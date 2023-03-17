@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+      <!--<script src="request_form.js" type="text/javascript"></script>-->
+      <link rel="stylesheet" href="man_build.css">
+      <title>PC Builder</title>
+      <script>
+        //update the total price depending on the elements in the list
+        function updatePrice()
+        {
+          var cpuPrice = document.getElementById("cpu_price");
+          var cpuCoolPrice = document.getElementById("cpu_cooler_price");
+          var moboPrice = document.getElementById("mobo_price");
+          var memPrice = document.getElementById("memory_price");
+          var storagePrice = document.getElementById("storage_price");
+          var gpuPrice = document.getElementById("gpu_price");
+          var casePrice = document.getElementById("case_price");
+          var psuPrice = document.getElementById("psu_price");
+          var compoundPrice = document.getElementById("compound_price");
+          var monitorPrice = document.getElementById("monitor_price");
+          var osPrice = document.getElementById("os_price");
+
+          var sum = 0;
+          for(var price of [cpuPrice, cpuCoolPrice, moboPrice, memPrice, storagePrice, gpuPrice, casePrice, psuPrice, compoundPrice, monitorPrice, osPrice])
+          {
+            if(price.textContent!="NA")
+            {
+              sum+=parseFloat(price.textContent);
+            }
+            else
+            {
+              //skip the element
+              continue;
+            }
+          }
+
+          if(sum=="0")
+          {
+            document.getElementById("total_price").textContent = "NA";
+          }
+
+          else
+            document.getElementById("total_price").textContent = sum;
+        }
+        
+        function check_os()
+        {
+          var osVal = document.getElementById("os_dropdown").value
+          
+          if(osVal=="NA")
+          {
+            document.getElementById("os_price").textContent = "NA";
+            updatePrice();
+            updateName(osVal, "os_name");
+          }
+
+          if(osVal=="Windows 10 Home")
+          {
+            document.getElementById("os_price").textContent = "120";
+            updatePrice();
+            updateName(osVal, "os_name");
+          }
+
+          if(osVal=="Windows 10 Pro")
+          {
+            document.getElementById("os_price").textContent = "160";
+            updatePrice();
+            updateName(osVal, "os_name");
+          }
+
+          if(osVal=="Windows 11 Home")
+          {
+            document.getElementById("os_price").textContent = "120";
+            updatePrice();
+            updateName(osVal, "os_name");
+          }
+
+          if(osVal=="Windows 11 Pro")
+          {
+            document.getElementById("os_price").textContent = "160";
+            updatePrice();
+            updateName(osVal, "os_name");
+          }
+        }
+
+        function updateName(product_name, product_category)
+        {
+            document.getElementById(product_category).textContent = product_name;
+        }
+      </script>
+  </head>
+  
+  <body>
+    <div class="header">
+       <h1>Choose Your Parts</h1>
+    </div>
+
+    <div class="row">
+       <div class="column"><b>Platform:</b></div>
+       <div class="column"><b>Form Factor:</b></div>
+       <div class="column"><b>Wattage:</b></div> 
+    </div>
+
+    <table>
+        <tr><th>Component</th><th>Selection</th><th>Name</th><th>Price</th></tr>
+        <tr><td id="comp_text">CPU</td><td>
+          <div id="partButton"><button id="choosePartButt">Choose CPU</button></div>
+          <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;">
+            <div id="tab" style="position:relative; margin: auto; width:85%; margin-top: 20px; height: 50px; background-color:white;">
+            <button id = "closeButton" style = "position:absolute; top:10px; right: 10px;">X</button>
+            </div>
+            <iframe id = "iframe" name = "iframe" src = "shop_popout.html" style = "position:absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 85%; height:85%; border:none;"></iframe>
+            </div>
+            <div id = "backdrop" style = "display:none; position: fixed; top:0; left: 0; width: 100%; height: 100%; background-color:rgba(0,0,0,0.5); z-index:9;"></div>
+            
+            <script>
+            var openButton = document.getElementById("choosePartButt");
+            var closeButton = document.getElementById("closeButton");
+            var overlay = document.getElementById("overlay");
+            var backdrop = document.getElementById("backdrop");
+            
+            openButton.addEventListener("click", function() {
+                overlay.style.display = "block";
+                backdrop.style.display = "block";
+            });
+            
+            closeButton.addEventListener("click", function() {
+                overlay.style.display = "none";
+                backdrop.style.display = "none";
+
+                // reset the iframe src to reload the page
+                document.getElementById('iframe').src = document.getElementById('iframe').src
+            });
+
+            window.frames["iframe"].onmessage = function(e) {
+            if(e.data == "close")
+            {
+              document.getElementById("overlay").style.display = "none";
+              document.getElementById("backdrop").style.display = "none";
+            }
+            }
+            </script>
+          
+        </td>
+        <td><p id="cpu_name">NA</p></td></td>
+        <td><p id="cpu_price">NA</p></td>
+      </tr>
+
+        <tr><td id="comp_text">CPU Cooler</td><td>
+          <div id="partButton"><button id="choosePartButt">Choose CPU Cooler</button></div>
+        </td>
+        <td><p id="cpu_cooler_name">NA</p></td></td>
+        <td><p id="cpu_cooler_price">NA</p></td>
+      </tr>
+
+        <tr><td id="comp_text">Motherboard</td><td>
+          <div id="partButton"><button id="choosePartButt">Choose Motherboard</button></div>
+        </td>
+        <td><p id="mobo_name">NA</p></td></td>
+        <td><p id="mobo_price">NA</p></td>
+      </tr>
+
+        <tr><td id="comp_text">Memory</td><td>
+          <div id="partButton"><button id="choosePartButt">Choose Memory</button></div>
+        </td>
+        <td><p id="memory_name">NA</p></td></td>
+        <td><p id="memory_price">NA</p></td>
+      </tr>
+
+        <tr><td id="comp_text">Storage</td><td>
+          <div id="partButton"><button id="choosePartButt">Choose Storage</button></div>
+        </td>
+        <td><p id="storage_name">NA</p></td></td>
+        <td><p id="storage_price">NA</p></td>
+      </tr>
+
+        <tr><td id="comp_text">Video Card</td><td>
+          <div id="partButton"><button id="choosePartButt">Choose Video Card</button></div>
+        </td>
+        <td><p id="gpu_name">NA</p></td></td>
+        <td><p id="gpu_price">NA</p></td>
+      </tr>
+
+        <tr><td id="comp_text">Case</td><td>
+          <div id="partButton"><button id="choosePartButt">Choose Case</button></div>
+        </td>
+        <td><p id="case_name">NA</p></td></td>
+        <td><p id="case_price">NA</p></td>
+      </tr>
+
+        <tr><td id="comp_text">Power Supply</td><td>
+          <div id="partButton"><button id="choosePartButt">Choose Power Supply</button></div>
+        </td>
+        <td><p id="psu_name">NA</p></td></td>
+        <td><p id="psu_price">NA</p></td>
+      </tr>
+
+        <tr><td id="comp_text">Thermal Compound</td><td>
+          <div id="partButton"><button id="choosePartButt">Choose Thermal Compound</button></div>
+        </td>
+        <td><p id="compound_name">NA</p></td></td>
+        <td><p id="compound_price">NA</p></td>
+      </tr>
+
+        <tr><td id="comp_text">Monitor</td><td>
+          <div id="partButton"><button id="choosePartButt">Choose Monitor</button></div>
+        </td>
+        <td><p id="monitor_name">NA</p></td></td>
+        <td><p id="monitor_price">NA</p></td>
+      </tr>
+        
+        <tr><td id="comp_text">Operating System</td><td>
+            <select id="os_dropdown" onchange="check_os()">
+                <option value="NA">None</option>
+                <option value="Windows 10 Home">Windows 10 Home</option>
+                <option value="Windows 10 Pro">Windows 10 Pro</option>
+                <option value="Windows 11 Home">Windows 11 Home</option>
+                <option value="Windows 11 Pro">Windows 11 Pro</option>
+            </select>
+        </td>
+        <td><p id="os_name">NA</p></td>
+        <td><p id="os_price">NA</p></td>
+      </tr>
+	</table>
+  <div class="price">
+    <p id="total_price_label"><b>Total Price:</b></p>
+    <p id="total_price">NA</p>
+  </div>
+
+  <!--Compatibility Notes-->
+  <div class="compatibility">
+    <b>Compatibility Notes:</b>
+  </div>
+  <hr></hr>
+  <p id="compat_spacing">Nothing to display: waiting for changes...</p>
+  <hr></hr>
+   <!--Submit Button-->
+  <div id="submitbutton">
+    <button type="submit" id="submit">Purchase Parts</button></div>
+
+</body>
+</html>

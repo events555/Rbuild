@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+
+    body{
+        background-color: white;
+    }
+    .product {
+      display: inline-block;
+      margin: 20px;
+      text-align: center;
+    }
+    
+    .product img {
+      width: 200px;
+      height: 200px;
+    }
+    
+    .product button {
+      background-color: green;
+      color: white;
+      padding: 10px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="product">
+    <img src="https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61cwywLZR-L._AC_SY300_SX300_.jpg" alt="iPhone">
+    <p>iPhone 14</p>
+    <p>$999</p>
+    <button onclick="addToCart('iPhone 14')">Add to cart</button>
+  </div>
+  
+  <div class="product">
+    <img src="https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61QGMX0Qy6L._AC_SX679_.jpg" alt="Laptop">
+    <p>Laptop</p>
+    <p>$799</p>
+    <button onclick="addToCart('Laptop')">Add to cart</button>
+  </div>
+
+<div class = "product">
+<img src = "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/81+cQQOQSQL._AC_SX466_.jpg" alt = "Headphones">
+<p>Headphones</p>
+<p>$199</p>
+<button onclick = "addToCart('Headphones')">Add to cart</button>
+
+<script>
+
+var addToCart = function(product) 
+{
+   // close the overlay and report the product name to the main html page
+   //window.parent.postMessage(product, "*");
+   window.parent.postMessage("close", "*");
+};
+</script>
+
+</body>
