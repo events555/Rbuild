@@ -18,17 +18,14 @@ Files that are included:
   the chat window.
 
 WIP for Demo 1:
-* customer.html and builder.html need to pass data so that I can have it display builder and customer next to the message names. Server.js
-  and chat.html needs to be updated as well to accompany this.
-* Adding the saving of chat history.
-* Ability to modify messages.
+* Saving chat history to a file to be reopened (will be implemented to a database in Demo 2)
 
 WIP for Demo 2:
 * Integrating this with the user database so that it can display specific user names.
-* Making the chat room look overall cleaner.
-  * Displaying who is currently online in the room.
-  * Tidying up the looks of the chat room to make it look better.
+* Displaying who is currently online
+* Saving chat history to user database
 
 To run:
 * Type "npm run devStart" into the console to run nodemon so that it is constantly running the server.
 * The port is currently set to 3000 so you go into Chrome/Firefox/Browser and type http://localhost:3000
+* To test customer vs builder open up two different instances of your browser

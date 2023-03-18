@@ -1,9 +1,21 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const app = express();
 const http = require("http");
+const mysql = require("mysql");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
+app.use(cookieParser());
+
+// connecting to the mysql server
+// const connection = mysql.createConnection({
+//     host: "localhost",
+//     user: "root",
+//     password: "admin",
+//     database: "rbuild"
+// });
+// connection.connect();
 
 // passing general index.html file to website
 app.get("/", (req, res) => {
@@ -30,7 +42,6 @@ app.get("/builder/chat", (req, res) => {
     res.sendFile(__dirname + "/chat.html");
 });
 
-// manages user connecting and disconnecting
 const chat = io.of("/chat");
 chat.on("connection", (socket) => {
     // notifies when a user has connected

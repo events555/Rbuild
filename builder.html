@@ -4,7 +4,15 @@
         <title>Builder View</title>
     </head>
     <body>
-        <p> Enter the chat room </p>
-        <a href="/builder/chat">Chat Room</a><br />
+        <script>
+            // Passes that user is a builder to chat.html
+            sessionStorage.setItem("name", "Builder");
+
+            // Button to access chat window
+            function visitPage(){
+                window.location="http://localhost:3000/builder/chat";
+            }
+        </script>
+        <button onclick="visitPage();">Enter Chat Room</button>
     </body>
 </html>
