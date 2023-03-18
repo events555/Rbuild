@@ -24,6 +24,7 @@ WIP for Demo 2:
 * Integrating this with the user database so that it can display specific user names.
 * Displaying who is currently online
 * Saving chat history to user database
+* Adding multiple rooms based on user ids
 
 To run:
 * Type "npm run devStart" into the console to run nodemon so that it is constantly running the server.
