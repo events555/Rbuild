@@ -1,12 +1,10 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
 const app = express();
 const http = require("http");
 const mysql = require("mysql");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
-app.use(cookieParser());
 
 // connecting to the mysql server
 // const connection = mysql.createConnection({
