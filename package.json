@@ -1,0 +1,14 @@
+{
+  "name": "build-chat",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql": "^2.18.1",
+    "socket.io": "^4.6.1"
+  },
+  "scripts": {
+    "devStart": "nodemon server.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.21"
+  }
+}
