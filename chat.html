@@ -2,31 +2,117 @@
 <html lang="en">
     <head>
         <title>Socket.io Chat Tester</title>
+        <!-- chat styling -- CSS -->
         <style>
-            body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-
-            #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
-            #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
-            #input:focus { outline: none; }
-            #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
-      
-            #messages { list-style-type: none; margin: 0; padding: 0; }
-            #messages > li { padding: 0.5rem 1rem; }
-            #messages > li { background: #efefef; }
+            /* chat font */
+            body { 
+                /* padding so that messages are not blocked by form on bottom */
+                padding-bottom: 2.9rem;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            }
+            /* form at bottom of screen */
+            #form { 
+                background: #7abae5; 
+                padding: 0.5rem; 
+                position: fixed; 
+                bottom: 0; 
+                left: 0; 
+                right: 0;
+                display: flex;
+                height: 3.5rem;
+                box-sizing: border-box;
+            }
+            /* input box within form */
+            #input { 
+                border: none; 
+                padding: 1rem; 
+                flex-grow: 1; 
+                border-radius: 2rem; 
+                margin: 0.25rem; 
+            }
+            #input:focus { 
+                /* removes outline when selected */
+                outline: none; 
+            }
+            /* form button */
+            #form > button { 
+                cursor: pointer;
+                background: #006fc0; 
+                border: none; 
+                padding: 0 1rem; 
+                margin: 0.25rem; 
+                border-radius: 15px; 
+                outline: none; 
+                color: #fff; 
+                font-weight: bold;
+                transition: transform 150ms ease-in-out;
+            }
+            #form > button:hover {
+                transform: scale(1.04);
+            }
+            /* chat messages */
+            #messages { 
+                list-style-type: none; 
+                padding: 0; 
+            }
+            /* message container (contains a <li> and a <p> */
+            #messages > div {
+                display: flex;
+                flex-direction: row;
+                align-items: center; /* vertically center */
+            }
+            /* messages from customer styling */
+            #messages > div > li { 
+                padding: 0.5rem 1rem; 
+                background: #efefef; 
+                border-radius: 25px;
+                margin: 8px;
+                margin-right: 4.25rem;
+            }
+            /* messages from the builder styling */
+            #messages > div > li.builder {
+                /* add additional styles for builder messages */
+                background-color: #006fc0;
+                color: #ffffff;
+            }
+            /* user status message styling */
+            #messages > div > li.user-status {
+                padding: 0rem 1rem;
+                font-size: smaller;
+                background: none;
+                color: #6a6a6a;
+                font-style: italic;
+                text-align: center;
+            }
+            /* message time styling */
+            #messages > div > p.message-time {
+                position: absolute;
+                right: 1rem;
+                font-size: smaller;
+                color: #6a6a6a;
+            }
+            /* user status time styling */
+            #messages > div > p.user-status-message-time {
+                display: none;
+            }
         </style>
     </head>
     <body>
         <div class = "receive-data">
             <script>
-                // Determines whether the user is a builder or a customer from prev page
+                // Determines whether the user is a builder or a customer from previous roles page
                 var username = sessionStorage.getItem("name");
             </script>
         </div>
+
         <div class = "chat-messages">
+            <!-- chat messages -->
             <ul id="messages"></ul>
+            <!-- form at bottom of screen -->
             <form id="form" action="">
-                <input id="input" autocomplete="off" /><button>Send</button>
+                <input id="input" autocomplete="off"/><button>Send</button>
             </form>
+
             <script src="http://localhost:3000/socket.io/socket.io.js"></script>
             <script>
                 var socket = io("/chat");
@@ -37,31 +123,91 @@
                 const room = "requests";
 
                 var today = new Date();
-                var date = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " @ ";
-                var time = today.getHours() + ":" + today.getMinutes() + " | ";
-                var datetime = date + time;
+                var date = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " | ";
 
                 // Sending individual chat messages
                 form.addEventListener("submit", function(e) {
                     e.preventDefault();
                     if (input.value) {
-                        socket.emit("chat-message", {msg: datetime + username + ": " + input.value, room});
+                        socket.emit("chat-message", {msg: date + username + ": " + input.value, room});
                         input.value = "";
                     }
                 });
                 
+                // listens for "chat-message" event to run function
                 socket.on("chat-message", function(msg) {
+                    // create new tag <div>
+                    var messageContainer = document.createElement("div");
+
+                    // create new item of tag <li>
                     var item = document.createElement("li");
+                    // set the content of the li to msg
                     item.textContent = msg;
-                    messages.appendChild(item);
+
+                    // create new item of tag <p>
+                    var messageTime = document.createElement("p");
+                    // add class to p for styling
+                    messageTime.classList.add("message-time");  
+                    // set the content of p to the current time
+                    messageTime.textContent = getTimeString();
+                    // set up a function to dynamically update the time every minute
+                    var updateTime = setInterval(function() {
+                        messageTime.textContent = getTimeString();
+                    }, 60000);
+
+                    // split the message by " "
+                    let msgArr = msg.split(" ");
+                    // obtain the 3rd element, which is the username of the speaker
+                    let speaker = msgArr[2];
+                    // the speaker is the builder
+                    if (speaker === "Builder:") {
+                        // add a class to the builder message (for different styling)
+                        item.classList.add("builder");
+                    }
+                    // checks if message is one that states status of user
+                    if (msg === "User has entered the room" || msg === "User has left the room") {
+                        // add a class to the user status messages (for different styling)
+                        item.classList.add("user-status");
+                        // add a class to the corresponding time p tag (for different styling)
+                        messageTime.classList.add("user-status-message-time");
+                    }
+
+                    // append the li and p elements to each div element (each div contains a li and p element)
+                    messageContainer.appendChild(item);
+                    messageContainer.appendChild(messageTime);
+
+                    // add div to the end of the message block 
+                    messages.appendChild(messageContainer);
+                    
+                    // scrolls window to last message
                     window.scrollTo(0, document.body.scrollHeight);
+
+                    // function to get the current time
+                    function getTimeString() {
+                        let now = new Date();
+                        // obtain hours
+                        let hours = now.getHours();
+                        // determine if time is AM or PM
+                        let amOrpm = hours >= 12 ? 'PM' : 'AM';
+                        if (hours > 12) {
+                            hours = hours - 12;
+                        }
+                        // obtain minutes
+                        let minutes = now.getMinutes();
+                        // adds leading zero
+                        if (minutes < 10) {
+                            minutes = "0" + minutes;
+                        }
+                        return hours + ":" + minutes+ " " + amOrpm;
+                    }
                 });
 
-                // Notifies when the user has joined the room
+                // notifies when the user has joined the room with a popup message
                 socket.on("connect", () => {
                     socket.emit("join", {room: room});
-                })
+                });
             </script>
+
         </div>
     </body>
 </html>

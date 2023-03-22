@@ -1,32 +1,14 @@
-# Chat for Build Requests
+# Chat System with Builder 
+### *(Lance’s Code with front-end implemented)*
+#### Replace the files from Lance's branch with these files (if same name)
+**Needed installations:**
+1. Download node.js on Mac/Windows
+2. Type in `npm install --save-dev nodemon` in terminal of VS Code (make sure you're in correct directory) to download nodemon
+* If not in the correct directory, type in `cd [nameOfDirectory]` in the terminal of VS Code
 
-I am using Node.js for this and have the following installed:
-* nodemon: Mainly for testing, am using this to just keep the server running so I don't have to type "node server.js" every time.
-* socket.io and express: Works together but they are used as the i/o for our chat functionality.
-* mysql: Will be implemented later but is going to work with the user database to display usernames in the chat box.
+**To run site:**
 
-Files that are included:
-* index.html: Just a generic html file with hyperlink references that go to builder or customer view but this
-  front end is mainly going to be implemented by Brian.
-* customer.html/builder.html: Currently working on using cookies or some sort of data pass so that I can get the
-  chat to display builder/customer next to their current message. Will probably implement this later on for Demo 2 with Ryan's
-  login code and use the account names that are associated with each user next to the message names. For now, just to display
-  working chat functionality, will only say builder or customer next to the message. This will most likely be implemented by Brian.
-* chat.html: Client side of the chat box. Currently uses socket.io accompanied with event listeners to transmit messages back and
-  forth between the chat window. 
-* server.js: Backend of the chat window. Currently uses socket.io and express to send messages/notify of connections and disconnections in
-  the chat window.
-
-WIP for Demo 1:
-* Saving chat history to a file to be reopened (will be implemented to a database in Demo 2)
-
-WIP for Demo 2:
-* Integrating this with the user database so that it can display specific user names.
-* Displaying who is currently online
-* Saving chat history to user database
-* Adding multiple rooms based on user ids
-
-To run:
-* Type "npm run devStart" into the console to run nodemon so that it is constantly running the server.
-* The port is currently set to 3000 so you go into Chrome/Firefox/Browser and type http://localhost:3000
-* To test customer vs builder open up two different instances of your browser
+3. Type `npm run devStart` into the terminal in VS Code to run `nodemon` so that it is constantly running the server.
+4. The port is currently set to `3000` so go on any browser (Chrome/Firefox, Safari) and type http://localhost:3000 and click return key on keyboard
+* To test customer interface: localhost:3000 should ask you to choose a role. Choose "Customer" and then press "Enter Chat Room"
+* To test builder interface: localhost:3000 should ask you to choose a role. Choose "Builder" and then press "Enter Chat Room"

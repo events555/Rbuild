@@ -1,11 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-    
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Roboto+Mono:wght@200&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="rolestyle.css">
+        <title>Chat</title>
     </head>
+
     <body>
-        <p> Choose your role </p>
-        <a href="/customer">Customer</a><br />
-        <a href="/builder">Builder</a>
+        <div>
+            <h1 class="title">Choose Your Role</h1>
+        </div>
+        <div class="container">
+
+            <div class="left-column">
+                <div class="left-column-container">
+                    <a class="no-underline" href="/customer">
+                        <div class="image-container">
+                            <img src="customer.png" class="icon" alt="Customer Icon">
+                        </div>
+                        <p class="column-text">Customer</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="right-column-container">
+                    <a class="no-underline" href="/builder">
+                        <div class="image-container">
+                            <img src="online-support.png" class="icon" href="/builder" alt="Builder Icon">
+                        </div>
+                        <p class="column-text">Builder</p>
+                    </a>
+                </div>
+            </div>
+
+        </div>
     </body>
 </html>

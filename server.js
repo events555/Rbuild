@@ -59,6 +59,22 @@ chat.on("connection", (socket) => {
     });
 });
 
+// added code to access .css file (ensures that the browser can interpret the CSS file and apply styles to HTML)
+// import built-in path module
+const path = require('path');
+// set up middleware to handle static files from public directory (css, image files)
+app.use(express.static('public', {
+setHeaders: (res, path) => {
+    // import mime-types package
+    const mime = require('mime-types');
+    const type = mime.lookup(path);
+    // explicitly set the Content-Type header for each response 
+    res.setHeader('Content-Type', type);
+}
+}));
+
 server.listen(3000, () => {
     console.log("listening on Port 3000");
 });
+
+
