@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- import Google Fonts to use in <style> tag -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Roboto+Mono:wght@200&display=swap" rel="stylesheet">
+        <!-- title of the tab of Browser -->
+        <title>Customer View</title>
+        <!-- styling of HTML page using <style> tag -->
+        <style>
+            .container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+            }
+            button {
+                cursor: pointer;
+                border-radius: 40px;
+                padding: 1rem 3rem 1rem 3rem;
+                font-size: large;
+                font-weight: 800;
+                font-family: 'Roboto Mono', monospace;
+                background-color: #AFE1AF;
+                border: none;
+                animation: float 3s ease-out infinite; 
+                transition: transform 200ms ease-in-out;
+            }
+            button:hover {
+                transform: scale(1.05);
+            }
+            @keyframes float {
+                40% {
+                    transform: translateY(20px);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            // Passes that user is a customer to the chat.html
+            sessionStorage.setItem("name", "Customer");
+
+            // Button to access chat window
+            function visitPage(){
+                window.location="http://localhost:3001/customer/chat";
+            }
+        </script>
+        <div class="container">
+            <button onclick="visitPage();">Enter Chat Room 〉</button>
+        </div>
+        
+    </body>
+</html>
