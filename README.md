@@ -227,7 +227,7 @@ CREATE TABLE `storage` (
   `interface` varchar(255) NOT NULL,
   `form_factor` varchar(255) NOT NULL,
   `rand_r_4k` varchar(255) NOT NULL,
-  `rank_w_4k` varchar(255) NOT NULL,
+  `rand_w_4k` varchar(255) NOT NULL,
   PRIMARY KEY (`upc`)
 )
 
