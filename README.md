@@ -26,4 +26,6 @@ CREATE TABLE `users` (
 
 - npm and Node.js installed with the following packages (express, body-parser, cors, mysql, cookie-parser, and crypto).
 
-- An apache http server with the login_register.html file in it.  
+- An apache http server with the login_register.html file in it.
+
+**Some other tables you will need in your database and their create tables...**
