@@ -91,18 +91,14 @@ let cpu = new Promise((res) => {
     // prod_name, cores, socket, compatibility, mem_type
 });
 cpu.then((result) => {
-    var arr = [
+    var values = [
         result.scrappedItems['Name '],
         result.scrappedItems['# of Cores # of Cores'],
         result.scrappedItems['CPU Socket Type CPU Socket Type'],
         result.scrappedItems['64-Bit Support 64-Bit Support'],
         result.scrappedItems['Memory Types ']];
-    arr = arr.map(item => '${item}');
-    var str = "(" + arr.join(",") + ")";
-    console.log(str)
-    var sql = "INSERT INTO cpu (prod_name, cores, socket, compatibility, mem_type) VALUES ";
-    sql = sql + str;
-    con.query(sql, function (err, result) {
+    var sql = "INSERT INTO cpu (prod_name, cores, socket, compatibility, mem_type) VALUES (?)";
+    con.query(sql, [values], function (err, result) {
         if (err) throw err;
         console.log("Number of records inserted: " + result.affectedRows);
     });
