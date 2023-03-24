@@ -62,11 +62,10 @@ const webscraping = async (pageURL) => {
     let dataObj = {};
     try {
         await page.goto(pageURL);
-        //work on this
-        //use $i to iterate through tables
         let attributeList = [];
         const scrappedItems = await page.evaluate(() => {
             //what the hell is happening here
+            //getting tables
             var keys = Array.from(document.querySelectorAll('#product-details > div.tab-panes > div:nth-child(2) > table tr th'));
             var values = Array.from(document.querySelectorAll('#product-details > div.tab-panes > div:nth-child(2) > table tr td'));
             keys = keys.map(th => th.innerText.trim());
