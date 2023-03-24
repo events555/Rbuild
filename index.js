@@ -25,11 +25,11 @@ app.get('/', (req, res) => {
 })
 
 app.get('/checkout', (req, res) => {
-    res.sendFile('checkout.html', { root: dirname })
+    res.sendFile('checkout.html', { root: __dirname })
 })
 
 app.get('/success', (req, res) => {
-    res.sendFile('success.html', { root: dirname })
+    res.sendFile('success.html', { root: __dirname })
 })
 
 app.post('/create-checkout-session', async (req, res) => {
@@ -67,10 +67,12 @@ const webscraping = async (pageURL) => {
         let attributeList = [];
         const scrappedItems = await page.evaluate(() => {
             //what the hell is happening here
-            keys = Array.from(document.querySelectorAll('#product-details > div.tab-panes > div:nth-child(2) > table tr th'));
-            values = Array.from(document.querySelectorAll('#product-details > div.tab-panes > div:nth-child(2) > table tr td'));
-            keys = keys.map(th => th.innerText);
-            values = values.map(td => td.innerText);
+            var keys = Array.from(document.querySelectorAll('#product-details > div.tab-panes > div:nth-child(2) > table tr th'));
+            var values = Array.from(document.querySelectorAll('#product-details > div.tab-panes > div:nth-child(2) > table tr td'));
+            keys = keys.map(th => th.innerText.trim());
+            values = values.map(td => td.innerText.trim());
+            keys = keys.map(x => Array.from(new Set(x.split(' '))).toString().split(',').join(' '));
+            values = values.map(x => Array.from(new Set(x.split(' '))).toString().split(',').join(' '));
             const merged = keys.reduce((obj, key, index) => ({ ...obj, [key]: values[index] }), {});
             return merged
         });
@@ -91,18 +93,14 @@ let cpu = new Promise((res) => {
     // prod_name, cores, socket, compatibility, mem_type
 });
 cpu.then((result) => {
-    var arr = [
-        result.scrappedItems['Name '],
-        result.scrappedItems['# of Cores # of Cores'],
-        result.scrappedItems['CPU Socket Type CPU Socket Type'],
-        result.scrappedItems['64-Bit Support 64-Bit Support'],
-        result.scrappedItems['Memory Types ']];
-    arr = arr.map(item => '${item}');
-    var str = "(" + arr.join(",") + ")";
-    console.log(str)
-    var sql = "INSERT INTO cpu (prod_name, cores, socket, compatibility, mem_type) VALUES ";
-    sql = sql + str;
-    con.query(sql, function (err, result) {
+    var values = [
+        result.scrappedItems['Name'],
+        result.scrappedItems['# of Cores'],
+        result.scrappedItems['CPU Socket Type'],
+        result.scrappedItems['64-Bit Support'],
+        result.scrappedItems['Memory Types']];
+    var sql = "INSERT INTO cpu (prod_name, cores, socket, compatibility, mem_type) VALUES (?)";
+    con.query(sql, [values], function (err, result) {
         if (err) throw err;
         console.log("Number of records inserted: " + result.affectedRows);
     });

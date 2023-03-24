@@ -1,0 +1,32 @@
+{
+	"folders": [
+		{
+			"path": "../RBuild-1"
+		},
+		{
+			"name": "Rbuild-2",
+			"path": "."
+		},
+		{
+			"name": "Rbuild-3",
+			"path": "../Rbuild-3"
+		}
+	],
+	"settings": {
+		"sqltools.connections": [
+			{
+				"mysqlOptions": {
+					"authProtocol": "default"
+				},
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 3306,
+				"driver": "MySQL",
+				"name": "dev",
+				"database": "parts",
+				"username": "root",
+				"password": "password"
+			}
+		]
+	}
+}
