@@ -1,0 +1,26 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <form action="/insert-item" method="POST">
+        <button type="submit" id="insert-product">Insert Product</button>
+      </form>
+    <button id="create-product">Create Product</button>
+    <script>
+        const product = await stripe.products.create({
+            name: 'Basic Dashboard',
+            default_price_data: {
+            unit_amount: 1000,
+            currency: 'usd',
+            recurring: {interval: 'month'},
+            },
+            expand: ['default_price'],
+        });
+    </script>
+    <button onclick="window.location.href='http://localhost:3000/checkout';">Click Here</button>
+</body>
+</html>
