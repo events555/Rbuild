@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <meta charset="UTF-8" />
+      <!--<script src="request_form.js" type="text/javascript"></script>-->
+      <link rel="stylesheet" href="request_form.css">
+      <title>PC Build Request Form</title>
+
+      <script>
+        function price_check()
+        {
+                var priceVal = document.querySelector('input[name="priceButt"]:checked').value;
+                
+                if (priceVal == "flatPrice")
+                {
+                        document.getElementById('range_price_selection_min').style.display = 'none';
+                        document.getElementById('range_price_selection_max').style.display = 'none';
+                        document.getElementById('range_extra_p').style.display = 'none';
+                        document.getElementById('no_price_selection').style.display = 'none';
+                        document.getElementById('flat_price_selection').style.display = 'block';
+                }
+                
+                else if(priceVal == "rangePrice")
+                {
+                        document.getElementById('flat_price_selection').style.display = 'none';
+                        document.getElementById('no_price_selection').style.display = 'none';
+                        document.getElementById('range_price_selection_min').style.display = 'inline-block';
+                        document.getElementById('range_price_selection_max').style.display = 'inline-block';
+                        document.getElementById('range_extra_p').style.display = 'block';
+                }
+
+                else
+                {
+                        document.getElementById('flat_price_selection').style.display = 'none';
+                        document.getElementById('range_price_selection_min').style.display = 'none';
+                        document.getElementById('range_price_selection_max').style.display = 'none';
+                        document.getElementById('range_extra_p').style.display = 'none';
+                        document.getElementById('no_price_selection').style.display = 'block';
+                }
+        }
+
+        function check_drive()
+        {
+                var driveVal = document.getElementById("dropdown2").value;
+                
+                if(driveVal=="no_pref")
+                {
+                        document.getElementById('drive_cap').style.display = 'none';
+                }
+
+                else
+                {
+                        document.getElementById('drive_cap').style.display = 'inline-block';
+                }
+        }
+
+        function check_sec()
+        {
+                var driveVal = document.getElementById("dropdown4").value;
+                
+                if(driveVal=="none")
+                {
+                        document.getElementById('sc_drive_cap').style.display = 'none';
+                }
+
+                else
+                {
+                        document.getElementById('sc_drive_cap').style.display = 'inline-block';
+                }
+        }
+
+        function diff_check()
+        {
+                var diffVal = document.querySelector('input[name="detailButt"]:checked').value;
+                
+                if(diffVal=="beg")
+                {
+                        document.getElementById('adv').style.display = 'none';
+                        document.getElementById('beg').style.display = 'block';
+                }
+
+                else
+                {
+                        document.getElementById('beg').style.display = 'none';
+                        document.getElementById('adv').style.display = 'block';
+                }
+        }
+
+        function range_min_check()
+        {
+                var minInput = Number(document.getElementById('range_min_price').value);
+                var maxInput = Number(document.getElementById('range_max_price').value);
+
+                if(minInput && maxInput && minInput>maxInput)
+                {
+                        window.alert('The minimum value cannot be larger than the maximum value [min: ' + minInput + ', max: ' + maxInput + ']');
+                        //window.alert('The minimum value cannot be larger than the maximum value');
+                        document.getElementById('range_min_price').value = '';
+                }
+
+        }
+
+        function range_max_check()
+        {
+                var minInput = Number(document.getElementById('range_min_price').value);
+                var maxInput = Number(document.getElementById('range_max_price').value);
+
+                if(maxInput && minInput && maxInput<minInput)
+                {
+                        window.alert('The maximum value cannot be less than the minimum value [min: ' + minInput + ', max: ' + maxInput + ']');
+                        //window.alert('The maximum value cannot be smaller than the minimum value');
+                        document.getElementById('range_max_price').value = '';
+                }
+        }
+
+        function backBoxLength()
+        {
+                var textarea = document.getElementById("backTextarea");
+                var display = document.getElementById("backLengthDisplay");
+
+                display.textContent = textarea.value.length + "/2000";
+
+                if(textarea.value.length >= 1000 && textarea.value.length < 2000)
+                {
+                        display.style.color = "orange";
+                }
+
+                else if(textarea.value.length == 2000)
+                {
+                        display.style.color = "red";
+                }
+
+                else
+                {
+                        display.style.color = "black";
+                }
+        }
+
+        function addBoxLength()
+        {
+                var textarea = document.getElementById("addTextarea");
+                var display = document.getElementById("addLengthDisplay");
+
+                display.textContent = textarea.value.length + "/2000";
+
+                if(textarea.value.length >= 1000 && textarea.value.length < 2000)
+                {
+                        display.style.color = "orange";
+                }
+
+                else if(textarea.value.length == 2000)
+                {
+                        display.style.color = "red";
+                }
+
+                else
+                {
+                        display.style.color = "black";
+                }
+        }
+
+      </script>
+   </head>
+  <body>
+    <div id="outside">
+      <form id="survey-form" action="thank_you.html" method="post">
+        <h1 id="title"><center>PC Build Request Form</center></h1>
+        <p id="description"><center>Form to request a PC Build from store employees at Rbuild</center></p>
+        <p id="description2">Please read and agree to the terms below in order to submit the form.</p>
+      
+        <!-- ------------------Terms of Service---------------------------- -->
+        <fieldset>
+        <div id="terms_of_service">
+          <!-- groups of widgets that share the same purpose, for styling and semantic purposes -->
+          <legend>Terms of Service</legend>
+          <p id="term_des2">- Users can have only <b>1 build request</b> open at a time!</p>
+          <p id="term_des2">- Users get <b>1 FREE build request per week</b>.  In other words, you can submit this form for free once a week* and subsequence submissions will result in a fee**.</p>
+          <p id="term_des3">- Users get <b>2 FREE modifications per week</b>.  In other words, if you are not happy with the build an employee responds with, you can ask them to redo some parts of the build twice*** before being charged a fee**.</p>
+          <p id="term_des4">- Builders can take up to <b>1-3 business days to respond to your request</b>; if you do not get a response in 1-3 business days, your submission will not be counted and you will be granted 1 free request and 2 additional free modifications for the week.</p>
+          <p id="term_des5">*A week is defined as the timeframe from as a week after the user's free submission.  For example, if a user submits a free build request on Friday, they will get another free build request next Friday.</p>
+          <p id="term_des6">**Subsequent build request and modification fees will be indicated by the builder and you will get the opportunity to move forward or halt the process.</p>
+          <p id="term_des7">***Large, complex modifications may not count as single modification.  The builder will indicate if a modification is small or large and if the user will be charged and if they want to move forward or halt the process.</p>
+          <div id="terms"><input type="checkbox" required id="service" name="terms" value="agree" style="text-align:center">
+            <label for="terms"> I agree to the terms listed above</label><br></div>
+        </div>
+        </fieldset>
+        
+        <!-- ------------------Personal Details---------------------------- -->
+        <fieldset>
+          <!-- groups of widgets that share the same purpose, for styling and semantic purposes -->
+          <legend>Account Details</legend>
+          <!-- formally describes the purpose of the fieldset it is included inside. -->
+          <div>
+                <p style="margin : 0;">Your accountID and username are added automatically with your form submission.  You do not have to do anything here.</p>
+                <p></p>
+            <label id="accountID-label" for="accountID"><b>AccountID:</b></label>
+            <input type="text" id="accountID-label" name="accountID" readonly></div>
+          <div>
+          <div>
+            <label id="name-label" for="name"><b>Username:</b></label>
+            <input type="text" id="name-label" name="name" readonly></div>
+          <div> 
+        
+        </fieldset>
+        <!-- ------------------Background Info-------------------------------- -->
+        <fieldset>
+          <legend>Price Information</legend>
+          <p style="margin : 0">Here, you will indicate to us your build budget; this will help us choose the parts for your build.  You can do the following:</p>
+          
+          <p style="margin : 0; padding-top:0;">- Set a price that we should target</p>
+          <p style="margin : 0; padding-top:0;">- Set a price range that we should target</p>
+          <p style="margin : 0; padding-top:0;">- Set no price, price will depend on customer's supplied parts or build requirements</p>
+          <p></p>
+          <div id="price_change_selection"> 
+            <label for="price" id="price_change"><b>Price:</b></label> 
+            
+            <input type = "radio"
+                    name = "priceButt"
+                    id = "flat_price"
+                    value = "flatPrice" 
+                    onclick="javascript:price_check();"/>
+            <label for = "flatPrice">Flat Price</label>
+        
+            <input type = "radio"
+                    name = "priceButt"
+                    id = "range_price"
+                    value = "rangePrice" 
+                    onclick="javascript:price_check();"/>
+            <label for = "rangePrice">Price Range</label>
+      
+            <input type = "radio"
+                    name = "priceButt"
+                    required id = "you_price"
+                    value = "you" 
+                    onclick="javascript:price_check();"/>
+            <label for = "you">You Decide</label>
+          </div>
+      
+        <div id="flat_price_selection" style="display: none;">
+          <label id="flat_price_label" for="price">Relative Price: $</label>
+          <input name="flat_price"
+            type = "number"
+            min = "0"
+            oninput="this.value=this.value.slice(0,this.maxLength)"
+            maxlength = "4"
+            required id = "flat_price"/>
+          <p? id="price_info"><b>NOTE:</b> We will do our best to target the price you provide given your needs.</p>
+        </div>
+
+        <div id="range_price_selection_min" style="display: none;">
+        <label id="range_price_label" for="price">Range Price (Min-Max): $</label>
+          <input name="range_min_price"
+            type = "number"
+            min = "0"
+            oninput="this.value=this.value.slice(0,this.maxLength);"
+            onblur="javascript:range_min_check();"
+            maxlength = "4"
+            required id = "range_min_price"/>
+        </div>
+
+        <div id="range_price_selection_max" style="display: none;">
+                <label id="range_price_label" for="price">-</label>
+                <input name="range_max_price"
+                type = "number"
+                min = "0"
+                oninput="this.value=this.value.slice(0,this.maxLength);"
+                onblur="javascript:range_max_check();"
+                maxlength = "4"
+                required id = "range_max_price"/>
+        </div>
+        <div id="range_extra_p" style="display: none;">
+                <p></p>
+        </div>
+
+        <div id="no_price_selection" style="display: none;">
+                <p><b>We will decide the price using all the info you supply us (e.g. use cases, desired parts, & additional info).</b></p>
+        </div>
+
+        </fieldset>
+
+        <fieldset>
+        <legend>Background Information</legend>
+        <div id = "textbox" style="display: block;">
+                <p style="margin : 0">To get an idea of how we should shop for parts, we need to know what you will be primarily using your PC for.  Please describe the main purposes and use cases of your new computer in the textbox below.</p>
+                <p></p>
+                <label for="backTextarea"></label>
+                <textarea id="backTextarea" maxlength="2000" oninput="backBoxLength()" name="user_message" rows="4" cols="50" placeholder="You can list your use cases or write full sentences."></textarea> 
+                <span id="backLengthDisplay" style="float:right;">0/2000</span>
+        </div>
+        </fieldset>
+
+        <!-- -----------------Parts To Include--------------------------------- -->
+        <fieldset>
+                <legend>Parts To Include</legend>
+                <p style="margin : 0">Here, you can indicate to us if you want to include any specific parts in the build.  To do so, simply click on the search bar and type in the name or UPC of the product and then click 'Add'.  This will add your parts to the list below.  You can then delete parts by pressing 'Delete'.  If you do not want to add any parts, leave this section blank.</p>
+                <p></p>
+        </fieldset>
+        
+        <!-- -----------------Preferences--------------------------------- -->
+        
+        <fieldset>
+          <legend>Preferences</legend>
+          <p style="margin : 0">Here, we want to get an idea of your overall part preferences and needs.  For example, if you want to restrict us to a particular platform (e.g. AMD), want a particular form factor (e.g. mini-ITX), or plan to use your computer with ethernet only, you can indicate that to us here.  If you do not have any particular preferences for a particular category, you can simply select "no preference".</p>
+          <p></p>
+          <div> 
+            <label for="platform" id="platform change"><b>Platform:</b></label> 
+            <input type = "radio"
+                    name = "platButt"
+                    id = "plat_intel"
+                    value = "intel" />
+            <label for = "intel">Prefer Intel</label>
+        
+            <input type = "radio"
+                    name = "platButt"
+                    id = "plat_amd"
+                    value = "amd" />
+            <label for = "amd">Prefer AMD</label>
+            
+            <input type = "radio"
+                    name = "platButt"
+                    required id = "plat_none"
+                    value = "none" />
+            <label for = "none">No preference</label>
+          </div>
+          <div> 
+            <label for="gpu_brand" id="gpu_change"><b>GPU Brand:</b></label> 
+            <input type = "radio"
+                    name = "gpuButt"
+                    id = "gpu_nvidia"
+                    value = "nvidia" />
+            <label for = "nvidia">Prefer Nvidia</label>
+        
+            <input type = "radio"
+                    name = "gpuButt"
+                    id = "gpu_amd"
+                    value = "amd" />
+            <label for = "amd">Prefer AMD</label>
+            
+            <input type = "radio"
+                    name = "gpuButt"
+                    required id = "gpu_none"
+                    value = "none" />
+            <label for = "none">No preference</label>
+          </div>
+          <div> 
+            <label for="cooler_type" required id="cooler_change"><b>CPU Cooler:</b></label> 
+            <input type = "radio"
+                    name = "coolerButt"
+                    id = "cooler_air"
+                    value = "air" />
+            <label for = "air">Prefer Air Cooler</label>
+        
+            <input type = "radio"
+                    name = "coolerButt"
+                    id = "cooler_aio"
+                    value = "aio" />
+            <label for = "aio">Prefer AIO Liquid Cooler</label>
+            
+            <input type = "radio"
+                    name = "coolerButt"
+                    required id = "cooler_none"
+                    value = "none" />
+            <label for = "none">No preference</label>
+          </div>
+          <div> 
+            <label for="form_factor" required id="factor_change"><b>Form Factor:</b></label> 
+            <input type = "radio"
+                    name = "formButt"
+                    id = "factor_atx"
+                    value = "atx" />
+            <label for = "atx">Prefer ATX</label>
+        
+            <input type = "radio"
+                    name = "formButt"
+                    id = "factor_mini"
+                    value = "mini" />
+            <label for = "mini">Prefer mini-ITX</label>
+            
+            <input type = "radio"
+                    name = "formButt"
+                    required id = "factor_none"
+                    value = "none" />
+            <label for = "none">No preference</label>
+        </div>
+            <div>
+                <label for="wifi_type" required id="wifi_change"><b>Mobo Onboard Wifi:</b></label> 
+            <input type = "radio"
+                    name = "wifiButt"
+                    id = "wifi_yes"
+                    value = "yes" />
+            <label for = "yes">Prefer WiFi</label>
+        
+            <input type = "radio"
+                    name = "wifiButt"
+                    id = "wifi_no"
+                    value = "no" />
+            <label for = "no">Prefer no WiFi</label>
+            
+            <input type = "radio"
+                    name = "wifiButt"
+                    required id = "wifi_none"
+                    value = "none" />
+            <label for = "none">No preference</label>
+            </div>
+          <div> 
+            <label for="psu_type" required id="psu_change"><b>PSU Type:</b></label> 
+            <input type = "radio"
+                    name = "psuButt"
+                    id = "psu_modular"
+                    value = "modular" />
+            <label for = "modular">Prefer modular</label>
+        
+            <input type = "radio"
+                    name = "psuButt"
+                    id = "psu_semi"
+                    value = "semi" />
+            <label for = "semi">Prefer semi-modular</label>
+      
+            <input type = "radio"
+                    name = "psuButt"
+                    id = "psu_non"
+                    value = "non" />
+            <label for = "non">Prefer non-modular</label>
+            
+            <input type = "radio"
+                    name = "psuButt"
+                    required id = "psu_none"
+                    value = "none" />
+            <label for = "none">No preference</label>
+          </div>
+          <div> 
+            <label for="rgb_pref" required id="rgb_change"><b>RGB Parts:</b></label> 
+            <input type = "radio"
+                    name = "rgbButt"
+                    id = "rgb_yes"
+                    value = "rgb" />
+            <label for = "rgb">Prefer RGB wherever possible</label>
+        
+            <input type = "radio"
+                    name = "rgbButt"
+                    id = "rgb_prefer"
+                    value = "rgb_p" />
+            <label for = "rgb_p">Prefer balance between RGB and part performance</label>
+      
+            <input type = "radio"
+                    name = "rgbButt"
+                    id = "rgb_no"
+                    value = "rgb_no" />
+            <label for = "rgb_no">Prefer no RGB at all</label>
+            
+            <input type = "radio"
+                    name = "rgbButt"
+                    required id = "rgb_none"
+                    value = "none" />
+            <label for = "none">No preference</label>
+          </div>
+          <div> 
+            <label for="noise_level" required id="noise_change"><b>Noise Level:</b></label> 
+            <input type = "radio"
+                    name = "noiseButt"
+                    id = "noise_quiet"
+                    value = "quiet" />
+            <label for = "quiet">Prefer quite parts</label>
+        
+            <input type = "radio"
+                    name = "noiseButt"
+                    id = "noise_mixed"
+                    value = "mixed" />
+            <label for = "mixed">Prefer balance between noise and performance</label>
+      
+            <input type = "radio"
+                    name = "noiseButt"
+                    id = "noise_loud"
+                    value = "loud" />
+            <label for = "loud">Prefer performance</label>
+            
+            <input type = "radio"
+                    name = "noiseButt"
+                    required id = "noise_none"
+                    value = "none" />
+            <label for = "none">No preference</label>
+          </div>
+        </fieldset>
+
+        <!-- -----------------Performance--------------------------------- -->
+        <fieldset>
+                <legend>Part Tier Level</legend>
+                <div>
+                <label for="detail_level" id="detail change"><b>PC Building Experience Level:</b></label> 
+                <input type = "radio"
+                        name = "detailButt"
+                        id = "detail_beg"
+                        value = "beg" 
+                        onclick="javascript:diff_check();"/>
+                <label for = "be">Beginner</label>
+                
+                <input type = "radio"
+                        name = "detailButt"
+                        required id = "detail_adv"
+                        value = "adv" 
+                        onclick="javascript:diff_check();"/>
+                <label for = "adv">Advanced</label>
+                </div>
+                <div id="beg" style="display: none;">
+                        <div> 
+                                <label for="cpu_tier" required id="cpu_change"><b>CPU:</b></label> 
+                                <input type = "radio"
+                                        name = "cpuTierButt"
+                                        id = "cpu_tier_budget"
+                                        value = "budget" />
+                                <label for = "budget">Budget</label>
+                                
+                                <input type = "radio"
+                                        name = "cpuTierButt"
+                                        id = "cpu_tier_lowerEnd"
+                                        value = "lowerEnd" />
+                                <label for = "lowerEnd">Lower Midrange</label>
+                                
+                                <input type = "radio"
+                                        name = "cpuTierButt"
+                                        id = "cpu_tier_midRange"
+                                        value = "midRange" />
+                                <label for = "midRange">Midrange</label>
+
+                                <input type = "radio"
+                                        name = "cpuTierButt"
+                                        id = "cpu_tier_upperRange"
+                                        value = "upperRange" />
+                                <label for = "upperRange">Upper Midrange</label>
+
+                                <input type = "radio"
+                                        name = "cpuTierButt"
+                                        id = "cpu_tier_highend"
+                                        value = "highend" />
+                                <label for = "highend">High-end</label>
+
+                                <input type = "radio"
+                                        name = "cpuTierButt"
+                                        id = "cpu_tier_top"
+                                        value = "top" />
+                                <label for = "top">Top-of-the-line</label>
+
+                                <input type = "radio"
+                                        name = "cpuTierButt"
+                                        required id = "cpu_tier_none"
+                                        value = "none" />
+                                <label for = "none">You Decide</label>
+                                </div>
+
+                        <div> 
+                                <label for="gpu_tier" required id="gpu_change"><b>GPU:</b></label> 
+                                <input type = "radio"
+                                        name = "gpuTierButt"
+                                        id = "gpu_tier_budget"
+                                        value = "budget" />
+                                <label for = "budget">Budget</label>
+                                
+                                <input type = "radio"
+                                        name = "gpuTierButt"
+                                        id = "gpu_tier_lowerEnd"
+                                        value = "lowerEnd" />
+                                <label for = "lowerEnd">Lower Midrange</label>
+                                
+                                <input type = "radio"
+                                        name = "gpuTierButt"
+                                        id = "gpu_tier_midRange"
+                                        value = "midRange" />
+                                <label for = "midRange">Midrange</label>
+
+                                <input type = "radio"
+                                        name = "gpuTierButt"
+                                        id = "gpu_tier_upperRange"
+                                        value = "upperRange" />
+                                <label for = "upperRange">Upper Midrange</label>
+
+                                <input type = "radio"
+                                        name = "gpuTierButt"
+                                        id = "gpu_tier_highend"
+                                        value = "highend" />
+                                <label for = "highend">High-end</label>
+
+                                <input type = "radio"
+                                        name = "gpuTierButt"
+                                        id = "gpu_tier_top"
+                                        value = "top" />
+                                <label for = "top">Top-of-the-line</label>
+
+                                <input type = "radio"
+                                        name = "gpuTierButt"
+                                        required id = "gpu_tier_none"
+                                        value = "none" />
+                                <label for = "none">You Decide</label>
+                                </div>
+
+                        <div> 
+                                <label for="mobo_tier" required id="mobo_change"><b>Mobo:</b></label> 
+                                <input type = "radio"
+                                        name = "moboTierButt"
+                                        id = "mobo_tier_budget"
+                                        value = "budget" />
+                                <label for = "budget">Budget</label>
+                                
+                                <input type = "radio"
+                                        name = "moboTierButt"
+                                        id = "mobo_tier_lowerEnd"
+                                        value = "lowerEnd" />
+                                <label for = "lowerEnd">Lower Midrange</label>
+                                
+                                <input type = "radio"
+                                        name = "moboTierButt"
+                                        id = "mobo_tier_midRange"
+                                        value = "midRange" />
+                                <label for = "midRange">Midrange</label>
+
+                                <input type = "radio"
+                                        name = "moboTierButt"
+                                        id = "mobo_tier_upperRange"
+                                        value = "upperRange" />
+                                <label for = "upperRange">Upper Midrange</label>
+
+                                <input type = "radio"
+                                        name = "moboTierButt"
+                                        id = "mobo_tier_highend"
+                                        value = "highend" />
+                                <label for = "highend">High-end</label>
+
+                                <input type = "radio"
+                                        name = "moboTierButt"
+                                        id = "mobo_tier_top"
+                                        value = "top" />
+                                <label for = "top">Top-of-the-line</label>
+
+                                <input type = "radio"
+                                        name = "moboTierButt"
+                                        required id = "mobo_tier_none"
+                                        value = "none" />
+                                <label for = "none">You Decide</label>
+                                </div>
+                        <div> 
+                                <label for="drive_tier" required id="drive_change"><b>Drives:</b></label> 
+                                <input type = "radio"
+                                        name = "driveTierButt"
+                                        id = "drive_tier_budget"
+                                        value = "budget" />
+                                <label for = "budget">Budget</label>
+                                
+                                <input type = "radio"
+                                        name = "driveTierButt"
+                                        id = "drive_tier_lowerEnd"
+                                        value = "lowerEnd" />
+                                <label for = "lowerEnd">Lower Midrange</label>
+                                
+                                <input type = "radio"
+                                        name = "moboTierButt"
+                                        id = "drive_tier_midRange"
+                                        value = "midRange" />
+                                <label for = "midRange">Midrange</label>
+
+                                <input type = "radio"
+                                        name = "driveTierButt"
+                                        id = "drive_tier_upperRange"
+                                        value = "upperRange" />
+                                <label for = "upperRange">Upper Midrange</label>
+
+                                <input type = "radio"
+                                        name = "driveTierButt"
+                                        id = "drive_tier_highend"
+                                        value = "highend" />
+                                <label for = "highend">High-end</label>
+
+                                <input type = "radio"
+                                        name = "driveTierButt"
+                                        id = "drive_tier_top"
+                                        value = "top" />
+                                <label for = "top">Top-of-the-line</label>
+
+                                <input type = "radio"
+                                        name = "driveTierButt"
+                                        required id = "drive_tier_none"
+                                        value = "none" />
+                                <label for = "none">You Decide</label>
+                                </div>
+                        <div> 
+                                <label for="psu_tier" required id="psu_change"><b>PSU:</b></label> 
+                                <input type = "radio"
+                                        name = "psuTierButt"
+                                        id = "psu_tier_budget"
+                                        value = "budget" />
+                                <label for = "budget">Budget</label>
+                                
+                                <input type = "radio"
+                                        name = "psuTierButt"
+                                        id = "psu_tier_lowerEnd"
+                                        value = "lowerEnd" />
+                                <label for = "lowerEnd">Lower Midrange</label>
+                                
+                                <input type = "radio"
+                                        name = "psuTierButt"
+                                        id = "psu_tier_midRange"
+                                        value = "midRange" />
+                                <label for = "midRange">Midrange</label>
+
+                                <input type = "radio"
+                                        name = "psuTierButt"
+                                        id = "psu_tier_upperRange"
+                                        value = "upperRange" />
+                                <label for = "upperRange">Upper Midrange</label>
+
+                                <input type = "radio"
+                                        name = "psuTierButt"
+                                        id = "psu_tier_highend"
+                                        value = "highend" />
+                                <label for = "highend">High-end</label>
+
+                                <input type = "radio"
+                                        name = "psuTierButt"
+                                        id = "psu_tier_top"
+                                        value = "top" />
+                                <label for = "top">Top-of-the-line</label>
+
+                                <input type = "radio"
+                                        name = "psuTierButt"
+                                        required id = "psu_tier_none"
+                                        value = "none" />
+                                <label for = "none">You Decide</label>
+                                </div>
+                        <div> 
+                </div>
+                <div id="adv" style="display: none;">
+                        <div>
+                                SUS
+                        </div>
+                </div>
+                </div>
+        </fieldset>
+        <!-- -----------------Capacities & Space--------------------------------- -->
+        <fieldset>
+                <legend>RAM & Drives</legend>
+                <div>
+                  <label for="ram_size"><b>RAM Size:</b></label>
+                  <select id="dropdown">
+                        <option value="you">No preference</option>
+                        <option value="4">4GB</option>
+                        <option value="8">8GB</option>
+                        <option value="12">12GB</option>
+                        <option value="16">16GB</option>
+                        <option value="24">24GB</option>
+                        <option value="32">32GB</option>
+                        <option value="64">64GB</option>
+                        <option value="128">128GB</option>
+                        </select>
+                </div>
+                <div id="drive_id" style="display: inline-block;">
+                  <label for="boot_drive"><b>Boot Drive:</b></label>
+                  <select id="dropdown2" onchange="check_drive()">
+                        <option value="no_pref">No Preference</option>
+                        <option value="ssd">SSD</option>
+                        <option value="drive">Mechanical Drive</option>
+                        </select>
+                </div>
+                <div id="drive_cap" style="display: none;">
+                <label for="boot_drive_space"><b>Boot Drive Space:</b></label>
+                  <select id="dropdown3">
+                        <option value="no_pref">No Preference</option>
+                        <option value="128">128GB</option>
+                        <option value="256">256GB</option>
+                        <option value="512">512GB</option>
+                        <option value="1024">1TB</option>
+                        <option value="2048">2TB</option>
+                        <option value="4096">4TB</option>
+                        <option value="8192">8TB</option>
+                        <option value="more">8TB+</option>
+                        </select>
+                </div>
+                <div id="bruh_block"></div>
+                <div id="sc_drive_id" style="display: inline-block;">
+                        <label for="sc_drive"><b>Secondary Drive:</b></label>
+                        <select id="dropdown4" onchange="check_sec()">
+                              <option value="none">None</option>
+                              <option value="no_pref">Yes, but no Preference</option>
+                              <option value="ssd">SSD</option>
+                              <option value="drive">Mechanical Drive</option>
+                        </select>
+                </div>
+                <div id="sc_drive_cap" style="display: none;">
+                      <label for="sc_drive_space"><b>Boot Drive Space:</b></label>
+                        <select id="dropdown5">
+                              <option value="no_pref">No Preference</option>
+                              <option value="128">128GB</option>
+                              <option value="256">256GB</option>
+                              <option value="512">512GB</option>
+                              <option value="1024">1TB</option>
+                              <option value="2048">2TB</option>
+                              <option value="4096">4TB</option>
+                              <option value="8192">8TB</option>
+                              <option value="more">8TB+</option>
+                        </select>
+                </div>
+        </fieldset>
+        <!-- --------------------Text Areas------------------------------ -->
+        
+        <fieldset>
+          <legend>Additional Information</legend>
+          <div>
+            <label for="add_info"></label>
+            <label for="addTextarea"></label>
+                <textarea id="addTextarea" maxlength="2000" oninput="addBoxLength()" name="user_message" rows="4" cols="50" placeholder="Any important additional information you want us to know?"></textarea> 
+                <span id="addLengthDisplay" style="float:right;">0/2000</span>
+       </fieldset>
+      
+       <div id="submitbutton">
+        <button type="submit" id="submit">Submit build request</button></div>
+      
+      </form>
+        </div>
+      
+      <!-- https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation -->
+  </body>
