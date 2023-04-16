@@ -1,9 +1,6 @@
 # Chat for Build Requests
 
-I am using Node.js for this and have the following installed:
-* nodemon: Mainly for testing, am using this to just keep the server running so I don't have to type "node server.js" every time.
-* socket.io and express: Works together but they are used as the i/o for our chat functionality.
-* mysql: Will be implemented later but is going to work with the user database to display usernames in the chat box.
+I am using Node.js for this and have the following installed: nodemon, socket.io, express, mysql
 
 Files that are included:
 * index.html: Just a generic html file with hyperlink references that go to builder or customer view but this
@@ -17,16 +14,18 @@ Files that are included:
 * server.js: Backend of the chat window. Currently uses socket.io and express to send messages/notify of connections and disconnections in
   the chat window.
 
-WIP for Demo 1:
-* Saving chat history to a file to be reopened (will be implemented to a database in Demo 2)
-
-WIP for Demo 2:
-* Integrating this with the user database so that it can display specific user names.
-* Displaying who is currently online
-* Saving chat history to user database
-* Adding multiple rooms based on user ids
+Updated 4/16: Implemented saving chat history to a database. Currently, still requires an emit back into the chat log to display the chat history. Saves into the sql database, but cannot display onto the website. Last thing that needs to be implemented is creating socket.io rooms based on user-id.
 
 To run:
 * Type "npm run devStart" into the console to run nodemon so that it is constantly running the server.
 * The port is currently set to 3000 so you go into Chrome/Firefox/Browser and type http://localhost:3000
 * To test customer vs builder open up two different instances of your browser
+* Need to create a MYSQL database with the following
+
+CREATE SCHEMA rbuilds
+
+CREATE TABLE rbuild.chat_line
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    line_text TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(ID)

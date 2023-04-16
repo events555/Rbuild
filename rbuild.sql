@@ -1,0 +1,22 @@
+CREATE SCHEMA rbuild DEFAULT CHARACTER SET utf8;
+
+-- Table `chats`.chat` --
+CREATE TABLE rbuild.chat (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE rbuild.chat_user (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    handle VARCHAR(45) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE rbuild.chat_line (
+	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    chat_id INT UNSIGNED NOT NULL,
+    user_id INT UNSIGNED NOT NULL,
+    line_text TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (ID),
+);
