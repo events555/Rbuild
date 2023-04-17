@@ -1,5 +1,7 @@
 # Chat for Build Requests
 
+Updated 4/17: Chat history implementation is complete. Final task to run is setting up with the user database to create separate rooms.
+
 I am using Node.js for this and have the following installed: nodemon, socket.io, express, mysql
 
 Files that are included:
@@ -13,8 +15,6 @@ Files that are included:
   forth between the chat window. 
 * server.js: Backend of the chat window. Currently uses socket.io and express to send messages/notify of connections and disconnections in
   the chat window.
-
-Updated 4/16: Implemented saving chat history to a database. Currently, still requires an emit back into the chat log to display the chat history. Saves into the sql database, but cannot display onto the website. Last thing that needs to be implemented is creating socket.io rooms based on user-id.
 
 To run:
 * Type "npm run devStart" into the console to run nodemon so that it is constantly running the server.

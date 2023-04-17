@@ -3,8 +3,12 @@ const app = express();
 const mysql = require('mysql2');
 const http = require('http');
 const server = http.createServer(app);
-const { Server } = require('socket.io');
-const io = new Server(server);
+const socketio = require('socket.io');
+const io = socketio(server, { cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: true
+}});
 
 // connecting to the mysql server
 const connection = mysql.createConnection({
@@ -46,14 +50,19 @@ chat.on('connection', (socket) => {
     // notifies when a user has connected and emits chat history
     socket.on('join', (data) => {
         socket.join(data.room);
+        let chatHistory = [];
         connection.connect(function(err) {
             if (err) throw err; 
             console.log('Connected!');
             let sql = 'SELECT line_text FROM rbuilds.chat_line';
             connection.query(sql, (err, results) => {
                 if (err) throw err;
-                chat.emit('chat-message', results);
-                console.log(results);
+                chatHistory = results;
+                for (let i = 0; i < chatHistory.length; i++) {
+                    chatHistory[i] = JSON.stringify(chatHistory[i]);
+                    chatHistory[i] = chatHistory[i].substring(14, chatHistory[i].length-2);
+                    chat.in(data.room).emit('chat-message', chatHistory[i]);
+                }
             })
         });
         chat.in(data.room).emit('chat-message', 'User has entered the room');
