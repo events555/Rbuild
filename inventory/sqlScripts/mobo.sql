@@ -1,0 +1,21 @@
+CREATE TABLE `mobo` (
+  `stock` int NOT NULL,
+  `upc` varchar(255) NOT NULL,
+  `prod_name` mediumtext NOT NULL,
+  `price` varchar(255) NOT NULL,
+  `chipset` varchar(255) NOT NULL,
+  `socket` varchar(255) NOT NULL,
+  `mem_type` mediumtext NOT NULL,
+  `mem_speeds` mediumtext NOT NULL,
+  `mem_slots` varchar(255) NOT NULL,
+  `max_mem` varchar(255) NOT NULL,
+  `max_mem_slot` varchar(255) NOT NULL,
+  `ssd_slots` varchar(255) NOT NULL,
+  `sata_slots` varchar(255) NOT NULL,
+  `wifi` varchar(255) NOT NULL,
+  `pcie_4` varchar(255) NOT NULL,
+  `pcie_3` varchar(255) NOT NULL,
+  `pcie_5` varchar(255) NOT NULL,
+  `form_fact` varchar(255) NOT NULL,
+  PRIMARY KEY (`upc`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
