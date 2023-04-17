@@ -1,4 +1,0 @@
-LOAD DATA LOCAL INFILE '/home/admin/Documents/SysEng/inventory/mobo.csv' INTO TABLE mobo
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 ROWS;
