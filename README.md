@@ -1,6 +1,9 @@
 # Chat for Build Requests
 
 Updated 4/17: Chat history implementation is complete. Final task to run is setting up with the user database to create separate rooms.
+Possible front end implementation:
+* Updating user status whether or not they are in the chat room
+* Modifying the timestamp on chat history messages (currently sets it as time upon entering room).
 
 I am using Node.js for this and have the following installed: nodemon, socket.io, express, mysql
 
