@@ -48,8 +48,8 @@ const chat = io.of('/chat');
 chat.on('connection', (socket) => {
     
     // notifies when a user has connected and emits chat history
-    socket.on('join', (data) => {
-        socket.join(data.room);
+    socket.on('join', room => {
+        socket.join(room);
         let chatHistory = [];
         connection.connect(function(err) {
             if (err) throw err; 
@@ -61,11 +61,11 @@ chat.on('connection', (socket) => {
                 for (let i = 0; i < chatHistory.length; i++) {
                     chatHistory[i] = JSON.stringify(chatHistory[i]);
                     chatHistory[i] = chatHistory[i].substring(14, chatHistory[i].length-2);
-                    chat.in(data.room).emit('chat-message', chatHistory[i]);
+                    chat.emit('chat-message', chatHistory[i]);
                 }
             })
         });
-        chat.in(data.room).emit('chat-message', 'User has entered the room');
+        chat.emit('chat-message', 'User has entered the room');
     });
 
     // notifies when a user has disconnected
@@ -74,18 +74,22 @@ chat.on('connection', (socket) => {
     });
 
     // sends user messages
-    socket.on('chat-message', (data) => {
-        connection.connect(function(err) {
-            if (err) throw err;
-            console.log('Connected!');
-            let post = {line_text: data.msg};
-            let sql = 'INSERT INTO chat_line SET ?';
-            connection.query(sql, post, () => {
+    socket.on('chat-message', (data, room) => {
+        if (room == '') { // if not private messaging, send publicly
+            chat.emit('chat-message', data.msg);
+            connection.connect(function(err) {
                 if (err) throw err;
-                console.log(post);
+                console.log('Connected!');
+                let post = {line_text: data.msg, socket_id: socket.id};
+                let sql = 'INSERT INTO chat_line SET ?';
+                connection.query(sql, post, () => {
+                    if (err) throw err;
+                    console.log(post);
+                });
             });
-        });
-        chat.in(data.room).emit('chat-message', data.msg);
+        } else { // send private message
+            chat.to(room).emit('chat-message', data.msg);
+        }
     });
 });
 

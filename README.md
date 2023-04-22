@@ -1,11 +1,9 @@
 # Chat for Build Requests
 
-Updated 4/17: Chat history implementation is complete. Final task to run is setting up with the user database to create separate rooms.
-Possible front end implementation:
-* Updating user status whether or not they are in the chat room
-* Modifying the timestamp on chat history messages (currently sets it as time upon entering room).
+Updated 4/22: Redesigning to create one large chat room for all customers and builders to communicate through. Currently
+setting up private messaging. Still need to find a way to display usernames from database.
 
-I am using Node.js for this and have the following installed: nodemon, socket.io, express, mysql
+I am using Node.js for this and have the following installed: nodemon, socket.io, express, mysql2
 
 Files that are included:
 * index.html: Just a generic html file with hyperlink references that go to builder or customer view but this
