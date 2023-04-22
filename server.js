@@ -61,16 +61,18 @@ chat.on('connection', (socket) => {
                 for (let i = 0; i < chatHistory.length; i++) {
                     chatHistory[i] = JSON.stringify(chatHistory[i]);
                     chatHistory[i] = chatHistory[i].substring(14, chatHistory[i].length-2);
-                    chat.emit('chat-message', chatHistory[i]);
+                    chat.to(socket.id).emit('chat-message', chatHistory[i]);
                 }
             })
         });
-        chat.emit('chat-message', 'User has entered the room');
+        setTimeout(() => {
+            chat.emit('chat-message', 'User has entered the room with id: ' + socket.id);
+        }, 50);
     });
 
     // notifies when a user has disconnected
     socket.on('disconnect', () => {
-        chat.emit('chat-message', 'User has left the room');
+        chat.emit('chat-message', 'User has left the room with id: ' + socket.id);
     });
 
     // sends user messages
@@ -88,7 +90,7 @@ chat.on('connection', (socket) => {
                 });
             });
         } else { // send private message
-            chat.to(room).emit('chat-message', data.msg);
+            chat.in(room).emit('chat-message', data.msg);
         }
     });
 });

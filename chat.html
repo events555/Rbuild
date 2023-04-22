@@ -144,7 +144,7 @@
                     if (input.value) {
                         console.log(room);
                         room = roomInput.value;
-                        socket.emit("chat-message", {msg: date + username + ": " + input.value}, room);
+                        socket.emit("chat-message", {msg: "ID: " + socket.id + " | " + username + ": " + input.value}, room);
                         input.value = "";
                     }
                 });
@@ -173,7 +173,7 @@
                     // split the message by " "
                     let msgArr = msg.split(" ");
                     // obtain the 3rd element, which is the username of the speaker
-                    let speaker = msgArr[2];
+                    let speaker = msgArr[3];
                     // the speaker is the builder
                     if (speaker === "Builder:") {
                         // add a class to the builder message (for different styling)
