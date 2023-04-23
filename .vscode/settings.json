@@ -8,10 +8,10 @@
             "server": "localhost",
             "port": 3306,
             "driver": "MySQL",
-            "name": "rbuild",
+            "name": "database",
             "database": "rbuild",
             "username": "root",
-            "password": "password"
+            "password": "admin"
         }
     ]
 }
