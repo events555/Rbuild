@@ -1,9 +1,5 @@
 # Chat for Build Requests
 
-Updated 4/22: Redesigning to create one large chat room for all customers and builders to communicate through. Front-end doesn't look
-super clean but functionally works with private messaging. Just need to add usernames from database. Current issue is that sending PM
-you can't see the messages that you privately messaged but the receiver can see them.
-
 I am using Node.js for this and have the following installed: nodemon, socket.io, express, mysql2
 
 Files that are included:
