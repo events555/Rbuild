@@ -112,7 +112,6 @@
             <form id="form" action="">
                 <input id="input" autocomplete="off"/>
                 <button>Send</button>
-                <label for="room-input">User</label>
                 <input type="text" id="room-input">
                 <button type="button" id="room-button">PM</button>
             </form>
@@ -142,9 +141,13 @@
                 form.addEventListener("submit", function(e) {
                     e.preventDefault();
                     if (input.value) {
-                        console.log(room);
                         room = roomInput.value;
-                        socket.emit("chat-message", {msg: "ID: " + socket.id + " | " + username + ": " + input.value}, room);
+                        if (room == '') {
+                            socket.emit("chat-message", {msg: "ID: " + socket.id + " | " + username + ": " + input.value}, room);
+                        } else {
+                            socket.emit("chat-message", {msg: "PM from " + socket.id + ": " + input.value}, room);
+                            socket.emit("chat-message", {msg: "PM to " + room + ": " + input.value}, socket.id);
+                        }
                         input.value = "";
                     }
                 });

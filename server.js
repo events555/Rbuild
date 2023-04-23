@@ -90,7 +90,7 @@ chat.on('connection', (socket) => {
                 });
             });
         } else { // send private message
-            chat.in(room).emit('chat-message', data.msg);
+            chat.to(room).emit('chat-message', data.msg);
         }
     });
 });
