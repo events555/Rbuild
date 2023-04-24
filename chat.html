@@ -28,7 +28,7 @@
                 padding: 1rem; 
                 flex-grow: 1; 
                 border-radius: 2rem; 
-                margin: 0.25rem; 
+                margin: 0.2rem; 
             }
             #input:focus { 
                 /* removes outline when selected */
@@ -95,6 +95,19 @@
             #messages > div > p.user-status-message-time {
                 display: none;
             }
+            .privateMessagingInput {
+                border: none;
+                border-radius: 2rem;
+                padding: 1rem; 
+                outline: none;
+                margin: 0.2rem;
+            }
+            .privateMessagingBtn {
+                color: #3600C5;
+            }
+            .builder-present {
+                background-color: green;
+            }
         </style>
     </head>
     <body>
@@ -104,32 +117,50 @@
                 var username = sessionStorage.getItem("name");
             </script>
         </div>
-
         <div class = "chat-messages">
             <!-- chat messages -->
             <ul id="messages"></ul>
             <!-- form at bottom of screen -->
             <form id="form" action="">
-                <input id="input" autocomplete="off"/><button>Send</button>
+                <input id="input" autocomplete="off"/>
+                <button>Send</button>
+                <input placeholder="User ID" class="privateMessagingInput" type="text" id="room-input">
+                <button type="button" id="room-button" style="background-color: #5d00e1;">Private Message</button>
             </form>
 
             <script src="http://localhost:3000/socket.io/socket.io.js"></script>
             <script>
+
                 var socket = io("/chat");
                 var messages = document.getElementById("messages");
                 var form = document.getElementById("form");
                 var input = document.getElementById("input");
+                
+                // private messaging
+                var roomButton = document.getElementById("room-button");
+                var roomInput = document.getElementById("room-input");
 
-                const room = "requests";
+                var room = '';
 
                 var today = new Date();
                 var date = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " | ";
 
+                roomButton.addEventListener("click", () => {
+                    room = roomInput.value;
+                })
+
                 // Sending individual chat messages
                 form.addEventListener("submit", function(e) {
                     e.preventDefault();
+                    console.log(input.value);
                     if (input.value) {
-                        socket.emit("chat-message", {msg: date + username + ": " + input.value, room});
+                        room = roomInput.value;
+                        if (room == '') {
+                            socket.emit("chat-message", {msg: "ID: " + socket.id + " | " + username + ": " + input.value}, room);
+                        } else {
+                            socket.emit("chat-message", {msg: "PM from " + username + ": " + input.value}, room);
+                            socket.emit("chat-message", {msg: "PM from " + username + " to " + room + ": " + input.value}, socket.id);
+                        }
                         input.value = "";
                     }
                 });
@@ -157,15 +188,14 @@
 
                     // split the message by " "
                     let msgArr = msg.split(" ");
-                    // obtain the 3rd element, which is the username of the speaker
-                    let speaker = msgArr[2];
+                    // obtain the 3rd or 4th element, which is the role of the speaker
                     // the speaker is the builder
-                    if (speaker === "Builder:") {
+                    if (msgArr[3].includes("Builder") || msgArr[4].includes("Builder")) {
                         // add a class to the builder message (for different styling)
                         item.classList.add("builder");
                     }
                     // checks if message is one that states status of user
-                    if (msg === "User has entered the room" || msg === "User has left the room") {
+                    if (msg.includes("User has entered the room with id") || msg.includes("User has left the room")) {
                         // add a class to the user status messages (for different styling)
                         item.classList.add("user-status");
                         // add a class to the corresponding time p tag (for different styling)
@@ -207,7 +237,6 @@
                     socket.emit("join", {room: room});
                 });
             </script>
-
         </div>
     </body>
 </html>

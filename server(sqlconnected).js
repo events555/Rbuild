@@ -11,13 +11,13 @@ const io = socketio(server, { cors: {
 }});
 
 // connecting to the mysql server
-// const connection = mysql.createConnection({
-//     host: '127.0.0.1',
-//     user: 'root',
-//     password: 'admin',
-//     database: 'rbuilds'
-// });
-// connection.connect();
+const connection = mysql.createConnection({
+    host: '127.0.0.1',
+    user: 'root',
+    password: 'admin',
+    database: 'rbuilds'
+});
+connection.connect();
 
 // passing general index.html file to website
 app.get('/', (req, res) => {
@@ -51,20 +51,20 @@ chat.on('connection', (socket) => {
     socket.on('join', room => {
         socket.join(room);
         let chatHistory = [];
-        // connection.connect(function(err) {
-        //     if (err) throw err; 
-        //     console.log('Connected!');
-        //     // let sql = 'SELECT line_text FROM rbuilds.chat_line';
-        //     // connection.query(sql, (err, results) => {
-        //     //     if (err) throw err;
-        //     //     chatHistory = results;
-        //     //     for (let i = 0; i < chatHistory.length; i++) {
-        //     //         chatHistory[i] = JSON.stringify(chatHistory[i]);
-        //     //         chatHistory[i] = chatHistory[i].substring(14, chatHistory[i].length-2);
-        //     //         chat.to(socket.id).emit('chat-message', chatHistory[i]);
-        //     //     }
-        //     // })
-        // });
+        connection.connect(function(err) {
+            if (err) throw err; 
+            console.log('Connected!');
+            let sql = 'SELECT line_text FROM rbuilds.chat_line';
+            connection.query(sql, (err, results) => {
+                if (err) throw err;
+                chatHistory = results;
+                for (let i = 0; i < chatHistory.length; i++) {
+                    chatHistory[i] = JSON.stringify(chatHistory[i]);
+                    chatHistory[i] = chatHistory[i].substring(14, chatHistory[i].length-2);
+                    chat.to(socket.id).emit('chat-message', chatHistory[i]);
+                }
+            })
+        });
         setTimeout(() => {
             chat.emit('chat-message', 'User has entered the room with id: ' + socket.id);
         }, 50);
@@ -79,18 +79,18 @@ chat.on('connection', (socket) => {
     socket.on('chat-message', (data, room) => {
         if (room == '') { // if not private messaging, send publicly
             chat.emit('chat-message', data.msg);
-            // connection.connect(function(err) {
-            //     if (err) throw err;
-            //     console.log('Connected!');
-            //     let post = {line_text: data.msg, socket_id: socket.id};
-            //     let sql = 'INSERT INTO chat_line SET ?';
-            //     connection.query(sql, post, () => {
-            //         if (err) throw err;
-            //         console.log(post);
-            //     });
-            // });
+            connection.connect(function(err) {
+                if (err) throw err;
+                console.log('Connected!');
+                let post = {line_text: data.msg, socket_id: socket.id};
+                let sql = 'INSERT INTO chat_line SET ?';
+                connection.query(sql, post, () => {
+                    if (err) throw err;
+                    console.log(post);
+                });
+            });
         } else { // send private message
-            chat.in(room).emit('chat-message', data.msg);
+            chat.to(room).emit('chat-message', data.msg);
         }
     });
 });
