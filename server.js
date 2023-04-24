@@ -29,13 +29,23 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser(crypto.randomBytes(64).toString()));
 app.use(express.json());
 app.use(cors({credentials: true, origin: 'http://localhost'}));
-app.use(express.static('public'));
+app.use(express.static('public', {
+  setHeaders: (res, path) => {
+      // import mime-types package
+      const mime = require('mime-types');
+      const type = mime.lookup(path);
+      // explicitly set the Content-Type header for each response 
+      res.setHeader('Content-Type', type);
+  }
+  }));
+
+app.use('/socket.io', express.static(__dirname + '/node_modules/socket.io/client-dist'));
 
 
 inventory(app, connection);
 review(app, connection);
 account(app, connection);
-chat_server(app);
+chat_server(app, connection);
 user(app, connection);
 
 
@@ -46,3 +56,5 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+module.exports = app;

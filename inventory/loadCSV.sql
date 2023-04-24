@@ -1,4 +1,4 @@
-LOAD DATA LOCAL INFILE '/home/stevenn/Projects/Rbuild/inventory/mobo.csv' INTO TABLE mobo
+LOAD DATA LOCAL INFILE 'inventory/storage.csv' INTO TABLE storage
 FIELDS TERMINATED BY ',' ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;

@@ -1,5 +1,8 @@
+DROP TABLE IF EXISTS `chat_line`;
+
 CREATE TABLE `chat_line` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `socket_id` VARCHAR(255) NOT NULL DEFAULT '',
     `line_text` TEXT NOT NULL, 
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(`id`)
     )
