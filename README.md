@@ -22,8 +22,8 @@ To run:
 
 CREATE SCHEMA rbuilds
 
-CREATE TABLE rbuild.chat_line
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    line_text TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY(ID)
+CREATE TABLE `rbuilds`.`chat_line` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `line_text` TEXT NOT NULL,
+  `created_at` TIMESTAMP NOT NULL,
+  PRIMARY KEY (`id`));
