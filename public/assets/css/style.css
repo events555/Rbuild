@@ -386,7 +386,7 @@ blockquote:before { content: "\f10d"; font-family:"capacity-bold"; font-size: 38
 	#siteNav > li:hover > a, #siteNav > li > a:hover:hover, #siteNav > li > a:hover, #siteNav > li > a.active, #siteNav > li ul.dropdown li a.active { color:#d30a0c; }
 	
 	#siteNav > li .megamenu { opacity:0; visibility:hidden; padding:30px; width:100%; position:absolute; top:110%; left:0; z-index:999; background-color:#fff; box-shadow: 2px 2px 1px 0px rgba(0,0,0,0.3); -webkit-box-shadow: 2px 2px 1px 0px rgba(0,0,0,0.3); pointer-events:none; -ms-transition:all 0.3s ease; -webkit-transition:all 0.3s ease; transition:all 0.3s ease; max-height:600px; overflow:auto; box-shadow:0px 0px 15px rgba(0,0,0,0.1); -webkit-box-shadow:0px 0px 15px rgba(0,0,0,0.1); border-radius: 10px; -webkit-border-radius: 10px; }
-    #siteNav > li .megamenu.style2 { width: 600px; }
+    #siteNav > li .megamenu.style2 { width: 300px; }
 	#siteNav > li .megamenu ul { padding:0; list-style:none; }
 	#siteNav > li:hover > .megamenu { top:100%; opacity:1; visibility:visible; pointer-events:visible; }
     #siteNav > li .megamenu.style1 { width: 100%; overflow: hidden; }

@@ -35,9 +35,22 @@
         </style>
     </head>
     <body>
+        <form id="form" action="">
+            <input id="input" autocomplete="off"/>
+            <button>Enter Name</button>
+        </form>
         <script>
-            // Passes that user is a builder to chat.html
-            sessionStorage.setItem("name", "Builder");
+            var form = document.getElementById("form");
+            var input = document.getElementById("input");
+            
+            form.addEventListener("submit", function(e) {
+                e.preventDefault();
+                if (input.value) {
+                    sessionStorage.setItem("name", input.value + " (Builder)");
+                } else {
+                    sessionStorage.setItem("name", "Customer");
+                }
+            });
 
             // Button to access chat window
             function visitPage(){

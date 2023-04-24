@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser(crypto.randomBytes(64).toString()));
 app.use(express.json());
 app.use(cors({credentials: true, origin: 'http://localhost'}));
-app.use(express.static('shop'));
+app.use(express.static('public'));
 
 
 inventory(app, connection);
@@ -40,7 +40,7 @@ user(app, connection);
 
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'shop','index.html'));
+  res.sendFile(path.join(__dirname, 'public','index.html'));
 });
 
 app.listen(port, () => {

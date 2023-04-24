@@ -38,9 +38,22 @@
         </style>
     </head>
     <body>
+        <form id="form" action="">
+            <input id="input" autocomplete="off"/>
+            <button>Enter Name</button>
+        </form>
         <script>
-            // Passes that user is a customer to the chat.html
-            sessionStorage.setItem("name", "Customer");
+            var form = document.getElementById("form");
+            var input = document.getElementById("input");
+            
+            form.addEventListener("submit", function(e) {
+                e.preventDefault();
+                if (input.value) {
+                    sessionStorage.setItem("name", input.value + " (Customer)");
+                } else {
+                    sessionStorage.setItem("name", "Customer");
+                }
+            });
 
             // Button to access chat window
             function visitPage(){
