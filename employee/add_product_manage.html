@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Iframe</title>
+    <style>
+      body {
+        text-align: center;
+        background-color: white;
+      }
+      textarea {
+        resize: none;
+      }
+
+      /*Remove spin buttons*/
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0; 
+        }
+    </style>
+  </head>
+  <body>
+    <h1>Add New Product to Database</h1>
+    <br />
+    <label for="category-select">Choose a category:</label>
+
+    <select name="category" id="category-select">
+      <option value="cpu">CPUs</option>
+      <option value="aio_cooler">Liquid Coolers</option>
+      <option value="air_cooler">Air Coolers</option>
+      <option value="mobo">Motherboards</option>
+      <option value="memory">RAM</option>
+      <option value="storage">Drives</option>
+      <option value="gpu">GPUs</option>
+      <option value="cases">Cases</option>
+      <option value="psu">PSUs</option> 
+      <option value="compound">Thermal Compound</option> 
+      <option value="monitor">Monitors</option> 
+    </select>
+
+    <!-- form to hold the input fields -->
+    <form id="input-form"></form>
+
+    <!-- submit button -->
+    <button id="submit-btn">Submit</button>
+
+    <!-- script to handle the logic -->
+    <script>  
+      // function to create input fields based on the data from the server
+      function createInputFields(data) {
+        const form = document.getElementById('input-form');
+        form.innerHTML = '';
+        data.columns.forEach(column => {
+          const label = document.createElement('label');
+          label.textContent = column.name;
+          label.htmlFor = column.name;
+          form.appendChild(label);
+          let input;
+          if (column.type === 'number') {
+            input = document.createElement('input');
+            input.type = 'number';
+            input.id = column.name;
+            input.name = column.name;
+            // add onblur function for number fields
+            input.onblur = () => {
+                if(!input.value)
+                    input.value=0;
+                if(input.value<0) 
+                    input.value=0; 
+                if(input.value>99) 
+                    input.value=99;
+            };
+          } else {
+            input = document.createElement('textarea');
+            input.id = column.name;
+            input.name = column.name;
+            // add onblur function for price textarea field
+            if (column.name === 'price') {
+                input.onblur = () => {
+                if(!input.value || input.value < 0) 
+                    input.value='$0'; 
+                else 
+                {
+                    let num; 
+                    
+                    if(Array.from(input.value)[0]==='$') 
+                        num=Number(input.value.slice(1)); 
+                    else
+                        num=input.value; 
+
+                    let rounded = Math.round(num); 
+                    input.value='$' + rounded;
+                }
+            };
+            }
+            //if text field, set maximum length equal to length of database
+            if(column.maxLength)
+                input.setAttribute('maxLength', column.maxLength);
+            //set preview text
+            if(data.row && data.row[column.name])
+                input.placeholder = data.row[column.name];
+          }
+          form.appendChild(input);
+          form.appendChild(document.createElement('br'));
+        });
+      }
+// function to handle category selection
+      function handleCategorySelect(event) {
+        const category = event.target.value;
+        fetch(`http://localhost:3000/product-cat?category=${category}`)
+          .then(response => response.json())
+          .then(data => createInputFields(data));
+      }
+
+      // function to handle form submission
+      function handleFormSubmit(form) {
+        const formData = new FormData(form);
+        const data = {};
+        let allFieldsFilled = 0;
+        let invalidFields = 0;
+        for (var [key, value] of formData.entries()) {
+          if (!value) 
+          {
+            if(key==='upc' || key==='prod_name' || key==='price' || key ==='stock')
+                invalidFields = invalidFields + 1;
+            else
+            {
+                value = '';
+                allFieldsFilled = allFieldsFilled+1;
+            }
+          }
+          data[key] = value;
+        }
+        if (allFieldsFilled===0 && invalidFields === 0) 
+        {
+            const categorySelect = document.getElementById('category-select');
+            const category = categorySelect.options[categorySelect.selectedIndex].value;
+            data.category = category;
+            window.parent.postMessage(JSON.stringify(data),"*");
+        } 
+        else if(allFieldsFilled>0 && invalidFields === 0)
+        {
+          var choice = window.confirm('Are you sure you want to create a new product that is potentially missing information?');
+          if(choice)
+          {
+            const categorySelect = document.getElementById('category-select');
+            const category = categorySelect.options[categorySelect.selectedIndex].value;
+            data.category = category;
+            window.parent.postMessage(JSON.stringify(data),"*");
+          }
+        }
+
+        else
+            alert('You must at least have a a stock, upc, prod_name, and price value to make an entry');
+      }
+
+      // add event listeners
+      document.getElementById('category-select').addEventListener('change', handleCategorySelect);
+      document.getElementById('submit-btn').addEventListener('click', () => {
+        handleFormSubmit(document.getElementById('input-form'));
+      });
+
+      //trigger initial category selection
+      document.getElementById("category-select").dispatchEvent(new Event("change"));
+    </script>
+  </body>
+</html>
