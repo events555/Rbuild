@@ -6,6 +6,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
 const port = 3000;
+const uuidv4 = require('uuid').v4;
 
 
 const inventory = require('./lib/inventory');
@@ -13,6 +14,7 @@ const review = require('./lib/review');
 const account = require('./lib/account');
 const chat_server = require('./lib/chat/chat_server');
 const user = require('./lib/user');
+const cart = require('./lib/cart');
 
 
 //connect this node.js server to the mysql server...
@@ -47,9 +49,22 @@ review(app, connection);
 account(app, connection);
 chat_server(app, connection);
 user(app, connection);
+cart(app,connection);
 
+app.use((req, res, next) => {
+  // check if the user already has a UUID
+  let userid = req.cookies.userId;
+  if (!userid) {
+    // generate a new UUID for the user
+    userid = uuidv4();
+    // set the userId cookie
+    res.cookie('userId', userid);
+  }
+  next();
+});
 
 app.get('/', (req, res) => {
+  res.send(`Your user ID is ${req.cookies.userId}`);
   res.sendFile(path.join(__dirname, 'public','index.html'));
 });
 

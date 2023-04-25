@@ -377,7 +377,7 @@
                                                 <!--End Product Label-->
                                                 <!--Button Action-->
                                                 <div class="button-hover">
-                                                    <a class="btn pro-addtocart-popup rounded btn-cart btn-primary" href="shopping-cart.html" title="Add To Cart"><i class="cps cp-shopping-cart"></i></a>
+                                                    <a class="btn pro-addtocart-popup rounded btn-cart btn-primary" title="Add To Cart"><i class="cps cp-shopping-cart"></i></a>
                                                 </div>
                                                 <!--End Button Action-->
                                             </div>
@@ -394,12 +394,7 @@
                                             <!--End Product Detail-->
                                         </div>
                                         <!--End Product Item-->
-                                    </div>
-
-                                    
-                                    
-                                    
-                                    
+                                    </div>                             
                                 </div>
                             </div>
                             <!--End Product Grid-->
@@ -493,84 +488,9 @@
                 <div class="modal-content">
                     <div id="cart-drawer" class="block block-cart">
                         <a href="javascript:void(0);" class="close-cart" data-bs-dismiss="modal" aria-label="Close"><i class="cp cp-times"></i></a>
-                        <h4>Your cart (3 Items)</h4>
+                        <h4>Your cart (<span id="cart-item-count">0</span> Items)</h4>
                         <div class="minicart-content">
                             <ul class="clearfix">
-                                <li class="item clearfix d-flex align-items-center">
-                                    <a class="product-image" href="#">
-                                        <img src="assets/images/products/110x110.jpg" alt="" title="">
-                                    </a>
-                                    <div class="product-details">
-                                        <a href="#" class="remove"><i class="cp cp-times"></i></a>
-                                        <a href="#" class="edit-i remove"><i class="cp cp-edit" aria-hidden="true"></i></a>
-                                        <a class="product-title" href="shopping-cart-style1.html">Customize Your Ride With Tires</a>
-                                        <div class="variant-cart">Black / XL</div>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="wrapQtyBtn">
-                                                <div class="qtyField">
-                                                    <a class="qtyBtn minus" href="javascript:void(0);"><i class="cp cp-minus" aria-hidden="true"></i></a>
-                                                    <input type="text"  name="quantity" value="1" class="qty">
-                                                    <a class="qtyBtn plus" href="javascript:void(0);"><i class="cp cp-plus" aria-hidden="true"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="priceRow">
-                                                <div class="product-price">
-                                                    <span>$59.00</span>
-                                                </div>
-                                             </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="item clearfix d-flex align-items-center">
-                                    <a class="product-image" href="#">
-                                        <img src="assets/images/products/110x110.jpg" alt="" title="">
-                                    </a>
-                                    <div class="product-details">
-                                        <a href="#" class="remove"><i class="cp cp-times"></i></a>
-                                        <a href="#" class="edit-i remove"><i class="cp cp-edit" aria-hidden="true"></i></a>
-                                        <a class="product-title" href="shopping-cart-style1.html">MagnaFlow Exhaust Products</a>
-                                        <div class="variant-cart">Red / S</div>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="wrapQtyBtn">
-                                                <div class="qtyField">
-                                                    <a class="qtyBtn minus" href="javascript:void(0);"><i class="cp cp-minus" aria-hidden="true"></i></a>
-                                                    <input type="text"  name="quantity" value="1" class="qty">
-                                                    <a class="qtyBtn plus" href="javascript:void(0);"><i class="cp cp-plus" aria-hidden="true"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="priceRow">
-                                                <div class="product-price">
-                                                    <span>$89.00</span>
-                                                </div>
-                                             </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="item clearfix d-flex align-items-center">
-                                    <a class="product-image" href="#">
-                                        <img src="assets/images/products/110x110.jpg" alt="" title="">
-                                    </a>
-                                    <div class="product-details">
-                                        <a href="#" class="remove"><i class="cp cp-times"></i></a>
-                                        <a href="#" class="edit-i remove"><i class="cp cp-edit" aria-hidden="true"></i></a>
-                                        <a class="product-title" href="shopping-cart-style1.html">Shock & Strut Set</a>
-                                        <div class="variant-cart">Red / S</div>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="wrapQtyBtn">
-                                                <div class="qtyField">
-                                                    <a class="qtyBtn minus" href="javascript:void(0);"><i class="cp cp-minus" aria-hidden="true"></i></a>
-                                                    <input type="text"  name="quantity" value="1" class="qty">
-                                                    <a class="qtyBtn plus" href="javascript:void(0);"><i class="cp cp-plus" aria-hidden="true"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="priceRow">
-                                                <div class="product-price">
-                                                    <span>$89.00</span>
-                                                </div>
-                                             </div>
-                                        </div>
-                                    </div>
-                                </li>
                             </ul>
                         </div>
                         <div class="minicart-bottom">
@@ -605,17 +525,7 @@
         <script src="assets/js/main.js"></script>
   	</div><!--page-wrapper-->
 </body>
-<script>
-    // var row = document.getElementById("product-row");
-    // var x = row.querySelector("#product-name");
-    // x.innerHTML = "DMM";
-    // var cloneValue = row.cloneNode(true);
-    // document.getElementById("product-view").appendChild(cloneValue);
-    // cloneValue.querySelector("#product-name").innerHTML = "HELLO";
-    // cloneValue = cloneValue.cloneNode(true);
-    // document.getElementById("product-view").appendChild(cloneValue);
-
-    
+<script>    
 
     function listProduct(){
         const queryString = window.location.search;
@@ -658,11 +568,7 @@
             })
         .then(data => {
             const tables = ['aio_cooler', 'air_cooler', 'cpu', 'cases', 'gpu', 'memory', 'mobo', 'psu', 'storage'];
-            
             tables.forEach(table => {
-                
-               
-
                 const items = data[table];
                 items.forEach(item => {
                     if(!isAdminLogin && item['stock'] == 1) return;
@@ -680,7 +586,6 @@
 
                     delete item.stock;
                     delete item.table;
-                    delete item.upc;
                     delete item.price;
                     for (const [key, value] of Object.entries(item)) {
                         var productKey = key.toUpperCase().replaceAll("_", " ");
@@ -696,12 +601,10 @@
 
                     document.getElementById("product-view").appendChild(cloneRow);
                     document.getElementById("product-showing").innerText = `Showing: ${cnt} products`;
-
-                });
-                
+                    addToCart(cloneRow);
             });
         });
-
+    });
     }
 
     function searchProduct(){
@@ -981,36 +884,68 @@
 
     var form = document.getElementById("price-form");
 
-    document.getElementById("button-price").addEventListener("click", function () {
-       // form.submit();
-        var dis = document.getElementById("amount").value;
-        var tmp = dis.split("-");
-        var from = tmp[0].substring(1, tmp[0].indexOf(" "));
-        var to = tmp[1].substring(2);
-        var queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        var keys = ['memory', 'page', 'cpu', 'storage', 'keyword', 'fromPrice', 'toPrice', 'category'];
-        var newQuery = "?";
-        keys.forEach(key => {
-            var value = urlParams.get(key);
-            if(key === 'fromPrice' || key == 'toPrice') return;
-
-            if(value){
-                if(newQuery === "?")
-                    newQuery += key + "=" + value;
-                else 
-                    newQuery += "&" + key + "=" + value;
-            }
+    function addToCart(row){
+        row.querySelector(".button-hover").addEventListener("click", function(event) {
+        var upc = row.querySelector("#product-detail").innerHTML.split('<br>')[0].split(':')[1].trim();
+        var price = row.querySelector("#product-price").innerHTML.replace("$", "");
+        var name = row.querySelector("#product-name").innerHTML;
+        var data = {upc: upc, price: price, name: name};
+        console.log('Added to cart', name);
+        fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
         });
-        if(newQuery === "?")
-            newQuery += "fromPrice=" + from;
-        else
-            newQuery += "&fromPrice=" + from;
-        newQuery += "&toPrice=" + to;
-        console.log(newQuery);
-        window.location.replace(window.location.pathname + newQuery);
-    });
-
-
+        updateCart();
+        });
+    }
+    function updateCart(){
+        console.log('Updated cart');
+        fetch('/cart', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Update the cart item count
+                document.querySelector('#cart-item-count').textContent = data.length;
+                // Loop through the cart items and create the HTML for each item
+                data.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'item clearfix d-flex align-items-center';
+                    li.innerHTML = `
+                        <a class="product-image" href="#">
+                            <img src="assets/images/products/110x110.jpg" alt="" title="">
+                        </a>
+                        <div class="product-details">
+                            <a href="#" class="remove"><i class="cp cp-times"></i></a>
+                            <a href="#" class="edit-i remove"><i class="cp cp-edit" aria-hidden="true"></i></a>
+                            <a class="product-title" href="#">${item.prod_name}</a>
+                            <div class="variant-cart">Black / XL</div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="wrapQtyBtn">
+                                    <div class="qtyField">
+                                        <a class="qtyBtn minus" href="#"><i class="cp cp-minus" aria-hidden="true"></i></a>
+                                        <input type="text" name="quantity" value="${item.quantity}" class="qty">
+                                        <a class="qtyBtn plus" href="#"><i class="cp cp-plus" aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+                                <div class="priceRow">
+                                    <div class="product-price">
+                                        <span>$${item.price}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    // Append the item to the cart
+                    document.querySelector('.minicart-content ul.clearfix').appendChild(li);
+                    console.log('Appended cart item to .html');
+                });
+            });
+    }
 </script>
 </html>
