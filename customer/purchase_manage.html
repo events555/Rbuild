@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+      table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+      }
+      td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+      }
+      tr:nth-child(even) {
+          background-color: #dddddd;
+      }
+
+    /*login overlay*/
+ /* Add styles for the login overlay */
+ .overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #dddddd;
+  z-index: 2;
+  }
+  
+  @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+  }
+  
+  .login-box {
+  position:absolute;
+  top:50%;
+  left:50%;
+  margin-top: -250px;
+  margin-left: -189px;
+  padding:80px 40px;
+  background-color:rgb(255, 255, 255);
+  opacity: 0;
+  /*animation*/
+  animation: fadeIn 1s ease-in-out forwards;
+  }
+
+  input[type="username"], input[type="password"]{
+      display:block; 
+      margin-bottom:25px; 
+      width:100%; 
+      border:none; 
+      border-bottom:solid #d9d9d9; 
+   }
+  
+  #flash-message{
+      visibility: hidden;
+      position: absolute;
+      top: 5%;
+      left: 50%;
+      background-color: rgb(255, 251, 9);
+      width: 450px;
+      height: 50px;
+      line-height: 50px;
+      transform: translate(-50%, -50%);
+      text-align: center;
+  }
+  
+  #flash-message-2{
+      visibility: hidden;
+      position: absolute;
+      top: 5%;
+      left: 50%;
+      background-color: rgb(128, 255, 9);
+      width: 350px;
+      height: 50px;
+      line-height: 50px;
+      transform: translate(-50%, -50%);
+      text-align: center;
+  }
+
+/*animation*/
+@keyframes fade{
+  from{opacity: .3}
+  to{opacity: .8}
+}
+  </style>
+</head>
+<body>
+
+<!-- Add the login overlay -->
+<div class="overlay" id="login-overlay">
+    <!--Message Window Div-->
+    <div id="flash-message">NO COOKIE OR INVALID COOKIE DETECTED</div>
+    <div class="login-box">
+    <h1 id="welcome_box">Welcome, please login</h1>
+    
+    <label for="username">Username </label><span id='username-count'>[0/15]:</span><br>
+    <input type="username" id="username" name="username" maxlength='15' oninput="colorChange('username', 'username-count')"><br>
+    
+    <label for="password">Password </label><span id='password-count'>[0/15]:</span><br>
+    <input type="password" id="password" name="password" maxlength='15' oninput="colorChange('password', 'password-count')"><br><br>
+    
+    <button id='login' onclick="login()">Login</button> <button id='register'>Register</button><br><br>
+    
+    <p id='error'></p>
+    
+    </div></div>
+    
+    <!-- Add the register overlay -->
+    <div class="overlay" id='register-overlay' style='display:none'>
+        <div class='login-box'>
+        <h1>Create an account</h1>
+    
+        <label for='new-username'>Username </label><span id='new-username-count'>[0/15]:</span><br>
+        <input type='username' id='new-username' name='new-username' maxlength='15' oninput="colorChange('new-username', 'new-username-count')"><br>
+    
+        <label for='new-password'>Password </label><span id='new-password-count'>[0/15]:</span><br>
+        <input type='password' id='new-password' name='new-password' maxlength='15' oninput="colorChange('new-password', 'new-password-count')"><br><br>
+    
+        <button id='back'>Back</button> <button id="createAccount" onclick="register()">Register</button><br><br>
+    
+        <p id='register-error'></p>
+        </div>
+    </div>
+    
+    <script>
+    function colorChange(first, second)
+    {
+            var textarea = document.getElementById(first);
+            var display = document.getElementById(second);
+
+            if(textarea.value.length >= 10 && textarea.value.length < 15)
+            {
+            display.style.color = "orange";
+            }
+
+            else if(textarea.value.length == 15)
+            {
+            display.style.color = "red";
+            }
+
+            else
+            {
+            display.style.color = "black";
+            }
+    }
+    
+    //flash message script
+    function flashMessage()
+    {
+        // set the flash speed in milliseconds
+        var flashSpeed = 600;
+        // get the flash message element by id
+        var flashMessage = document.getElementById("flash-message");
+        // create a setInterval function that toggles visibility
+        var counter = 0;
+        var t = setInterval(function() {
+            // if the element is hidden, show it
+            if (flashMessage.style.visibility == "hidden") {
+                flashMessage.style.visibility = "visible";
+                counter++;
+            } else {
+                // otherwise, hide it
+                flashMessage.style.visibility = "hidden";
+            }
+            if(counter==4)
+            {
+                clearInterval(t);
+                flashMessage.style.visibility = "hidden";
+            }
+        }, flashSpeed);
+    }
+    
+    function flashMessage2()
+    {
+        // set the flash speed in milliseconds
+        var flashSpeed = 600;
+        // get the flash message element by id
+        var flashMessage = document.getElementById("flash-message-2");
+        // create a setInterval function that toggles visibility
+        var counter = 0;
+        var t = setInterval(function() {
+            // if the element is hidden, show it
+            if (flashMessage.style.visibility == "hidden") {
+                flashMessage.style.visibility = "visible";
+                counter++;
+            } else {
+                // otherwise, hide it
+                flashMessage.style.visibility = "hidden";
+            }
+            if(counter==4)
+            {
+                clearInterval(t);
+                flashMessage.style.visibility = "hidden";
+            }
+        }, flashSpeed);
+    }
+    
+    //cookie check on page load
+    window.onload = function() {
+      fetch('http://localhost:3000/check-cookie', { 
+        credentials: "include",
+    })
+        .then(response => response.json())
+        .then(data => {
+          if (data.loggedIn == "success") {
+            document.querySelector('.overlay').style.display = 'none';
+            document.getElementById("flash-message-2").innerHTML = "LOGGED IN AS: " + data.username;
+            flashMessage2();
+            getProducts(data.username);
+          }
+          if(data.loggedIn == "invalid") {
+            flashMessage();
+          }
+        });
+    }
+    
+    
+    //Restrict characters in username text field...
+    document.querySelectorAll('#username, #new-username').forEach(function(input) {
+        input.addEventListener('keypress', function(event) {
+            var regex = new RegExp("^[a-zA-Z0-9]+$");
+            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+            if (!regex.test(key)) {
+                event.preventDefault();
+                return false;
+            }
+        });
+    });
+    
+    //Restrict characters in password text field...
+    document.querySelectorAll('#password, #new-password').forEach(function(input) {
+        input.addEventListener('keypress', function(event) {
+            var regex = new RegExp("^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]+$");
+            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+            if (!regex.test(key)) {
+                event.preventDefault();
+                return false;
+            }
+        });
+    });
+    
+  //login function...
+  function login()
+  {
+      var xhr = new XMLHttpRequest();
+  
+      xhr.onreadystatechange = function() 
+      {
+          if(xhr.readyState == 4)
+          {
+              var data = xhr.response;
+              //login successful
+              if (this.status === 200) 
+              {
+                  document.querySelector('.overlay').style.display = 'none';
+                  document.getElementById("flash-message-2").innerHTML = "LOGGED IN AS: " + data;
+                  flashMessage2();
+                  getProducts(data);
+              }
+              
+              //login failed
+              else 
+                  document.getElementById('error').innerHTML = data;
+          }
+      }; 
+      xhr.open('POST', 'http://localhost:3000/login', true);
+      xhr.withCredentials = true;
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      var username = document.getElementById('username').value.toLowerCase();
+      var password = document.getElementById('password').value;
+      xhr.send('username=' + username + '&password=' + password);
+  }
+  
+  //register function...
+  function register()
+  {
+      //check if can register unique username/password combination
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() 
+      {
+          if(xhr.readyState == 4)
+          {
+               //registration successful
+              if (this.status == 201) 
+              {
+                  document.querySelector('#register-overlay').style.display = 'none';
+                  document.querySelector('#login-overlay').style.display = 'block';
+                  document.getElementById('new-username').value = '';
+                  document.getElementById('new-password').value = '';
+              }
+              
+              //registration failed
+              else 
+                  var data = xhr.response;
+                  document.getElementById('register-error').innerHTML = data;
+          }
+      };
+  
+      xhr.open('POST', 'http://localhost:3000/register', true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      var username = document.getElementById('new-username').value.toLowerCase();
+      var password = document.getElementById('new-password').value;
+      xhr.send('username=' + username + '&password=' + password);
+  } 
+  
+  document.querySelector('#register').addEventListener('click', function() {
+  document.querySelector('#login-overlay').style.display = 'none';
+  document.querySelector('#register-overlay').style.display = 'block';
+  document.getElementById('new-username').value = '';
+  document.getElementById('new-password').value = '';
+  document.getElementById('new-username-count').innerHTML = '[0/15]:';
+  document.getElementById('new-password-count').innerHTML = '[0/15]:';
+  document.getElementById('new-username-count').style.color = "black";
+  document.getElementById('new-password-count').style.color = "black";
+  document.getElementById('register-error').innerHTML = '';
+  });
+  
+  document.querySelector('#back').addEventListener('click', function() {
+  document.querySelector('#register-overlay').style.display = 'none';
+  document.querySelector('#login-overlay').style.display = 'block';
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+  document.getElementById('username-count').innerHTML = '[0/15]:';
+  document.getElementById('password-count').innerHTML = '[0/15]:';
+  document.getElementById('username-count').style.color = "black";
+  document.getElementById('password-count').style.color = "black";
+  document.getElementById('error').innerHTML = '';
+  document.querySelector('.login-box').style.opacity = '1';
+  });
+  
+  document.querySelectorAll('input[type="username"], input[type="password"]').forEach(function(input) {
+  input.addEventListener('input', function() {
+  document.querySelector('#' + input.id + '-count').innerHTML = '[' + input.value.length + '/15]:';
+  });
+  });
+</script>
+
+<!---main page content-->
+<!--Message Window Div-->
+<div id="flash-message-2"></div>
+<!--iframe stuff-->
+<div id="add_overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;">
+    <div id="tab" style="position:relative; margin: auto; width:65%; margin-top: 20px; height: 50px; background-color:white;">
+    <button id = "closeButton" style = "position:absolute; top:10px; right: 10px;">X</button>
+    </div>
+    <iframe id = "iframe" name = "iframe" src = "purchase_manage_2.html" style = "position:absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 65%; height:85%; border:none;"></iframe>
+    </div>
+    <div id = "backdrop" style = "display:none; position: fixed; top:0; left: 0; width: 100%; height: 100%; background-color:rgba(0,0,0,0.5); z-index:9;"></div>
+    
+<h2 style="text-align:center;">Customer Purchase Portal</h2>
+
+<table id = "productTable">
+<tr>
+<th>Product Name</th> 
+<th>Quantity</th> 
+<th>Price</th> 
+<th>Purchase Date</th> 
+<th>Status</th> 
+<th>Action</th> 
+</tr> 
+
+<!-- First row -->
+<tr class = "row">
+<script>
+    //iframe review window and stuff
+    var closeButton = document.getElementById("closeButton");
+    var overlay = document.getElementById("add_overlay");
+    var backdrop = document.getElementById("backdrop");
+
+    closeButton.addEventListener("click", function() {
+        overlay.style.display = "none";
+        backdrop.style.display = "none";
+
+        // reset the iframe src to reload the page
+        document.getElementById('iframe').src = document.getElementById('iframe').src;
+    });
+
+    window.frames["iframe"].onmessage = function(e) {
+    if(e.data == "close")
+    {
+        document.getElementById("add_overlay").style.display = "none";
+        document.getElementById("backdrop").style.display = "none";
+    }
+    }
+
+    // Function to populate table with data
+    function populateTable(data, userid, username) {
+        let table = document.getElementById('productTable');
+        for (let i = 0; i < data.length; i++) {
+            let fixDate = new Date(data[i].date);
+            let date = fixDate.getUTCMonth()+1 + '-' + fixDate.getUTCDate() + '-' + fixDate.getUTCFullYear();
+            let row = table.insertRow(-1);
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+            let cell3 = row.insertCell(2);
+            let cell4 = row.insertCell(3);
+            let cell5 = row.insertCell(4);
+            let cell6 = row.insertCell(5);
+            cell1.innerHTML = data[i].prod_name;
+            cell2.innerHTML = data[i].quantity;
+            cell3.innerHTML = data[i].price;
+            cell4.innerHTML = date;
+            cell5.innerHTML = data[i].status;
+            cell6.innerHTML = `<button onclick="reviewMenu('${userid}', '${username}', '${data[i].upc}', this)">Add, Modify, or Delete Review</button><button onclick="productMenu('${userid}', '${username}', '${data[i].quantity}', '${data[i].date}', '${data[i].upc}', this)">Request Return/Replacement</button>`;
+        }
+    }
+
+    async function getProducts(username)
+    {
+        //Get the userid given username
+        let response = await fetch('http://localhost:3000/getuserid?username=' + username);
+         
+        var receivedUserID = await response.json();
+        userid = receivedUserID.userid;
+
+        // Now make GET request to retrieve all the orders that the user has...
+        const response1 = await fetch(`http://localhost:3000/view-orders?userid=${userid}`, { 
+                method: 'GET',
+                credentials: "include",
+        })
+
+        if(response1.status === 200)
+        {
+            const data1 = await response1.json();
+            //then populate the table with the results that we get
+            populateTable(data1, userid, username);
+        }
+
+        else
+        {
+            alert('An error has occurred retrieving your product transactions.');
+        }
+    }
+
+    function reviewMenu(userid, username, upc, button)
+    {
+        let sendInfo = JSON.stringify({userid: userid, username: username, upc: upc, button: button});
+        overlay.style.display = "block";
+        backdrop.style.display = "block";
+
+        // send the info to the iframe
+
+        var iframeWindow = document.getElementById('iframe').contentWindow;
+        //send the part information and localStorage to the iframe... first loop through everything in localStorage
+        
+        var payload = {};
+        payload['type'] = 'review';
+        payload['data'] = sendInfo;
+
+        // resize the iframe...
+        document.getElementById('iframe').style.width = '65%';
+        document.getElementById('iframe').style.height = '85%';
+        document.getElementById('tab').style.width = '65%';
+        document.getElementById('tab').style.height = '50px';
+        document.getElementById('tab').style.marginTop = '20px';
+
+
+        //send the payload to the iframe
+        iframeWindow.postMessage(JSON.stringify(payload), '*');
+    }
+
+    function productMenu(userid, username, quantity, date, upc, button)
+    {
+        let sendInfo = JSON.stringify({userid: userid, username: username, quantity: quantity, date: date, upc: upc, button: button});
+        overlay.style.display = "block";
+        backdrop.style.display = "block";
+
+        // send the info to the iframe
+
+        var iframeWindow = document.getElementById('iframe').contentWindow;
+        //send the part information and localStorage to the iframe... first loop through everything in localStorage
+        
+        var payload = {};
+        payload['type'] = 'product';
+        payload['data'] = sendInfo;
+
+        // resize the iframe...
+        document.getElementById('iframe').style.width = '15%';
+        document.getElementById('iframe').style.height = '55%';
+        document.getElementById('tab').style.width = '15%';
+        document.getElementById('tab').style.height = '50px';
+        document.getElementById('tab').style.marginTop = '140px';
+
+        //send the payload to the iframe
+        iframeWindow.postMessage(JSON.stringify(payload), '*');
+    }
+
+    //as soon as we receive a message, display a alert and close iframe
+    window.onmessage = function(e) 
+    {
+        overlay.style.display = "none";
+        backdrop.style.display = "none";
+
+        // reset the iframe src to reload the page
+        document.getElementById('iframe').src = document.getElementById('iframe').src;
+        
+        if(e.data.action==='>30Days')
+        {
+            alert(e.data.message);
+        }
+    }
+</script>
+</body>
+</html>
