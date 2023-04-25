@@ -19,6 +19,7 @@ To run:
 * The port is currently set to 3000 so you go into Chrome/Firefox/Browser and type http://localhost:3000
 * To test customer vs builder open up two different instances of your browser
 * Need to create a MYSQL database with the following
+* To PM someone, copy that person's ID and paste it into the PM text box.
 
 CREATE SCHEMA rbuilds
 
