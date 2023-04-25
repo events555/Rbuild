@@ -10,6 +10,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                flex-direction: column;
                 height: 100vh;
             }
             button {
@@ -32,34 +33,52 @@
                     transform: translateY(20px);
                 }
             }
+            label {
+                font-family: 'Roboto Mono', monospace;
+                margin-bottom: 1rem;
+            }
+            input {
+                font-family: 'Roboto Mono', monospace;
+                margin-bottom: 1.5rem;
+                padding: 0.5rem;
+                width: 40%;
+                text-align: center;
+                border-radius: 10px;
+                border-bottom-color: black;
+                border-width: 1.5px;
+            }
         </style>
     </head>
     <body>
-        <form id="form" action="">
+        <div class="container">
+            <label for="input">Please enter your name:</label>
             <input id="input" autocomplete="off"/>
-            <button>Enter Name</button>
-        </form>
+            <button id="enterChatBtn">Enter Chat Room 〉</button>
+        </div>
+
         <script>
-            var form = document.getElementById("form");
-            var input = document.getElementById("input");
-            
-            form.addEventListener("submit", function(e) {
-                e.preventDefault();
+            // obtain input from input tag
+            let input = document.getElementById("input");
+            // add event listener to button and run function when clicked
+            enterChatBtn.addEventListener("click", function(e) {
+                // there is a value in input tag
                 if (input.value) {
+                    // set their name to the value + (Customer)
                     sessionStorage.setItem("name", input.value + " (Builder)");
                 } else {
-                    sessionStorage.setItem("name", "Customer");
+                    // set name to just Customer
+                    sessionStorage.setItem("name", "Builder");
                 }
+                // function call to visitPage()
+                visitPage();
             });
 
             // Button to access chat window
             function visitPage(){
-                window.location="http://localhost:3000/builder/chat";
+                // hyperlink to next page
+                window.location="http://localhost:3000/customer/chat";
             }
         </script>
-        <div class="container">
-            <button onclick="visitPage();">Enter Chat Room 〉</button>
-        </div>
-
+        </script>
     </body>
 </html>

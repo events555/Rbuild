@@ -82,7 +82,7 @@ chat.on('connection', (socket) => {
             connection.connect(function(err) {
                 if (err) throw err;
                 console.log('Connected!');
-                let post = {line_text: data.msg, socket_id: socket.id};
+                let post = {line_text: data.msg};
                 let sql = 'INSERT INTO chat_line SET ?';
                 connection.query(sql, post, () => {
                     if (err) throw err;
