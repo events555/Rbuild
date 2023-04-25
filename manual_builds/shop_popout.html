@@ -114,7 +114,6 @@
     </style>
 </head>
 <body>
-
     <div class="shop-container">
     
       <input type="text" id="search-bar" onkeyup="searchProducts()" placeholder="Search for products...">
@@ -195,8 +194,8 @@ function makeDivs(e)
 
     for(let i=0; i<prod_data.length; i++) {
 
-        var compatible;
         //compatibility checks
+        var compatible = 1;
         
         //check the current part that we have loaded
         if(loadPart==='cpu')
@@ -205,7 +204,7 @@ function makeDivs(e)
             CPU NEEDS TO CHECK LOCALSTORAGE ELEMENTS:
             MOTHERBOARD & CPU COOLER
             
-            MOTHERBOARD: check CPU socket with Motherboard socket & CPU compatibility with motherboard chipset
+            MOTHERBOARD: check CPU socket with Motherboard socket & CPU compatibility with motherboard chipset (and also the memory on mobo)
             CPU COOLER: CPU socket with amd_socket and intel_socket
             MEMORY: compare mem_type from cpu with mem_type from memory
             */
@@ -223,7 +222,35 @@ function makeDivs(e)
                 //first we need to parse the JSON in this localStorage...
                 let checkVal = JSON.parse(payload["mobo"]);
                 if((checkVal.socket === prod_data[i].socket) && (prod_data[i].compatibility.indexOf(checkVal.chipset) > -1))
-                    compatible = 1;
+                {
+                    // Split by DDR values and RAM speeds
+                    var first = checkVal.mem_type.split(/[\s-]+/);
+                    var second = prod_data[i].mem_type.split(/[\s-]+/);
+
+                    let firstDDR = first.filter((_, i) => i % 2 === 0);
+                    let firstSpeeds = first.filter((_, i) => i % 2 === 1);
+                    let secondDDR = second.filter((_, i) => i % 2 === 0);
+                    let secondSpeeds = second.filter((_, i) => i % 2 === 1);
+                    let moboOCSpeeds = checkVal.mem_speeds.match(/\d+/g);
+
+                    if(firstDDR.some(value => secondDDR.includes(value)))
+                    {
+                        if(firstSpeeds.some(value => secondSpeeds.includes(value)))
+                            compatible = 1;
+
+                        else
+                        {
+                            if(secondSpeeds.some(value => moboOCSpeeds.includes(value)))
+                                compatible = 1;
+
+                            else
+                                compatible = 0;
+                        }
+                    }
+
+                    else
+                        compatible = 0;
+                }
 
                 else
                     compatible = 0;
@@ -234,10 +261,30 @@ function makeDivs(e)
                 //first we need to parse the JSON in this localStorage...
                 let checkVal = JSON.parse(payload["memory"]);
                 if((prod_data[i].mem_type.indexOf(checkVal.mem_type) > -1) || (prod_data[i].mem_type.indexOf(checkVal.mem_speed) > -1))
-                    compatible = 1;
+                {
+                    // Make sure the RAM has the right platform...
+                    if(prod_data[i].prod_name.includes('Intel') && checkVal.mem_pfp === 'Intel XMP')
+                        compatible = 1;
+                    else if(prod_data[i].prod_name.includes('AMD') && checkVal.mem_pfp === 'AMD EXPO')
+                        compatible = 1;
+                    else
+                        compatible = 0;
 
-                else
-                    compatible = 0;
+                    if(compatible === 1)
+                    {
+                        var first = checkVal.mem_type.split(/[\s-]+/);
+                        var second = prod_data[i].mem_type.split(/[\s-]+/);
+
+                        let firstDDR = first.filter((_, i) => i % 2 === 0);
+                        let secondDDR = second.filter((_, i) => i % 2 === 0);
+
+                        if(firstDDR.some(value => secondDDR.includes(value)))
+                        {
+                                compatible = 1;
+                        }
+                    }
+
+                 }
             }
         }
 
@@ -246,7 +293,7 @@ function makeDivs(e)
             CPU & CASES & Motherboard
             
             CPU: check CPU socket with CPU cooler intel_socket and amd_socket
-            CASES: CPU height with max_heatsink from case (max_heatsink should be larger) & CPU socket with 
+            CASES: CPU height with max_heatsink from case (max_heatsink should be larger) & CPU socket width 
             MOTHERBOARD: check CPU socket with intel_sock and amd_sock from mobo
         */
         else if(loadPart==='cpu_cooler')
@@ -255,8 +302,9 @@ function makeDivs(e)
             {
                 //first we need to parse the JSON in this localStorage...
                 let checkVal = JSON.parse(payload["cpu"]);
-                if(((prod_data[i].intel_socket).indexOf(checkVal.socket) > -1) || ((prod_data[i].amd_socket).indexOf(checkVal.socket) > -1))
+                if(((prod_data[i].intel_sock).indexOf(checkVal.socket) > -1) || ((prod_data[i].amd_sock).indexOf(checkVal.socket) > -1))
                     compatible = 1;
+                    
                 else
                     compatible = 0;
             }
@@ -265,12 +313,27 @@ function makeDivs(e)
             {
                 //first we need to parse the JSON in this localStorage...
                 let checkVal = parseFloat(((JSON.parse(payload["cases"])).max_heatsink).match(/\(([^)]+)\)/)[1]);
-                let cpuHeight = parseFloat((prod_data[i].height.match(/\(([^)]+)\)/)[1]));
+                if(prod_data[i].hasOwnProperty('height'))
+                {
+                    let cpuHeight = parseFloat((prod_data[i].height.match(/\(([^)]+)\)/)[1]));
 
-                if(checkVal > cpuHeight)
-                    compatible = 1;
+                    if(checkVal > cpuHeight)
+                        compatible = 1;
+                    else
+                        compatible = 0;
+                }
+
+                // aio liquid cooler if it does not have this property...
                 else
-                    compatible = 0;
+                {
+                    let checkVal2 = JSON.parse(payload["cases"]);
+                    test = parseInt(prod_data[i].rad_size);
+                    test = test + " mm";
+                    if((checkVal2.sup_rad).indexOf(test) > -1)
+                        compatible = 1;
+                    else
+                        compatible = 0;
+                }
             }
 
             if(payload.hasOwnProperty("mobo") && compatible === 1)
@@ -310,55 +373,172 @@ function makeDivs(e)
             if(payload.hasOwnProperty("cpu") && compatible === 1)
             {
                 //first we need to parse the JSON in this localStorage...
-                let checkVal = JSON.parse(payload["mobo"]);
+                let checkVal = JSON.parse(payload["cpu"]);
                 if(checkVal.socket === prod_data[i].socket && checkVal.compatibility.indexOf(prod_data[i].chipset) > -1)
-                    compatible = 1;
+                {
+                    // Split by DDR values and RAM speeds
+                    var first = prod_data[i].mem_type.split(/[\s-]+/);
+                    var second = checkVal.mem_type.split(/[\s-]+/);
+
+                    let firstDDR = first.filter((_, i) => i % 2 === 0);
+                    let firstSpeeds = first.filter((_, i) => i % 2 === 1);
+                    let secondDDR = second.filter((_, i) => i % 2 === 0);
+                    let secondSpeeds = second.filter((_, i) => i % 2 === 1);
+                    let moboOCSpeeds = prod_data[i].mem_speeds.match(/\d+/g);
+
+                    if(firstDDR.some(value => secondDDR.includes(value)))
+                    {
+                        if(firstSpeeds.some(value => secondSpeeds.includes(value)))
+                            compatible = 1;
+
+                        else
+                        {
+                            if(secondSpeeds.some(value => moboOCSpeeds.includes(value)))
+                                compatible = 1;
+
+                            else
+                                compatible = 0;
+                        }
+                    }
+
+                    else
+                        compatible = 0;
+                }
+
                 else
                     compatible = 0;
             }
 
-            if(payload.hasOwnProperty("case") && compatible === 1)
+            if(payload.hasOwnProperty("cases") && compatible === 1)
             {
                 //first we need to parse the JSON in this localStorage...
-                let checkVal = JSON.parse(payload["case"]);
+                let checkVal = JSON.parse(payload["cases"]);
                 if(checkVal.mobo_support.indexOf(prod_data[i].form_factor) > -1)
                     compatible = 1;
                 else
                     compatible = 0;
             }
 
-            //TO DO: memory
-            /*
             if(payload.hasOwnProperty("memory") && compatible === 1)
             {
-                //first we need to parse the JSON in this localStorage...
-                let checkVal = JSON.parse(payload["case"]);
-                if(checkVal.mobo_support.indexOf(prod_data[i].form_factor) > -1)
-                    compatible = 1;
+                let checkVal = JSON.parse(payload["memory"]);
+                // Split by DDR values and RAM speeds
+                var first = prod_data[i].mem_type.split(/[\s-]+/);
+                var second = checkVal.mem_type.split(/[\s-]+/);
+
+                let firstDDR = first.filter((_, i) => i % 2 === 0);
+                let firstSpeeds = first.filter((_, i) => i % 2 === 1);
+                let secondSpeeds = second.filter((_, i) => i % 2 === 1);
+                let moboOCSpeeds = prod_data[i].match(/\d+/g);
+
+                if(firstDDR.some(value => prod_data[i].mem_type.includes(value)))
+                {
+                    if(firstSpeeds.some(value => secondSpeeds.includes(value)))
+                        compatible = 1;
+
+                    else
+                    {
+                        if(secondSpeeds.some(value => moboOCSpeeds.includes(value)))
+                            compatible = 1;
+
+                        else
+                            compatible = 0;
+                    }
+                }
+
                 else
                     compatible = 0;
-            }*/
+            }
 
-            //TO DO: make sure do not have too many SSDs
+            /*
+            //TO DO: make sure do not have too storage devices or SSDs; Just count number of localStorage entries
+            if(payload.hasOwnProperty("storage") && compatible === 1)
+            {
+                let checkVal = JSON.parse(payload["storage"]);
+                
+                compatible = 1;
+            }*/
         }
 
+        // Memory matches with MOBO and with CPU
         else if(loadPart==='memory')
         {
-            
+            if(payload.hasOwnProperty("mobo"))
+            {
+                let checkVal = JSON.parse(payload["mobo"]);
+                // Split by DDR values and RAM speeds
+                var first = checkVal.mem_type.mem_type.split(/[\s-]+/);
+                var second = prod_data[i].split(/[\s-]+/);
+
+                let firstDDR = first.filter((_, i) => i % 2 === 0);
+                let firstSpeeds = first.filter((_, i) => i % 2 === 1);
+                let secondSpeeds = second.filter((_, i) => i % 2 === 1);
+                let moboOCSpeeds = checkVal.match(/\d+/g);
+
+                if(firstDDR.some(value => prod_data[i].mem_type.includes(value)))
+                {
+                    if(firstSpeeds.some(value => secondSpeeds.includes(value)))
+                        compatible = 1;
+
+                    else
+                    {
+                        if(secondSpeeds.some(value => moboOCSpeeds.includes(value)))
+                            compatible = 1;
+
+                        else
+                            compatible = 0;
+                    }
+                }
+
+                else
+                    compatible = 0;
+            }
+
+            if(payload.hasOwnProperty("cpu") && compatible === 1)
+            {
+                let checkVal = JSON.parse(payload["mobo"]);
+                // Split by DDR values and RAM speeds
+                var first = checkVal.mem_type.mem_type.split(/[\s-]+/);
+                var second = prod_data[i].split(/[\s-]+/);
+
+                let firstDDR = first.filter((_, i) => i % 2 === 0);
+                let firstSpeeds = first.filter((_, i) => i % 2 === 1);
+                let secondSpeeds = second.filter((_, i) => i % 2 === 1);
+                let moboOCSpeeds = checkVal.match(/\d+/g);
+
+                if(firstDDR.some(value => prod_data[i].mem_type.includes(value)))
+                {
+                    if(firstSpeeds.some(value => secondSpeeds.includes(value)))
+                        compatible = 1;
+
+                    else
+                    {
+                        if(secondSpeeds.some(value => moboOCSpeeds.includes(value)))
+                            compatible = 1;
+
+                        else
+                            compatible = 0;
+                    }
+                }
+
+                else
+                    compatible = 0;
+            }
         }
 
         /*
             Drives NEEDS TO CHECK LOCALSTORAGE ELEMENTS:
             Case, Mobo
             
-            CASE: check CPU socket & compatibility with mobo socket and mobo chipset
-            MOBO: eno
-            PSU: 
+            CASE: Check 2.5/3.5 can fit in case drive bays
+            MOBO: Enough NVME ssd slots
+            PSU:  check if enough slots to fit 3.5/2.5
         */
-        else if(loadPart==='storage')
+
+        /*else if(loadPart==='storage')
         {
             
-        }
+        }*/
 
         /*
             GPU NEEDS TO CHECK LOCALSTORAGE ELEMENTS:
@@ -369,28 +549,206 @@ function makeDivs(e)
         */
         else if(loadPart==='gpu')
         {
-            
+            // psu check
+            if(payload.hasOwnProperty("psu"))
+            {
+                 let checkVal = JSON.parse(payload["psu"]);
+
+                 // gpu power check
+                 if(parseInt(prod_data[i].rec_psu) <= parseInt(checkVal.watt))
+                    compatible = 1;
+                 else
+                    compatible = 0;
+                
+                // gpu power cable check
+                if(compatible===1)
+                {
+                    let pinValue = checkVal.gfx_con;
+                    let pinArray = pinValue.split(", ");
+                    let result = {};
+
+                    for (let i = 0; i < pinArray.length; i++) {
+                        let pin = pinArray[i].split(" x ");
+                        let value = parseInt(pin[0]);
+                        let key = pin[1];
+                        if (key.includes("+")) {
+                            let splitKey = key.split("+");
+                            let firstNum = parseInt(splitKey[0]);
+                            let secondNum = parseInt(splitKey[1].split("-")[0]);
+                            key = firstNum + secondNum + "-pin";
+                        }
+                        result[key] = value;
+                    }
+
+                    // now that result is created... do same for checkVal and then compare...
+                    let pin = prod_data[i].pow_con.split(" x ");
+                    let counter = parseInt(pin[0]);
+                    let compareVal = pin[1];
+                    let notFound = 1;
+
+                    // now we check if compareVal 
+                    for(key in result)
+                    {
+                        // first make sure that it is matching value...
+                        if(key === compareVal)
+                        {
+                            notFound = 0;
+                            if(result[key] <= counter)
+                            {
+                                compatible = 1;
+                                break;
+                            }
+
+                            else
+                            {
+                                comaptible = 0;
+                                break;
+                            }
+                        }
+                    }
+
+                    // if not found then compatible is 0...
+                    if(notFound===1)
+                        compatible = 0;
+                }
+
+                if(payload.hasOwnProperty("cases") && compatible===1)
+                {
+                    let checkVal = parseFloat(((JSON.parse(payload["cases"])).max_gpu).match(/\(([^)]+)\)/)[1]);
+                    let caseHeight = parseFloat((prod_data[i].card_length.match(/\(([^)]+)\)/)[1]));
+
+                    if(checkVal > caseHeight)
+                        compatible = 1;
+                    else
+                        compatible = 0;
+                }
+            }
         }
 
         else if(loadPart==='cases')
         {
-            
+            // cpu cooler check
+                
+
+
+            // gpu length check
+            if(payload.hasOwnProperty("gpu"))
+            {
+                let checkVal = parseFloat(((JSON.parse(payload["gpu"])).card_length).match(/\(([^)]+)\)/)[1]);
+                let caseSize = parseFloat((prod_data[i].max_gpu.match(/\(([^)]+)\)/)[1]));
+
+                if(caseSize > checkVal)
+                    compatible = 1;
+                else
+                    compatible = 0;
+            }
+
+            // mobo size check
+            if(payload.hasOwnProperty("mobo") && compatible === 1)
+            {
+                //first we need to parse the JSON in this localStorage...
+                let checkVal = JSON.parse(payload["mobo"]);
+                if(prod_data[i].mobo_support.indexOf(checkVal.form_factor) > -1)
+                    compatible = 1;
+                else
+                    compatible = 0;
+            }
+
+            // psu length check
+            if(payload.hasOwnProperty("psu"))
+            {
+                let checkVal = parseFloat(((JSON.parse(payload["psu"])).psu_size).match(/\(([^)]+)\)/)[1]);
+                let maxCase = parseFloat((prod_data[i].max_psu.match(/\(([^)]+)\)/)[1]));
+
+                if(maxCase > checkVal)
+                    compatible = 1;
+                else
+                    compatible = 0;
+            }
         }
 
+        /*
+            PSU NEEDS TO CHECK LOCALSTORAGE ELEMENTS:
+            GPU, CASE
+            
+            GPU: gfx_con with correct pow_con and rec_psu >= watt
+            CASE: make sure it fits in the case
+        */
         else if(loadPart==='psu')
         {
-            
-        }
+            if(payload.hasOwnProperty("gpu"))
+            {
+                 let checkVal = JSON.parse(payload["gpu"]);
 
-        //These two parts will always be compatible
-        else if(loadPart==='compound')
-        {
-            compatible = 1;
-        }
+                 // gpu power check
+                 if(parseInt(prod_data[i].watt) >= parseInt(checkVal.rec_psu))
+                    compatible = 1;
+                 else
+                    compatible = 0;
+                
+                // gpu power cable check
+                if(compatible===1)
+                {
+                    let pinValue = prod_data[i].gfx_con;
+                    let pinArray = pinValue.split(", ");
+                    let result = {};
 
-        else if(loadPart==='monitor')
-        {
-            compatible = 1;
+                    for (let i = 0; i < pinArray.length; i++) {
+                        let pin = pinArray[i].split(" x ");
+                        let value = parseInt(pin[0]);
+                        let key = pin[1];
+                        if (key.includes("+")) {
+                            let splitKey = key.split("+");
+                            let firstNum = parseInt(splitKey[0]);
+                            let secondNum = parseInt(splitKey[1].split("-")[0]);
+                            key = firstNum + secondNum + "-pin";
+                        }
+                        result[key] = value;
+                    }
+
+                    // now that result is created... do same for checkVal and then compare...
+                    let pin = checkVal.pow_con.split(" x ");
+                    let counter = parseInt(pin[0]);
+                    let compareVal = pin[1];
+                    let notFound = 1;
+
+                    // now we check if compareVal 
+                    for(key in result)
+                    {
+                        // first make sure that it is matching value...
+                        if(key === compareVal)
+                        {
+                            notFound = 0;
+                            if(result[key] <= counter)
+                            {
+                                compatible = 1;
+                                break;
+                            }
+
+                            else
+                            {
+                                comaptible = 0;
+                                break;
+                            }
+                        }
+                    }
+
+                    // if not found then compatible is 0...
+                    if(notFound===1)
+                        compatible = 0;
+                }
+            }
+
+            if(payload.hasOwnProperty("cases") && compatible===1)
+            {
+                let checkVal = parseFloat(((JSON.parse(payload["cases"])).max_psu).match(/\(([^)]+)\)/)[1]);
+                let psuLength = parseFloat((prod_data[i].psu_size.match(/\(([^)]+)\)/)[1]));
+
+                if(checkVal > psuLength)
+                    compatible = 1;
+                else
+                    compatible = 0;
+            }
         }
 
         //if the parts are compatible with current loadout
@@ -563,8 +921,15 @@ function hideDetails() {
 }
 
 function addToCart(prodToAdd) {
-   window.parent.postMessage(prodToAdd,"*");
-}
+
+    //window.parent.postMessage(prodToAdd,"*");
+    
+    if(prodToAdd.stock > 0)
+    window.parent.postMessage(prodToAdd,"*");
+    
+    else
+    alert("Cannot add to your list: this product is out of stock");
+} 
 
 function searchProducts() {
     

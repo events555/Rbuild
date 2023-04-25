@@ -18,6 +18,10 @@
                         document.getElementById('range_extra_p').style.display = 'none';
                         document.getElementById('no_price_selection').style.display = 'none';
                         document.getElementById('flat_price_selection').style.display = 'block';
+
+                        document.getElementById('flat_price_val').setAttribute('required', '');
+                        document.getElementById('range_min_price').removeAttribute('required');
+                        document.getElementById('range_max_price').removeAttribute('required');
                 }
                 
                 else if(priceVal == "rangePrice")
@@ -27,6 +31,10 @@
                         document.getElementById('range_price_selection_min').style.display = 'inline-block';
                         document.getElementById('range_price_selection_max').style.display = 'inline-block';
                         document.getElementById('range_extra_p').style.display = 'block';
+
+                        document.getElementById('flat_price_val').removeAttribute('required');
+                        document.getElementById('range_min_price').setAttribute('required', '');
+                        document.getElementById('range_max_price').setAttribute('required', '');
                 }
 
                 else
@@ -36,6 +44,10 @@
                         document.getElementById('range_price_selection_max').style.display = 'none';
                         document.getElementById('range_extra_p').style.display = 'none';
                         document.getElementById('no_price_selection').style.display = 'block';
+
+                        document.getElementById('flat_price_val').removeAttribute('required');
+                        document.getElementById('range_min_price').removeAttribute('required');
+                        document.getElementById('range_max_price').removeAttribute('required');
                 }
         }
 
@@ -69,32 +81,17 @@
                 }
         }
 
-        function diff_check()
-        {
-                var diffVal = document.querySelector('input[name="detailButt"]:checked').value;
-                
-                if(diffVal=="beg")
-                {
-                        document.getElementById('adv').style.display = 'none';
-                        document.getElementById('beg').style.display = 'block';
-                }
-
-                else
-                {
-                        document.getElementById('beg').style.display = 'none';
-                        document.getElementById('adv').style.display = 'block';
-                }
-        }
-
         function range_min_check()
         {
+                // first we need to strip off the leading 0s
+                document.getElementById('range_min_price').value = document.getElementById('range_min_price').value.replace(/^0+/, "");
+
                 var minInput = Number(document.getElementById('range_min_price').value);
                 var maxInput = Number(document.getElementById('range_max_price').value);
 
-                if(minInput && maxInput && minInput>maxInput)
+                if(minInput && maxInput && minInput>=maxInput)
                 {
-                        window.alert('The minimum value cannot be larger than the maximum value [min: ' + minInput + ', max: ' + maxInput + ']');
-                        //window.alert('The minimum value cannot be larger than the maximum value');
+                        window.alert('The minimum value cannot be larger than or equal to the maximum value [min: ' + minInput + ', max: ' + maxInput + ']');
                         document.getElementById('range_min_price').value = '';
                 }
 
@@ -102,15 +99,22 @@
 
         function range_max_check()
         {
+                // first we need to strip off the leading 0s
+                document.getElementById('range_max_price').value = document.getElementById('range_max_price').value.replace(/^0+/, "");
+
                 var minInput = Number(document.getElementById('range_min_price').value);
                 var maxInput = Number(document.getElementById('range_max_price').value);
 
-                if(maxInput && minInput && maxInput<minInput)
+                if(maxInput && minInput && maxInput<=minInput)
                 {
-                        window.alert('The maximum value cannot be less than the minimum value [min: ' + minInput + ', max: ' + maxInput + ']');
-                        //window.alert('The maximum value cannot be smaller than the minimum value');
+                        window.alert('The maximum value cannot be less than or equal to the minimum value [min: ' + minInput + ', max: ' + maxInput + ']');
                         document.getElementById('range_max_price').value = '';
                 }
+        }
+
+        function flat_price_truncate()
+        {
+                document.getElementById('flat_price_val').value = document.getElementById('flat_price_val').value.replace(/^0+/, "");
         }
 
         function backBoxLength()
@@ -118,14 +122,14 @@
                 var textarea = document.getElementById("backTextarea");
                 var display = document.getElementById("backLengthDisplay");
 
-                display.textContent = textarea.value.length + "/2000";
+                display.textContent = textarea.value.length + "/5000";
 
-                if(textarea.value.length >= 1000 && textarea.value.length < 2000)
+                if(textarea.value.length >= 3000 && textarea.value.length < 5000)
                 {
                         display.style.color = "orange";
                 }
 
-                else if(textarea.value.length == 2000)
+                else if(textarea.value.length == 5000)
                 {
                         display.style.color = "red";
                 }
@@ -141,14 +145,14 @@
                 var textarea = document.getElementById("addTextarea");
                 var display = document.getElementById("addLengthDisplay");
 
-                display.textContent = textarea.value.length + "/2000";
+                display.textContent = textarea.value.length + "/5000";
 
-                if(textarea.value.length >= 1000 && textarea.value.length < 2000)
+                if(textarea.value.length >= 3000 && textarea.value.length < 5000)
                 {
                         display.style.color = "orange";
                 }
 
-                else if(textarea.value.length == 2000)
+                else if(textarea.value.length == 5000)
                 {
                         display.style.color = "red";
                 }
@@ -159,11 +163,891 @@
                 }
         }
 
+        // login color change
+        function colorChange(first, second)
+        {
+                var textarea = document.getElementById(first);
+                var display = document.getElementById(second);
+
+                if(textarea.value.length >= 10 && textarea.value.length < 15)
+                {
+                display.style.color = "orange";
+                }
+
+                else if(textarea.value.length == 15)
+                {
+                display.style.color = "red";
+                }
+
+                else
+                {
+                display.style.color = "black";
+                }
+        }
+
       </script>
    </head>
   <body>
+<!-- Add the login overlay -->
+<div class="overlay" id="login-overlay">
+        <!--Message Window Div-->
+        <div id="flash-message">NO COOKIE OR INVALID COOKIE DETECTED</div>
+        <div class="login-box">
+        <h1 id="welcome_box">Welcome, please login</h1>
+        
+        <label for="username">Username </label><span id='username-count'>[0/15]:</span><br>
+        <input type="username" id="username" name="username" maxlength='15' oninput="colorChange('username', 'username-count')"><br>
+        
+        <label for="password">Password </label><span id='password-count'>[0/15]:</span><br>
+        <input type="password" id="password" name="password" maxlength='15' oninput="colorChange('password', 'password-count')"><br><br>
+        
+        <button id='login' onclick="login()">Login</button> <button id='register'>Register</button><br><br>
+        
+        <p id='error'></p>
+        
+        </div></div>
+        
+        <!-- Add the register overlay -->
+        <div class="overlay" id='register-overlay' style='display:none'>
+            <div class='login-box'>
+            <h1>Create an account</h1>
+        
+            <label for='new-username'>Username </label><span id='new-username-count'>[0/15]:</span><br>
+            <input type='username' id='new-username' name='new-username' maxlength='15' oninput="colorChange('new-username', 'new-username-count')"><br>
+        
+            <label for='new-password'>Password </label><span id='new-password-count'>[0/15]:</span><br>
+            <input type='password' id='new-password' name='new-password' maxlength='15' oninput="colorChange('new-password', 'new-password-count')"><br><br>
+        
+            <button id='back'>Back</button> <button id="createAccount" onclick="register()">Register</button><br><br>
+        
+            <p id='register-error'></p>
+            </div>
+        </div>
+        
+        <script>
+        
+        //flash message script
+        function flashMessage()
+        {
+            // set the flash speed in milliseconds
+            var flashSpeed = 600;
+            // get the flash message element by id
+            var flashMessage = document.getElementById("flash-message");
+            // create a setInterval function that toggles visibility
+            var counter = 0;
+            var t = setInterval(function() {
+                // if the element is hidden, show it
+                if (flashMessage.style.visibility == "hidden") {
+                    flashMessage.style.visibility = "visible";
+                    counter++;
+                } else {
+                    // otherwise, hide it
+                    flashMessage.style.visibility = "hidden";
+                }
+                if(counter==4)
+                {
+                    clearInterval(t);
+                    flashMessage.style.visibility = "hidden";
+                }
+            }, flashSpeed);
+        }
+        
+        function flashMessage2()
+        {
+            // set the flash speed in milliseconds
+            var flashSpeed = 600;
+            // get the flash message element by id
+            var flashMessage = document.getElementById("flash-message-2");
+            // create a setInterval function that toggles visibility
+            var counter = 0;
+            var t = setInterval(function() {
+                // if the element is hidden, show it
+                if (flashMessage.style.visibility == "hidden") {
+                    flashMessage.style.visibility = "visible";
+                    counter++;
+                } else {
+                    // otherwise, hide it
+                    flashMessage.style.visibility = "hidden";
+                }
+                if(counter==4)
+                {
+                    clearInterval(t);
+                    flashMessage.style.visibility = "hidden";
+                }
+            }, flashSpeed);
+        }
+        
+        //cookie check on page load
+        window.onload = function() {
+          fetch('http://localhost:3000/check-cookie', { 
+            credentials: "include",
+        })
+            .then(response => response.json())
+            .then(data => {
+              if (data.loggedIn == "success") {
+                document.querySelector('.overlay').style.display = 'none';
+                document.getElementById("flash-message-2").innerHTML = "LOGGED IN AS: " + data.username;
+                flashMessage2();
+                populateAuto();
+              }
+              if(data.loggedIn == "invalid") {
+                flashMessage();
+              }
+            });
+        }
+        
+        
+        //Restrict characters in username text field...
+        document.querySelectorAll('#username, #new-username').forEach(function(input) {
+            input.addEventListener('keypress', function(event) {
+                var regex = new RegExp("^[a-zA-Z0-9]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key)) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+        
+        //Restrict characters in password text field...
+        document.querySelectorAll('#password, #new-password').forEach(function(input) {
+            input.addEventListener('keypress', function(event) {
+                var regex = new RegExp("^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key)) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+        
+      //login function...
+      function login()
+      {
+          var xhr = new XMLHttpRequest();
+      
+          xhr.onreadystatechange = function() 
+          {
+              if(xhr.readyState == 4)
+              {
+                  var data = xhr.response;
+                  //login successful
+                  if (this.status === 200) 
+                  {
+                      document.querySelector('.overlay').style.display = 'none';
+                      document.getElementById("flash-message-2").innerHTML = "LOGGED IN AS: " + data;
+                      flashMessage2();
+                      populateAuto();
+                  }
+                  
+                  //login failed
+                  else 
+                      document.getElementById('error').innerHTML = data;
+              }
+          }; 
+          xhr.open('POST', 'http://localhost:3000/login', true);
+          xhr.withCredentials = true;
+          xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+          var username = document.getElementById('username').value.toLowerCase();
+          var password = document.getElementById('password').value;
+          xhr.send('username=' + username + '&password=' + password);
+      }
+      
+      //register function...
+      function register()
+      {
+          //check if can register unique username/password combination
+          var xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function() 
+          {
+              if(xhr.readyState == 4)
+              {
+                   //registration successful
+                  if (this.status == 201) 
+                  {
+                      document.querySelector('#register-overlay').style.display = 'none';
+                      document.querySelector('#login-overlay').style.display = 'block';
+                      document.getElementById('new-username').value = '';
+                      document.getElementById('new-password').value = '';
+                  }
+                  
+                  //registration failed
+                  else 
+                      var data = xhr.response;
+                      document.getElementById('register-error').innerHTML = data;
+              }
+          };
+      
+          xhr.open('POST', 'http://localhost:3000/register', true);
+          xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+          var username = document.getElementById('new-username').value.toLowerCase();
+          var password = document.getElementById('new-password').value;
+          xhr.send('username=' + username + '&password=' + password);
+      } 
+      
+      document.querySelector('#register').addEventListener('click', function() {
+      document.querySelector('#login-overlay').style.display = 'none';
+      document.querySelector('#register-overlay').style.display = 'block';
+      document.getElementById('new-username').value = '';
+      document.getElementById('new-password').value = '';
+      document.getElementById('new-username-count').innerHTML = '[0/15]:';
+      document.getElementById('new-password-count').innerHTML = '[0/15]:';
+      document.getElementById('new-username-count').style.color = "black";
+      document.getElementById('new-password-count').style.color = "black";
+      document.getElementById('register-error').innerHTML = '';
+      });
+      
+      document.querySelector('#back').addEventListener('click', function() {
+      document.querySelector('#register-overlay').style.display = 'none';
+      document.querySelector('#login-overlay').style.display = 'block';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('username-count').innerHTML = '[0/15]:';
+      document.getElementById('password-count').innerHTML = '[0/15]:';
+      document.getElementById('username-count').style.color = "black";
+      document.getElementById('password-count').style.color = "black";
+      document.getElementById('error').innerHTML = '';
+      document.querySelector('.login-box').style.opacity = '1';
+      });
+      
+      document.querySelectorAll('input[type="username"], input[type="password"]').forEach(function(input) {
+      input.addEventListener('input', function() {
+      document.querySelector('#' + input.id + '-count').innerHTML = '[' + input.value.length + '/15]:';
+      });
+      });
+
+      function updateDivs()
+      {
+        // parts to include are from the localStorage...
+        let includeParts = JSON.parse(localStorage.getItem("excludedProducts")) || "[]"
+
+        //build the array of categories
+        let excludedProducts = JSON.parse(localStorage.getItem('excludedProducts'));
+        let categories = [];
+        excludedProducts.forEach(function(product) {
+        if (!categories.includes(product.category)) {
+                categories.push(product.category);
+        }
+        });
+
+        if(categories.includes('cpu') || categories.includes('mobo'))
+        {
+                document.querySelectorAll('#platformVal').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#platform_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+
+                // Get all the radio buttons with the name "platButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="platButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Remove the required attribute from the last radio button
+                lastRadioButton.removeAttribute('required');
+        }
+
+        else
+        {
+                document.querySelectorAll('#platformVal').forEach(function(radio) {
+                        radio.style.display = 'inline-block';
+                });
+                document.querySelectorAll('#platform_change').forEach(function(label) {
+                        label.style.display = 'inline-block';
+                });
+
+                // Get all the radio buttons with the name "platButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="platButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton.setAttribute('required', '');
+        }
+        
+        if(categories.includes('cpu_cooler'))
+        {
+                document.querySelectorAll('#coolerVal').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#cooler_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+        
+                // Get all the radio buttons with the name "coolerButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="coolerButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Remove the required attribute from the last radio button
+                lastRadioButton.removeAttribute('required', '');
+        }
+
+        else
+        {
+                document.querySelectorAll('#coolerVal').forEach(function(radio) {
+                        radio.style.display = 'inline-block';
+                });
+                document.querySelectorAll('#cooler_change').forEach(function(label) {
+                        label.style.display = 'inline-block';
+                });
+                
+                // Get all the radio buttons with the name "coolerButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="coolerButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton.setAttribute('required', '');
+        }
+
+        if(categories.includes('cases'))
+        {
+                document.querySelectorAll('#factorVal').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#factor_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+                
+                // Get all the radio buttons with the name "formButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="formButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Remove the required attribute from the last radio button
+                lastRadioButton.removeAttribute('required');
+        }
+
+        else
+        {
+                document.querySelectorAll('#factorVal').forEach(function(radio) {
+                        radio.style.display = 'inline-block';
+                });
+                document.querySelectorAll('#factor_change').forEach(function(label) {
+                        label.style.display = 'inline-block';
+                });
+                
+                // Get all the radio buttons with the name "formButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="formButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton.setAttribute('required', '');
+        }
+
+        if(categories.includes('cpu'))
+        {
+                document.querySelectorAll('#cpu_tier').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#cpu_tier_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+                
+                // Get all the radio buttons with the name "cpuTierButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="cpuTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Remove the required attribute from the last radio button
+                lastRadioButton.removeAttribute('required');
+        }
+
+        else
+        {
+                document.querySelectorAll('#cpu_tier').forEach(function(radio) {
+                        radio.style.display = 'inline-block';
+                });
+                document.querySelectorAll('#cpu_tier_change').forEach(function(label) {
+                        label.style.display = 'inline-block';
+                });
+                
+                // Get all the radio buttons with the name "cpuTierButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="cpuTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton.setAttribute('required', '');
+        }
+
+        if(categories.includes('gpu'))
+        {
+                document.querySelectorAll('#gpuVal').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#gpu_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+
+                // Get all the radio buttons with the name "gpuButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="gpuButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Remove the required attribute from the last radio button
+                lastRadioButton.removeAttribute('required');
+
+                document.querySelectorAll('#gpu_tier').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#gpu_tier_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+                
+                // Get all the radio buttons with the name "gpuTierButt"
+                const radioButtons2 = document.querySelectorAll('input[type="radio"][name="gpuTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton2 = radioButtons2[radioButtons2.length - 1];
+
+                // Remove the required attribute from the last radio button
+                lastRadioButton2.removeAttribute('required');
+        }
+
+        else
+        {
+                document.querySelectorAll('#gpuVal').forEach(function(radio) {
+                        radio.style.display = 'inline-block';
+                });
+                document.querySelectorAll('#gpu_change').forEach(function(label) {
+                        label.style.display = 'inline-block';
+                });
+                // Get all the radio buttons with the name "gpuButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="gpuButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton.setAttribute('required', '');
+
+                document.querySelectorAll('#gpu_tier').forEach(function(radio) {
+                        radio.style.display = 'inline-block';
+                });
+                document.querySelectorAll('#gpu_tier_change').forEach(function(label) {
+                        label.style.display = 'inline-block';
+                });
+                
+                // Get all the radio buttons with the name "gpuTierButt"
+                const radioButtons2 = document.querySelectorAll('input[type="radio"][name="gpuTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton2 = radioButtons2[radioButtons2.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton2.setAttribute('required', '');
+        }
+
+        if(categories.includes('memory'))
+        {
+                document.getElementById('ram_dropdown').style.display = 'none';
+
+                document.querySelectorAll('#ram_tier').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#ram_tier_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+                
+                // Get all the radio buttons with the name "ramTierButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="ramTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Remove the required attribute from the last radio button
+                lastRadioButton.removeAttribute('required');
+        }
+
+        else
+        {
+                document.getElementById('ram_dropdown').style.display = 'inline-block';
+
+                document.querySelectorAll('#ram_tier').forEach(function(radio) {
+                        radio.style.display = 'inline-block';
+                });
+                document.querySelectorAll('#ram_tier_change').forEach(function(label) {
+                        label.style.display = 'inline-block';
+                });
+                
+                // Get all the radio buttons with the name "ramTierButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="ramTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton.setAttribute('required', '');
+        }
+
+        if(categories.includes('mobo'))
+        {
+                document.querySelectorAll('#wifiVal').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#wifi_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+                
+                // Get all the radio buttons with the name "wifiButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="wifiButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Remove the required attribute from the last radio button
+                lastRadioButton.removeAttribute('required');
+
+                document.querySelectorAll('#mobo_tier').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#mobo_tier_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+                
+                // Get all the radio buttons with the name "moboTierButt"
+                const radioButtons2 = document.querySelectorAll('input[type="radio"][name="moboTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton2 = radioButtons2[radioButtons2.length - 1];
+
+                // Remove the required attribute from the last radio button
+                lastRadioButton2.removeAttribute('required');
+        }
+
+        else
+        {
+                document.querySelectorAll('#wifiVal').forEach(function(radio) {
+                        radio.style.display = 'inline-block';
+                });
+                document.querySelectorAll('#wifi_change').forEach(function(label) {
+                        label.style.display = 'inline-block';
+                });
+                
+                // Get all the radio buttons with the name "wifiButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="wifiButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton.setAttribute('required', '');
+
+                document.querySelectorAll('#mobo_tier').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#mobo_tier_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+                // Get all the radio buttons with the name "moboTierButt"
+                const radioButtons2 = document.querySelectorAll('input[type="radio"][name="moboTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton2 = radioButtons2[radioButtons2.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton2.setAttribute('required', '');
+        }
+
+        if(categories.includes('psu'))
+        {
+                document.querySelectorAll('#psuVal').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#psu_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+                // Get all the radio buttons with the name "psuButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="psuButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton.removeAttribute('required');
+
+                document.querySelectorAll('#psu_tier').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#psu_tier_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+                
+                // Get all the radio buttons with the name "psuTierButt"
+                const radioButtons2 = document.querySelectorAll('input[type="radio"][name="psuTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton2 = radioButtons2[radioButtons2.length - 1];
+
+                // Remove the required attribute from the last radio button
+                lastRadioButton2.removeAttribute('required');
+        }
+
+        else
+        {
+                document.querySelectorAll('#psuVal').forEach(function(radio) {
+                        radio.style.display = 'inline-block';
+                });
+                document.querySelectorAll('#psu_change').forEach(function(label) {
+                        label.style.display = 'inline-block';
+                });
+                
+                // Get all the radio buttons with the name "psuButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="psuButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton.setAttribute('required', '');
+
+                document.querySelectorAll('#psu_tier').forEach(function(radio) {
+                        radio.style.display = 'inline-block';
+                });
+                document.querySelectorAll('#psu_tier_change').forEach(function(label) {
+                        label.style.display = 'inline-block';
+                });
+
+                // Get all the radio buttons with the name "psuTierButt"
+                const radioButtons2 = document.querySelectorAll('input[type="radio"][name="psuTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton2 = radioButtons2[radioButtons2.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton2.setAttribute('required', '');
+        }
+
+        if(categories.includes('storage'))
+        {
+                document.getElementById('drive_id').style.display = 'none';
+                document.getElementById('dropdown2').value = 'no_pref';
+                document.getElementById('drive_cap').style.display = 'none';
+                document.getElementById('dropdown3').value = 'no_pref';
+                document.getElementById('bruh_block').style.display = 'none';
+                document.getElementById('sc_drive_id').style.display = 'none';
+                document.getElementById('dropdown4').value = 'none';
+                document.getElementById('sc_drive_cap').style.display = 'none';
+                document.getElementById('dropdown5').value = 'no_pref';
+
+                document.querySelectorAll('#drive_tier').forEach(function(radio) {
+                        radio.style.display = 'none';
+                });
+                document.querySelectorAll('#drive_tier_change').forEach(function(label) {
+                        label.style.display = 'none';
+                });
+
+                // Get all the radio buttons with the name "driveTierButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="driveTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Remove the required attribute from the last radio button
+                lastRadioButton.removeAttribute('required');
+        }
+
+        else
+        {
+                document.getElementById('drive_id').style.display = 'block';
+                document.getElementById('bruh_block').style.display = 'block';
+                document.getElementById('sc_drive_id').style.display = 'block';
+
+                document.querySelectorAll('#drive_tier').forEach(function(radio) {
+                        radio.style.display = 'inline-block';
+                });
+                document.querySelectorAll('#drive_tier_change').forEach(function(label) {
+                        label.style.display = 'inline-block';
+                });
+                
+                // Get all the radio buttons with the name "driveTierButt"
+                const radioButtons = document.querySelectorAll('input[type="radio"][name="driveTierButt"]');
+
+                // Get the last radio button
+                const lastRadioButton = radioButtons[radioButtons.length - 1];
+
+                // Add the required attribute from the last radio button
+                lastRadioButton.setAttribute('required', '');
+        }
+      }
+
+      async function packageJSON()
+      {
+
+        const response1 = await fetch('http://localhost:3000/check-cookie', { 
+                method: 'GET',
+                credentials: "include",
+        })
+
+        const data1 = await response1.json();
+
+        if (data1.loggedIn == "success")
+        {
+                let username1 = data1.username;
+
+                const response2 = await fetch('http://localhost:3000/getuserid?username=' + username1, { 
+                method: 'GET'
+                })
+
+                const data2 = await response2.json();
+                let userid = data2.userid;
+                let validToSend;
+
+                // first make sure that a pendingService does not already exist in the table
+                // now send the request to the server...
+                const response3 = await fetch(`http://localhost:3000/check-service`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({userid: userid, request: 'Builder'})
+                });
+
+                if(response3.status === 200)
+                {
+                        const results = await response3.json();
+                        validToSend = true;
+                }
+
+                else
+                        validToSend = false;
+                        
+
+                if(validToSend)
+                {
+                        data = {};
+                
+                        // first grab the userid and username...
+                        data.userid = document.getElementById('accountIDLabel').value;
+                        data.username = document.getElementById('nameLabel').value;
+                        
+                        // next grab the price information...
+
+                        var ele = document.getElementsByName('priceButt');
+                        for(j = 0; j < ele.length; j++) {
+                        if(ele[j].checked)
+                        {
+                                if(ele[j].value==='flatPrice')
+                                {
+                                        var price = Number(document.getElementById('flat_price_val').value);
+                                        if(price)
+                                        data.price = price;
+                                }
+
+                                else if(ele[j].value==='rangePrice')
+                                {
+                                        var minInput = Number(document.getElementById('range_min_price').value);
+                                        var maxInput = Number(document.getElementById('range_max_price').value);
+                                        
+                                        if(minInput && maxInput)
+                                        {
+                                                data.min_price = minInput;
+                                                data.max_price = maxInput;
+                                        }
+                                }
+
+                                else
+                                        data.price = 'NA';
+                        }
+                                
+                        }
+
+                        // grab the background information...
+                        data.backgroundInfo = document.getElementById('backTextarea').value;
+
+                        // parts to include are from the localStorage...
+                        data.includeParts = JSON.parse(localStorage.getItem("excludedProducts")) || "[]"
+
+                        // grab the preferences information / part tier list information...
+                        let prefNames = ['platButt', 'gpuButt', 'coolerButt', 'formButt', 'wifiButt', 'psuButt', 'rgbButt', 'noiseButt', 'cpuTierButt,', 'gpuTierButt', 'ramTierButt', 'moboTierButt', 'driveTierButt', 'psuTierButt',]
+                        
+                        prefNames.forEach(name => {
+                                var ele = document.getElementsByName(name);
+                                for(j = 0; j < ele.length; j++) {
+                                if(ele[j].checked)
+                                        data[name] = ele[j].value;
+                                }
+                        })
+
+                        // grab the ram and drives information...
+                        data.ram_size = document.getElementById('dropdown').value;
+                        data.boot_drive = document.getElementById('dropdown2').value;
+                        data.boot_drive_space = document.getElementById('dropdown3').value;
+                        data.sec_drive = document.getElementById('dropdown4').value;
+                        data.sec_drive_space = document.getElementById('dropdown5').value;
+
+                        // grab the additional information...
+                        data.addInfo = document.getElementById('addTextarea').value;
+
+                        //testing purposes
+                        //alert(JSON.stringify(data, null, 2));
+
+                        // send the data to the server...
+                        // first derive the userid
+                        // grab the userid...
+
+                        // now send the request to the server...
+                        const response4 = await fetch(`http://localhost:3000/link-service`, {
+                                method: 'POST',
+                                credentials: 'include',
+                                headers: {
+                                'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({userid: userid, request: 'Builder', data: data})
+                        });
+
+                        const results2 = await response4.text();
+
+                        if(results2!=='No employee found for the request')
+                                valid = true;
+                        
+                        // successful submission
+                        if(valid)
+                        {
+                                //delete localStorage elements
+                                localStorage.removeItem('excludedProducts');
+                                //redirect the user to the thank_you.html page
+                                window.location.replace("http://localhost/thank_you.html");
+                        }       
+
+                        else
+                                alert('The submission was not sucessful; please try again.');
+                }
+
+                else
+                {
+                        alert('The submission was not sucessful: you likely have a pending build request.');
+                }
+        }
+
+        else
+        {
+                alert('An error has occurred verifiying your credientials.');
+        }
+      }
+      </script>
+
+      <!-- Add your main page content here -->
     <div id="outside">
-      <form id="survey-form" action="thank_you.html" method="post">
+         <!--Message Window Div-->
+        <div id="flash-message-2"></div>
+        <!--Testing purposes-->
+        <!--<div><button onclick="packageJSON()">PACKAGE TEST</button></div>-->
+      <form id="survey-form" onsubmit="event.preventDefault(); packageJSON();">
         <h1 id="title"><center>PC Build Request Form</center></h1>
         <p id="description"><center>Form to request a PC Build from store employees at Rbuild</center></p>
         <p id="description2">Please read and agree to the terms below in order to submit the form.</p>
@@ -176,7 +1060,7 @@
           <p id="term_des2">- Users can have only <b>1 build request</b> open at a time!</p>
           <p id="term_des2">- Users get <b>1 FREE build request per week</b>.  In other words, you can submit this form for free once a week* and subsequence submissions will result in a fee**.</p>
           <p id="term_des3">- Users get <b>2 FREE modifications per week</b>.  In other words, if you are not happy with the build an employee responds with, you can ask them to redo some parts of the build twice*** before being charged a fee**.</p>
-          <p id="term_des4">- Builders can take up to <b>1-3 business days to respond to your request</b>; if you do not get a response in 1-3 business days, your submission will not be counted and you will be granted 1 free request and 2 additional free modifications for the week.</p>
+          <p id="term_des4">- Builders can take up to <b>1-3 business days to respond to your request</b>; if you do not get a response in 1-3 business days, you will get $50 off your PC built by your employee should you choose to buy it and 2 free modifications for your next build request.</p>
           <p id="term_des5">*A week is defined as the timeframe from as a week after the user's free submission.  For example, if a user submits a free build request on Friday, they will get another free build request next Friday.</p>
           <p id="term_des6">**Subsequent build request and modification fees will be indicated by the builder and you will get the opportunity to move forward or halt the process.</p>
           <p id="term_des7">***Large, complex modifications may not count as single modification.  The builder will indicate if a modification is small or large and if the user will be charged and if they want to move forward or halt the process.</p>
@@ -191,15 +1075,43 @@
           <legend>Account Details</legend>
           <!-- formally describes the purpose of the fieldset it is included inside. -->
           <div>
-                <p style="margin : 0;">Your accountID and username are added automatically with your form submission.  You do not have to do anything here.</p>
+                <p style="margin : 0;">Your username is automatically included with your form submission.  You do not have to do anything here.</p>
                 <p></p>
             <label id="accountID-label" for="accountID"><b>AccountID:</b></label>
-            <input type="text" id="accountID-label" name="accountID" readonly></div>
+            <input type="text" id="accountIDLabel" name="accountID" readonly display: none></div>
           <div>
           <div>
             <label id="name-label" for="name"><b>Username:</b></label>
-            <input type="text" id="name-label" name="name" readonly></div>
+            <input type="text" id="nameLabel" name="name" readonly></div>
           <div> 
+        
+        <script>
+        async function populateAuto()
+        {
+                // grab the userid...
+                const response1 = await fetch('http://localhost:3000/check-cookie', { 
+                        method: 'GET',
+                        credentials: "include",
+                })
+
+                const data1 = await response1.json();
+
+                if (data1.loggedIn == "success")
+                {
+                        let username1 = data1.username;
+
+                        const response2 = await fetch('http://localhost:3000/getuserid?username=' + username1, { 
+                        method: 'GET'
+                        })
+
+                        const data2 = await response2.json();
+                        let userid = data2.userid;
+
+                        document.getElementById('accountIDLabel').value = userid;
+                        document.getElementById('nameLabel').value = username1;
+                }
+        }
+        </script>
         
         </fieldset>
         <!-- ------------------Background Info-------------------------------- -->
@@ -212,7 +1124,7 @@
           <p style="margin : 0; padding-top:0;">- Set no price, price will depend on customer's supplied parts or build requirements</p>
           <p></p>
           <div id="price_change_selection"> 
-            <label for="price" id="price_change"><b>Price:</b></label> 
+            <label for="price" required id="price_change"><b>Price:</b></label> 
             
             <input type = "radio"
                     name = "priceButt"
@@ -238,12 +1150,13 @@
       
         <div id="flat_price_selection" style="display: none;">
           <label id="flat_price_label" for="price">Relative Price: $</label>
-          <input name="flat_price"
+          <input name="flat_price_val"
             type = "number"
-            min = "0"
+            min = "1"
             oninput="this.value=this.value.slice(0,this.maxLength)"
+            onblur="javascript:flat_price_truncate();"
             maxlength = "4"
-            required id = "flat_price"/>
+            required id = "flat_price_val"/>
           <p? id="price_info"><b>NOTE:</b> We will do our best to target the price you provide given your needs.</p>
         </div>
 
@@ -251,7 +1164,7 @@
         <label id="range_price_label" for="price">Range Price (Min-Max): $</label>
           <input name="range_min_price"
             type = "number"
-            min = "0"
+            min = "1"
             oninput="this.value=this.value.slice(0,this.maxLength);"
             onblur="javascript:range_min_check();"
             maxlength = "4"
@@ -262,7 +1175,7 @@
                 <label id="range_price_label" for="price">-</label>
                 <input name="range_max_price"
                 type = "number"
-                min = "0"
+                min = "1"
                 oninput="this.value=this.value.slice(0,this.maxLength);"
                 onblur="javascript:range_max_check();"
                 maxlength = "4"
@@ -284,16 +1197,120 @@
                 <p style="margin : 0">To get an idea of how we should shop for parts, we need to know what you will be primarily using your PC for.  Please describe the main purposes and use cases of your new computer in the textbox below.</p>
                 <p></p>
                 <label for="backTextarea"></label>
-                <textarea id="backTextarea" maxlength="2000" oninput="backBoxLength()" name="user_message" rows="4" cols="50" placeholder="You can list your use cases or write full sentences."></textarea> 
-                <span id="backLengthDisplay" style="float:right;">0/2000</span>
+                <textarea id="backTextarea" maxlength="5000" oninput="backBoxLength()" name="user_message" rows="4" cols="50" placeholder="You can list your use cases or write full sentences."></textarea> 
+                <span id="backLengthDisplay" style="float:right;">0/5000</span>
         </div>
         </fieldset>
 
         <!-- -----------------Parts To Include--------------------------------- -->
         <fieldset>
                 <legend>Parts To Include</legend>
-                <p style="margin : 0">Here, you can indicate to us if you want to include any specific parts in the build.  To do so, simply click on the search bar and type in the name or UPC of the product and then click 'Add'.  This will add your parts to the list below.  You can then delete parts by pressing 'Delete'.  If you do not want to add any parts, leave this section blank.</p>
+                <p style="margin : 0">Here, you can indicate to us if you want to include any specific parts in the build.  To do so, simply click on the search field, type in the name of the product, and click on any names that show up in the dropdown to add it.  You can then delete parts by pressing the 'Delete' button that is to the right of the corresponding part.  If you do not want to add any parts, leave this section blank.</p>
                 <p></p>
+                <div id="searches"></div>
+                <script>
+                  function createSearch() {
+                    const searchContainer = document.createElement("div");
+                    searchContainer.className = "search-container";
+            
+                    const searchInput = document.createElement("input");
+                    searchInput.type = "text";
+                    searchInput.className = "search-input";
+                    searchInput.placeholder = "Search...";
+                    searchContainer.appendChild(searchInput);
+            
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className ="delete-button";
+                    deleteButton.textContent = "Delete";
+                    deleteButton.style.display = "none";
+                    searchContainer.appendChild(deleteButton);
+            
+                    const searchResults = document.createElement("ul");
+                    searchResults.className = "search-results";
+                    searchContainer.appendChild(searchResults);
+
+                    // Add event listener to hide searchResults when clicking outside of it
+                document.addEventListener('click', (event) => {
+                if (!searchContainer.contains(event.target)) {
+                searchResults.style.display = 'none';
+                }
+                });
+
+                // Add event listener to show searchResults when searchInput receives focus
+                searchInput.addEventListener('focus', () => {
+                searchResults.style.display = 'block';
+                });
+            
+                    let timeout = null;
+                    searchInput.addEventListener("input", (event) => {
+                      clearTimeout(timeout);
+                      timeout = setTimeout(async () => {
+                        const query = event.target.value;
+                        if (query.length > 0) {
+                          try {
+                            const excludedProducts = JSON.parse(
+                              localStorage.getItem("excludedProducts") || "[]"
+                            );
+                            const response = await fetch(`http://localhost:3000/product/${query}`, {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json'
+                              },
+                              body: JSON.stringify({exclude: excludedProducts})
+                              }
+                            );
+                            const results = await response.json();
+                            searchResults.innerHTML = "";
+                            for (const result of results) {
+                              const searchResult = document.createElement("li");
+                              searchResult.classList.add("search-result");
+                              searchResult.textContent = result.prod_name;
+                              searchResult.addEventListener("click", () => {
+                                searchInput.value = result.prod_name;
+                                searchInput.readOnly = true;
+                                deleteButton.style.display = "inline-block";
+                                searchResults.innerHTML = "";
+                                localStorage.setItem(
+                                  "excludedProducts",
+                                  JSON.stringify([...excludedProducts, result])
+                                );
+                                createSearch();
+
+                                // need to update the divs
+                                updateDivs();
+                              });
+                              searchResults.appendChild(searchResult);
+                            }
+                          } catch (error) {
+                            console.error(error);
+                          }
+                        } else {
+                          searchResults.innerHTML = "";
+                        }
+                      }, 500);
+                    });
+            
+                    deleteButton.addEventListener("click", () => {
+                      const excludedProducts = JSON.parse(
+                        localStorage.getItem("excludedProducts") || "[]"
+                      );
+                      const index = excludedProducts.findIndex((product) => product.prod_name === searchInput.value);
+                      if(index!=-1) {
+                        excludedProducts.splice(index, 1);
+                        localStorage.setItem("excludedProducts", JSON.stringify(excludedProducts));
+                      }
+                      searchContainer.remove();
+
+                      // need to update the divs
+                      updateDivs();
+
+                    });
+            
+                    searches.appendChild(searchContainer);
+                  }
+            
+                  createSearch();
+                </script>
         </fieldset>
         
         <!-- -----------------Preferences--------------------------------- -->
@@ -303,154 +1320,154 @@
           <p style="margin : 0">Here, we want to get an idea of your overall part preferences and needs.  For example, if you want to restrict us to a particular platform (e.g. AMD), want a particular form factor (e.g. mini-ITX), or plan to use your computer with ethernet only, you can indicate that to us here.  If you do not have any particular preferences for a particular category, you can simply select "no preference".</p>
           <p></p>
           <div> 
-            <label for="platform" id="platform change"><b>Platform:</b></label> 
+            <label for="platform" id="platform_change"><b>Platform:</b></label> 
             <input type = "radio"
                     name = "platButt"
-                    id = "plat_intel"
+                    id = "platformVal"
                     value = "intel" />
-            <label for = "intel">Prefer Intel</label>
+            <label for = "intel" id="platform_change">Prefer Intel</label>
         
             <input type = "radio"
                     name = "platButt"
-                    id = "plat_amd"
+                    id = "platformVal"
                     value = "amd" />
-            <label for = "amd">Prefer AMD</label>
+            <label for = "amd" id="platform_change">Prefer AMD</label>
             
             <input type = "radio"
                     name = "platButt"
-                    required id = "plat_none"
+                    required id = "platformVal"
                     value = "none" />
-            <label for = "none">No preference</label>
+            <label for = "none" id="platform_change">No preference</label>
           </div>
           <div> 
             <label for="gpu_brand" id="gpu_change"><b>GPU Brand:</b></label> 
             <input type = "radio"
                     name = "gpuButt"
-                    id = "gpu_nvidia"
+                    id = "gpuVal"
                     value = "nvidia" />
-            <label for = "nvidia">Prefer Nvidia</label>
+            <label for = "nvidia" id="gpu_change">Prefer Nvidia</label>
         
             <input type = "radio"
                     name = "gpuButt"
-                    id = "gpu_amd"
+                    id = "gpuVal"
                     value = "amd" />
-            <label for = "amd">Prefer AMD</label>
+            <label for = "amd" id="gpu_change">Prefer AMD</label>
             
             <input type = "radio"
                     name = "gpuButt"
-                    required id = "gpu_none"
+                    required id = "gpuVal"
                     value = "none" />
-            <label for = "none">No preference</label>
+            <label for = "none" id="gpu_change">No preference</label>
           </div>
           <div> 
-            <label for="cooler_type" required id="cooler_change"><b>CPU Cooler:</b></label> 
+            <label for="cooler_type" id="cooler_change"><b>CPU Cooler:</b></label> 
             <input type = "radio"
                     name = "coolerButt"
-                    id = "cooler_air"
+                    id = "coolerVal"
                     value = "air" />
-            <label for = "air">Prefer Air Cooler</label>
+            <label for = "air" id="cooler_change">Prefer Air Cooler</label>
         
             <input type = "radio"
                     name = "coolerButt"
-                    id = "cooler_aio"
+                    id = "coolerVal"
                     value = "aio" />
-            <label for = "aio">Prefer AIO Liquid Cooler</label>
+            <label for = "aio" id="cooler_change">Prefer AIO Liquid Cooler</label>
             
             <input type = "radio"
                     name = "coolerButt"
-                    required id = "cooler_none"
+                    required id = "coolerVal"
                     value = "none" />
-            <label for = "none">No preference</label>
+            <label for = "none" id="cooler_change">No preference</label>
           </div>
           <div> 
-            <label for="form_factor" required id="factor_change"><b>Form Factor:</b></label> 
+            <label for="form_factor" id="factor_change"><b>Form Factor:</b></label> 
             <input type = "radio"
                     name = "formButt"
-                    id = "factor_atx"
+                    id = "factorVal"
                     value = "atx" />
-            <label for = "atx">Prefer ATX</label>
+            <label for = "atx" id="factor_change">Prefer ATX</label>
         
             <input type = "radio"
                     name = "formButt"
-                    id = "factor_mini"
+                    id = "factorVal"
                     value = "mini" />
-            <label for = "mini">Prefer mini-ITX</label>
+            <label for = "mini" id="factor_change">Prefer mini-ITX</label>
             
             <input type = "radio"
                     name = "formButt"
-                    required id = "factor_none"
+                    required id = "factorVal"
                     value = "none" />
-            <label for = "none">No preference</label>
+            <label for = "none" id="factor_change">No preference</label>
         </div>
             <div>
-                <label for="wifi_type" required id="wifi_change"><b>Mobo Onboard Wifi:</b></label> 
+                <label for="wifi_type" id="wifi_change"><b>Mobo Onboard Wifi:</b></label> 
             <input type = "radio"
                     name = "wifiButt"
-                    id = "wifi_yes"
+                    id = "wifiVal"
                     value = "yes" />
-            <label for = "yes">Prefer WiFi</label>
+            <label for = "yes" id="wifi_change">Prefer WiFi</label>
         
             <input type = "radio"
                     name = "wifiButt"
-                    id = "wifi_no"
+                    id = "wifiVal"
                     value = "no" />
-            <label for = "no">Prefer no WiFi</label>
+            <label for = "no" id="wifi_change">Prefer no WiFi</label>
             
             <input type = "radio"
                     name = "wifiButt"
-                    required id = "wifi_none"
+                    required id = "wifiVal"
                     value = "none" />
-            <label for = "none">No preference</label>
+            <label for = "none" id="wifi_change">No preference</label>
             </div>
           <div> 
-            <label for="psu_type" required id="psu_change"><b>PSU Type:</b></label> 
+            <label for="psu_type" id="psu_change"><b>PSU Type:</b></label> 
             <input type = "radio"
                     name = "psuButt"
-                    id = "psu_modular"
+                    id = "psuVal"
                     value = "modular" />
-            <label for = "modular">Prefer modular</label>
+            <label for = "modular" id="psu_change">Prefer modular</label>
         
             <input type = "radio"
                     name = "psuButt"
-                    id = "psu_semi"
+                    id = "psuVal"
                     value = "semi" />
-            <label for = "semi">Prefer semi-modular</label>
+            <label for = "semi" id="psu_change">Prefer semi-modular</label>
       
             <input type = "radio"
                     name = "psuButt"
-                    id = "psu_non"
+                    id = "psuVal"
                     value = "non" />
-            <label for = "non">Prefer non-modular</label>
+            <label for = "non" id="psu_change">Prefer non-modular</label>
             
             <input type = "radio"
                     name = "psuButt"
-                    required id = "psu_none"
+                    required id = "psuVal"
                     value = "none" />
-            <label for = "none">No preference</label>
+            <label for = "none" id="psu_change">No preference</label>
           </div>
           <div> 
             <label for="rgb_pref" required id="rgb_change"><b>RGB Parts:</b></label> 
             <input type = "radio"
                     name = "rgbButt"
-                    id = "rgb_yes"
+                    id = "rgbVal"
                     value = "rgb" />
             <label for = "rgb">Prefer RGB wherever possible</label>
         
             <input type = "radio"
                     name = "rgbButt"
-                    id = "rgb_prefer"
+                    id = "rgbVal"
                     value = "rgb_p" />
             <label for = "rgb_p">Prefer balance between RGB and part performance</label>
       
             <input type = "radio"
                     name = "rgbButt"
-                    id = "rgb_no"
+                    id = "rgbVal"
                     value = "rgb_no" />
             <label for = "rgb_no">Prefer no RGB at all</label>
             
             <input type = "radio"
                     name = "rgbButt"
-                    required id = "rgb_none"
+                    required id = "rgbVal"
                     value = "none" />
             <label for = "none">No preference</label>
           </div>
@@ -458,25 +1475,25 @@
             <label for="noise_level" required id="noise_change"><b>Noise Level:</b></label> 
             <input type = "radio"
                     name = "noiseButt"
-                    id = "noise_quiet"
+                    id = "noiseVal"
                     value = "quiet" />
             <label for = "quiet">Prefer quite parts</label>
         
             <input type = "radio"
                     name = "noiseButt"
-                    id = "noise_mixed"
+                    id = "noiseVal"
                     value = "mixed" />
             <label for = "mixed">Prefer balance between noise and performance</label>
       
             <input type = "radio"
                     name = "noiseButt"
-                    id = "noise_loud"
+                    id = "noiseVal"
                     value = "loud" />
             <label for = "loud">Prefer performance</label>
             
             <input type = "radio"
                     name = "noiseButt"
-                    required id = "noise_none"
+                    required id = "noiseVal"
                     value = "none" />
             <label for = "none">No preference</label>
           </div>
@@ -485,261 +1502,286 @@
         <!-- -----------------Performance--------------------------------- -->
         <fieldset>
                 <legend>Part Tier Level</legend>
-                <div>
-                <label for="detail_level" id="detail change"><b>PC Building Experience Level:</b></label> 
-                <input type = "radio"
-                        name = "detailButt"
-                        id = "detail_beg"
-                        value = "beg" 
-                        onclick="javascript:diff_check();"/>
-                <label for = "be">Beginner</label>
-                
-                <input type = "radio"
-                        name = "detailButt"
-                        required id = "detail_adv"
-                        value = "adv" 
-                        onclick="javascript:diff_check();"/>
-                <label for = "adv">Advanced</label>
-                </div>
-                <div id="beg" style="display: none;">
+                <p style="margin : 0">Here, you will indicate to us your the relative tier/quality of some of the parts in your build that you prefer.  Some options might be missing (or this whole section might be blank) depending on the parts you indicated that you want in the build.</p>
+                <p></p>
+                <div id="tier">
                         <div> 
-                                <label for="cpu_tier" required id="cpu_change"><b>CPU:</b></label> 
+                                <label for="cpu_tier" id="cpu_tier_change"><b>CPU:</b></label> 
                                 <input type = "radio"
                                         name = "cpuTierButt"
-                                        id = "cpu_tier_budget"
+                                        id = "cpu_tier"
                                         value = "budget" />
-                                <label for = "budget">Budget</label>
+                                <label for = "budget" id="cpu_tier_change">Budget</label>
                                 
                                 <input type = "radio"
                                         name = "cpuTierButt"
-                                        id = "cpu_tier_lowerEnd"
+                                        id = "cpu_tier"
                                         value = "lowerEnd" />
-                                <label for = "lowerEnd">Lower Midrange</label>
+                                <label for = "lowerEnd" id="cpu_tier_change">Lower Midrange</label>
                                 
                                 <input type = "radio"
                                         name = "cpuTierButt"
-                                        id = "cpu_tier_midRange"
+                                        id = "cpu_tier"
                                         value = "midRange" />
-                                <label for = "midRange">Midrange</label>
+                                <label for = "midRange" id="cpu_tier_change">Midrange</label>
 
                                 <input type = "radio"
                                         name = "cpuTierButt"
-                                        id = "cpu_tier_upperRange"
+                                        id = "cpu_tier"
                                         value = "upperRange" />
-                                <label for = "upperRange">Upper Midrange</label>
+                                <label for = "upperRange" id="cpu_tier_change">Upper Midrange</label>
 
                                 <input type = "radio"
                                         name = "cpuTierButt"
-                                        id = "cpu_tier_highend"
+                                        id = "cpu_tier"
                                         value = "highend" />
-                                <label for = "highend">High-end</label>
+                                <label for = "highend" id="cpu_tier_change">High-end</label>
 
                                 <input type = "radio"
                                         name = "cpuTierButt"
-                                        id = "cpu_tier_top"
+                                        id = "cpu_tier"
                                         value = "top" />
-                                <label for = "top">Top-of-the-line</label>
+                                <label for = "top" id="cpu_tier_change">Top-of-the-line</label>
 
                                 <input type = "radio"
                                         name = "cpuTierButt"
-                                        required id = "cpu_tier_none"
+                                        required id = "cpu_tier"
                                         value = "none" />
-                                <label for = "none">You Decide</label>
+                                <label for = "none" id="cpu_tier_change">You Decide</label>
                                 </div>
 
                         <div> 
-                                <label for="gpu_tier" required id="gpu_change"><b>GPU:</b></label> 
+                                <label for="gpu_tier" id="gpu_tier_change"><b>GPU:</b></label> 
                                 <input type = "radio"
                                         name = "gpuTierButt"
-                                        id = "gpu_tier_budget"
+                                        id = "gpu_tier"
                                         value = "budget" />
-                                <label for = "budget">Budget</label>
+                                <label for = "budget" id="gpu_tier_change">Budget</label>
                                 
                                 <input type = "radio"
                                         name = "gpuTierButt"
-                                        id = "gpu_tier_lowerEnd"
+                                        id = "gpu_tier"
                                         value = "lowerEnd" />
-                                <label for = "lowerEnd">Lower Midrange</label>
+                                <label for = "lowerEnd" id="gpu_tier_change">Lower Midrange</label>
                                 
                                 <input type = "radio"
                                         name = "gpuTierButt"
-                                        id = "gpu_tier_midRange"
+                                        id = "gpu_tier"
                                         value = "midRange" />
-                                <label for = "midRange">Midrange</label>
+                                <label for = "midRange" id="gpu_tier_change">Midrange</label>
 
                                 <input type = "radio"
                                         name = "gpuTierButt"
-                                        id = "gpu_tier_upperRange"
+                                        id = "gpu_tier"
                                         value = "upperRange" />
-                                <label for = "upperRange">Upper Midrange</label>
+                                <label for = "upperRange" id="gpu_tier_change">Upper Midrange</label>
 
                                 <input type = "radio"
                                         name = "gpuTierButt"
-                                        id = "gpu_tier_highend"
+                                        id = "gpu_tier"
                                         value = "highend" />
-                                <label for = "highend">High-end</label>
+                                <label for = "highend" id="gpu_tier_change">High-end</label>
 
                                 <input type = "radio"
                                         name = "gpuTierButt"
-                                        id = "gpu_tier_top"
+                                        id = "gpu_tier"
                                         value = "top" />
-                                <label for = "top">Top-of-the-line</label>
+                                <label for = "top" id="gpu_tier_change">Top-of-the-line</label>
 
                                 <input type = "radio"
                                         name = "gpuTierButt"
-                                        required id = "gpu_tier_none"
+                                        required id = "gpu_tier"
                                         value = "none" />
-                                <label for = "none">You Decide</label>
+                                <label for = "none" id="gpu_tier_change">You Decide</label>
+                                </div>
+                        <div> 
+                                <label for="ram_tier" id="ram_tier_change"><b>RAM:</b></label> 
+                                <input type = "radio"
+                                        name = "ramTierButt"
+                                        id = "ram_tier"
+                                        value = "budget" />
+                                <label for = "budget" id="ram_tier_change">Budget</label>
+                                
+                                <input type = "radio"
+                                        name = "ramTierButt"
+                                        id = "ram_tier"
+                                        value = "lowerEnd" />
+                                <label for = "lowerEnd" id="ram_tier_change">Lower Midrange</label>
+                                
+                                <input type = "radio"
+                                        name = "ramTierButt"
+                                        id = "ram_tier"
+                                        value = "midRange" />
+                                <label for = "midRange" id="ram_tier_change">Midrange</label>
+
+                                <input type = "radio"
+                                        name = "ramTierButt"
+                                        id = "ram_tier"
+                                        value = "upperRange" />
+                                <label for = "upperRange" id="ram_tier_change">Upper Midrange</label>
+
+                                <input type = "radio"
+                                        name = "ramTierButt"
+                                        id = "ram_tier"
+                                        value = "highend" />
+                                <label for = "highend" id="ram_tier_change">High-end</label>
+
+                                <input type = "radio"
+                                        name = "ramTierButt"
+                                        id = "ram_tier"
+                                        value = "top" />
+                                <label for = "top" id="ram_tier_change">Top-of-the-line</label>
+
+                                <input type = "radio"
+                                        name = "ramTierButt"
+                                        required id = "ram_tier"
+                                        value = "none" />
+                                <label for = "none" id="ram_tier_change">You Decide</label>
                                 </div>
 
                         <div> 
-                                <label for="mobo_tier" required id="mobo_change"><b>Mobo:</b></label> 
+                                <label for="mobo_tier" id="mobo_tier_change"><b>Mobo:</b></label> 
                                 <input type = "radio"
                                         name = "moboTierButt"
-                                        id = "mobo_tier_budget"
+                                        id = "mobo_tier"
                                         value = "budget" />
-                                <label for = "budget">Budget</label>
+                                <label for = "budget" id="mobo_tier_change">Budget</label>
                                 
                                 <input type = "radio"
                                         name = "moboTierButt"
-                                        id = "mobo_tier_lowerEnd"
+                                        id = "mobo_tier"
                                         value = "lowerEnd" />
-                                <label for = "lowerEnd">Lower Midrange</label>
+                                <label for = "lowerEnd" id="mobo_tier_change">Lower Midrange</label>
                                 
                                 <input type = "radio"
                                         name = "moboTierButt"
-                                        id = "mobo_tier_midRange"
+                                        id = "mobo_tier"
                                         value = "midRange" />
-                                <label for = "midRange">Midrange</label>
+                                <label for = "midRange" id="mobo_tier_change">Midrange</label>
 
                                 <input type = "radio"
                                         name = "moboTierButt"
-                                        id = "mobo_tier_upperRange"
+                                        id = "mobo_tier"
                                         value = "upperRange" />
-                                <label for = "upperRange">Upper Midrange</label>
+                                <label for = "upperRange" id="mobo_tier_change">Upper Midrange</label>
 
                                 <input type = "radio"
                                         name = "moboTierButt"
-                                        id = "mobo_tier_highend"
+                                        id = "mobo_tier"
                                         value = "highend" />
-                                <label for = "highend">High-end</label>
+                                <label for = "highend" id="mobo_tier_change">High-end</label>
 
                                 <input type = "radio"
                                         name = "moboTierButt"
-                                        id = "mobo_tier_top"
+                                        id = "mobo_tier"
                                         value = "top" />
-                                <label for = "top">Top-of-the-line</label>
+                                <label for = "top" id="mobo_tier_change">Top-of-the-line</label>
 
                                 <input type = "radio"
                                         name = "moboTierButt"
-                                        required id = "mobo_tier_none"
+                                        required id = "mobo_tier"
                                         value = "none" />
-                                <label for = "none">You Decide</label>
+                                <label for = "none" id="mobo_tier_change">You Decide</label>
                                 </div>
                         <div> 
-                                <label for="drive_tier" required id="drive_change"><b>Drives:</b></label> 
+                                <label for="drive_tier" id="drive_tier_change"><b>Drives:</b></label> 
                                 <input type = "radio"
                                         name = "driveTierButt"
-                                        id = "drive_tier_budget"
+                                        id = "drive_tier"
                                         value = "budget" />
-                                <label for = "budget">Budget</label>
+                                <label for = "budget" id="drive_tier_change">Budget</label>
                                 
                                 <input type = "radio"
                                         name = "driveTierButt"
-                                        id = "drive_tier_lowerEnd"
+                                        id = "drive_tier"
                                         value = "lowerEnd" />
-                                <label for = "lowerEnd">Lower Midrange</label>
+                                <label for = "lowerEnd" id="drive_tier_change">Lower Midrange</label>
                                 
                                 <input type = "radio"
-                                        name = "moboTierButt"
-                                        id = "drive_tier_midRange"
+                                        name = "driveTierButt"
+                                        id = "drive_tier"
                                         value = "midRange" />
-                                <label for = "midRange">Midrange</label>
+                                <label for = "midRange" id="drive_tier_change">Midrange</label>
 
                                 <input type = "radio"
                                         name = "driveTierButt"
-                                        id = "drive_tier_upperRange"
+                                        id = "drive_tier"
                                         value = "upperRange" />
-                                <label for = "upperRange">Upper Midrange</label>
+                                <label for = "upperRange" id="drive_tier_change">Upper Midrange</label>
 
                                 <input type = "radio"
                                         name = "driveTierButt"
-                                        id = "drive_tier_highend"
+                                        id = "drive_tier"
                                         value = "highend" />
-                                <label for = "highend">High-end</label>
+                                <label for = "highend" id="drive_tier_change">High-end</label>
 
                                 <input type = "radio"
                                         name = "driveTierButt"
-                                        id = "drive_tier_top"
+                                        id = "drive_tier"
                                         value = "top" />
-                                <label for = "top">Top-of-the-line</label>
+                                <label for = "top" id="drive_tier_change">Top-of-the-line</label>
 
                                 <input type = "radio"
                                         name = "driveTierButt"
-                                        required id = "drive_tier_none"
+                                        required id = "drive_tier"
                                         value = "none" />
-                                <label for = "none">You Decide</label>
+                                <label for = "none" id="drive_tier_change">You Decide</label>
                                 </div>
                         <div> 
-                                <label for="psu_tier" required id="psu_change"><b>PSU:</b></label> 
+                                <label for="psu_tier" id="psu_tier_change"><b>PSU:</b></label> 
                                 <input type = "radio"
                                         name = "psuTierButt"
-                                        id = "psu_tier_budget"
+                                        id = "psu_tier"
                                         value = "budget" />
-                                <label for = "budget">Budget</label>
+                                <label for = "budget" id="psu_tier_change">Budget</label>
                                 
                                 <input type = "radio"
                                         name = "psuTierButt"
-                                        id = "psu_tier_lowerEnd"
+                                        id = "psu_tier"
                                         value = "lowerEnd" />
-                                <label for = "lowerEnd">Lower Midrange</label>
+                                <label for = "lowerEnd" id="psu_tier_change">Lower Midrange</label>
                                 
                                 <input type = "radio"
                                         name = "psuTierButt"
-                                        id = "psu_tier_midRange"
+                                        id = "psu_tier"
                                         value = "midRange" />
-                                <label for = "midRange">Midrange</label>
+                                <label for = "midRange" id="psu_tier_change">Midrange</label>
 
                                 <input type = "radio"
                                         name = "psuTierButt"
-                                        id = "psu_tier_upperRange"
+                                        id = "psu_tier"
                                         value = "upperRange" />
-                                <label for = "upperRange">Upper Midrange</label>
+                                <label for = "upperRange" id="psu_tier_change">Upper Midrange</label>
 
                                 <input type = "radio"
                                         name = "psuTierButt"
-                                        id = "psu_tier_highend"
+                                        id = "psu_tier"
                                         value = "highend" />
-                                <label for = "highend">High-end</label>
+                                <label for = "highend" id="psu_tier_change">High-end</label>
 
                                 <input type = "radio"
                                         name = "psuTierButt"
-                                        id = "psu_tier_top"
+                                        id = "psu_tier"
                                         value = "top" />
-                                <label for = "top">Top-of-the-line</label>
+                                <label for = "top" id="psu_tier_change">Top-of-the-line</label>
 
                                 <input type = "radio"
                                         name = "psuTierButt"
-                                        required id = "psu_tier_none"
+                                        required id = "psu_tier"
                                         value = "none" />
-                                <label for = "none">You Decide</label>
+                                <label for = "none" id="psu_tier_change">You Decide</label>
                                 </div>
-                        <div> 
-                </div>
-                <div id="adv" style="display: none;">
-                        <div>
-                                SUS
-                        </div>
-                </div>
                 </div>
         </fieldset>
         <!-- -----------------Capacities & Space--------------------------------- -->
         <fieldset>
                 <legend>RAM & Drives</legend>
-                <div>
+                <p style="margin : 0">Here, you will indicate your preference for RAM and storage drives.  Some options might be missing (or this whole section might be blank) depending on the parts you indicated that you want in the build.</p>
+                <p></p>
+                <div id="ram_dropdown">
                   <label for="ram_size"><b>RAM Size:</b></label>
                   <select id="dropdown">
-                        <option value="you">No preference</option>
+                        <option value="no_pref">No preference</option>
                         <option value="4">4GB</option>
                         <option value="8">8GB</option>
                         <option value="12">12GB</option>
@@ -769,7 +1811,7 @@
                         <option value="2048">2TB</option>
                         <option value="4096">4TB</option>
                         <option value="8192">8TB</option>
-                        <option value="more">8TB+</option>
+                        <option value="8192+">8TB+</option>
                         </select>
                 </div>
                 <div id="bruh_block"></div>
@@ -793,19 +1835,21 @@
                               <option value="2048">2TB</option>
                               <option value="4096">4TB</option>
                               <option value="8192">8TB</option>
-                              <option value="more">8TB+</option>
+                              <option value="8192+">8TB+</option>
                         </select>
                 </div>
         </fieldset>
-        <!-- --------------------Text Areas------------------------------ -->
+        <!-- --------------------Additional Info Text Area------------------------------ -->
         
         <fieldset>
           <legend>Additional Information</legend>
+          <p style="margin : 0">Here, you can indicate to us if there is any additional information you want us to know about your build.</p>
+          <p></p>
           <div>
             <label for="add_info"></label>
             <label for="addTextarea"></label>
-                <textarea id="addTextarea" maxlength="2000" oninput="addBoxLength()" name="user_message" rows="4" cols="50" placeholder="Any important additional information you want us to know?"></textarea> 
-                <span id="addLengthDisplay" style="float:right;">0/2000</span>
+                <textarea id="addTextarea" maxlength="5000" oninput="addBoxLength()" name="user_message" rows="4" cols="50" placeholder="Any important additional information you want us to know?"></textarea> 
+                <span id="addLengthDisplay" style="float:right;">0/5000</span>
        </fieldset>
       
        <div id="submitbutton">
@@ -813,6 +1857,4 @@
       
       </form>
         </div>
-      
-      <!-- https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation -->
-  </body>
+ </body>

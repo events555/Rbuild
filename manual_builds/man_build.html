@@ -6,8 +6,261 @@
       <link rel="stylesheet" href="man_build.css">
       <title>PC Builder</title>
   </head>
+    <script>
+      function colorChange(first, second)
+      {
+          var textarea = document.getElementById(first);
+          var display = document.getElementById(second);
   
+          if(textarea.value.length >= 10 && textarea.value.length < 15)
+          {
+            display.style.color = "orange";
+          }
+  
+          else if(textarea.value.length == 15)
+          {
+            display.style.color = "red";
+          }
+  
+          else
+          {
+            display.style.color = "black";
+          }
+      }
+  </script>
+  </head>
   <body>
+  
+  <!-- Add the login overlay -->
+  <div class="overlay" id="login-overlay">
+  <!--Message Window Div-->
+  <div id="flash-message">NO COOKIE OR INVALID COOKIE DETECTED</div>
+  <div class="login-box">
+  <h1 id="welcome_box">Welcome, please login</h1>
+  
+  <label for="username">Username </label><span id='username-count'>[0/15]:</span><br>
+  <input type="text" id="username" name="username" maxlength='15' oninput="colorChange('username', 'username-count')"><br>
+  
+  <label for="password">Password </label><span id='password-count'>[0/15]:</span><br>
+  <input type="password" id="password" name="password" maxlength='15' oninput="colorChange('password', 'password-count')"><br><br>
+  
+  <button id='login' onclick="login()">Login</button> <button id='register'>Register</button><br><br>
+  
+  <p id='error'></p>
+  
+  </div></div>
+  
+  <!-- Add the register overlay -->
+  <div class="overlay" id='register-overlay' style='display:none'>
+      <div class='login-box'>
+      <h1>Create an account</h1>
+  
+      <label for='new-username'>Username </label><span id='new-username-count'>[0/15]:</span><br>
+      <input type='text' id='new-username' name='new-username' maxlength='15' oninput="colorChange('new-username', 'new-username-count')"><br>
+  
+      <label for='new-password'>Password </label><span id='new-password-count'>[0/15]:</span><br>
+      <input type='password' id='new-password' name='new-password' maxlength='15' oninput="colorChange('new-password', 'new-password-count')"><br><br>
+  
+      <button id='back'>Back</button> <button id="createAccount" onclick="register()">Register</button><br><br>
+  
+      <p id='register-error'></p>
+      </div>
+  </div>
+  
+  <script>
+  
+  //flash message script
+  function flashMessage()
+  {
+      // set the flash speed in milliseconds
+      var flashSpeed = 600;
+      // get the flash message element by id
+      var flashMessage = document.getElementById("flash-message");
+      // create a setInterval function that toggles visibility
+      var counter = 0;
+      var t = setInterval(function() {
+          // if the element is hidden, show it
+          if (flashMessage.style.visibility == "hidden") {
+              flashMessage.style.visibility = "visible";
+              counter++;
+          } else {
+              // otherwise, hide it
+              flashMessage.style.visibility = "hidden";
+          }
+          if(counter==4)
+          {
+              clearInterval(t);
+              flashMessage.style.visibility = "hidden";
+          }
+      }, flashSpeed);
+  }
+  
+  function flashMessage2()
+  {
+      // set the flash speed in milliseconds
+      var flashSpeed = 600;
+      // get the flash message element by id
+      var flashMessage = document.getElementById("flash-message-2");
+      // create a setInterval function that toggles visibility
+      var counter = 0;
+      var t = setInterval(function() {
+          // if the element is hidden, show it
+          if (flashMessage.style.visibility == "hidden") {
+              flashMessage.style.visibility = "visible";
+              counter++;
+          } else {
+              // otherwise, hide it
+              flashMessage.style.visibility = "hidden";
+          }
+          if(counter==4)
+          {
+              clearInterval(t);
+              flashMessage.style.visibility = "hidden";
+          }
+      }, flashSpeed);
+  }
+  
+  //cookie check on page load
+  window.onload = function() {
+    fetch('http://localhost:3000/check-cookie', { 
+      credentials: "include",
+  })
+      .then(response => response.json())
+      .then(data => {
+        if (data.loggedIn == "success") {
+          document.querySelector('.overlay').style.display = 'none';
+          document.getElementById("flash-message-2").innerHTML = "LOGGED IN AS: " + data.username;
+          flashMessage2();
+        }
+        if(data.loggedIn == "invalid") {
+          flashMessage();
+        }
+      });
+  }
+  
+  
+  //Restrict characters in username text field...
+  document.querySelectorAll('#username, #new-username').forEach(function(input) {
+      input.addEventListener('keypress', function(event) {
+          var regex = new RegExp("^[a-zA-Z0-9]+$");
+          var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+          if (!regex.test(key)) {
+              event.preventDefault();
+              return false;
+          }
+      });
+  });
+  
+  //Restrict characters in password text field...
+  document.querySelectorAll('#password, #new-password').forEach(function(input) {
+      input.addEventListener('keypress', function(event) {
+          var regex = new RegExp("^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]+$");
+          var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+          if (!regex.test(key)) {
+              event.preventDefault();
+              return false;
+          }
+      });
+  });
+  
+//login function...
+function login()
+{
+    var xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = function() 
+    {
+        if(xhr.readyState == 4)
+        {
+            var data = xhr.response;
+            //login successful
+            if (this.status === 200) 
+            {
+                document.querySelector('.overlay').style.display = 'none';
+                document.getElementById("flash-message-2").innerHTML = "LOGGED IN AS: " + data;
+                flashMessage2();
+            }
+            
+            //login failed
+            else 
+                document.getElementById('error').innerHTML = data;
+        }
+    }; 
+    xhr.open('POST', 'http://localhost:3000/login', true);
+    xhr.withCredentials = true;
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    var username = document.getElementById('username').value.toLowerCase();
+    var password = document.getElementById('password').value;
+    xhr.send('username=' + username + '&password=' + password);
+}
+
+//register function...
+function register()
+{
+    //check if can register unique username/password combination
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() 
+    {
+        if(xhr.readyState == 4)
+        {
+             //registration successful
+            if (this.status == 201) 
+            {
+                document.querySelector('#register-overlay').style.display = 'none';
+                document.querySelector('#login-overlay').style.display = 'block';
+                document.getElementById('new-username').value = '';
+                document.getElementById('new-password').value = '';
+            }
+            
+            //registration failed
+            else 
+                var data = xhr.response;
+                document.getElementById('register-error').innerHTML = data;
+        }
+    };
+
+    xhr.open('POST', 'http://localhost:3000/register', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    var username = document.getElementById('new-username').value.toLowerCase();
+    var password = document.getElementById('new-password').value;
+    xhr.send('username=' + username + '&password=' + password);
+} 
+
+document.querySelector('#register').addEventListener('click', function() {
+document.querySelector('#login-overlay').style.display = 'none';
+document.querySelector('#register-overlay').style.display = 'block';
+document.getElementById('new-username').value = '';
+document.getElementById('new-password').value = '';
+document.getElementById('new-username-count').innerHTML = '[0/15]:';
+document.getElementById('new-password-count').innerHTML = '[0/15]:';
+document.getElementById('new-username-count').style.color = "black";
+document.getElementById('new-password-count').style.color = "black";
+document.getElementById('register-error').innerHTML = '';
+});
+
+document.querySelector('#back').addEventListener('click', function() {
+document.querySelector('#register-overlay').style.display = 'none';
+document.querySelector('#login-overlay').style.display = 'block';
+document.getElementById('username').value = '';
+document.getElementById('password').value = '';
+document.getElementById('username-count').innerHTML = '[0/15]:';
+document.getElementById('password-count').innerHTML = '[0/15]:';
+document.getElementById('username-count').style.color = "black";
+document.getElementById('password-count').style.color = "black";
+document.getElementById('error').innerHTML = '';
+document.querySelector('.login-box').style.opacity = '1';
+});
+
+document.querySelectorAll('input[type="text"], input[type="password"]').forEach(function(input) {
+input.addEventListener('input', function() {
+document.querySelector('#' + input.id + '-count').innerHTML = '[' + input.value.length + '/15]:';
+});
+});
+</script>
+  
+  <!-- Add your main page content here -->
+  <!--Message Window Div-->
+  <div id="flash-message-2"></div>
     <div class="header">
        <h1>Choose Your Parts</h1>
     </div>
@@ -19,7 +272,7 @@
     </div>
 
     <!--iframe-->
-    <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;">
+    <div id="overlay2" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;">
       <div id="tab" style="position:relative; margin: auto; width:85%; margin-top: 20px; height: 50px; background-color:white;">
       <button id = "closeButton" style = "position:absolute; top:10px; right: 10px;">X</button>
       </div>
@@ -137,9 +390,39 @@
   //last Part global variable to identify last user selection
   let lastPart;
   
-  //check if any saved data exists in the localStorage, if so, update the form...
-  window.onload = function()
+  //iframe shop popout window stuff
+  var chooseButtons = document.querySelectorAll(".choosePartButt");
+  var closeButton = document.getElementById("closeButton");
+  var overlay2 = document.getElementById("overlay2");
+  var backdrop = document.getElementById("backdrop");
+
+  for(var button of chooseButtons)
   {
+      //add listener for all buttons in the same class
+      button.addEventListener("click", function() {
+      overlay2.style.display = "block";
+      backdrop.style.display = "block";
+    });
+  }
+
+  closeButton.addEventListener("click", function() {
+      overlay2.style.display = "none";
+      backdrop.style.display = "none";
+
+      // reset the iframe src to reload the page
+      document.getElementById('iframe').src = document.getElementById('iframe').src;
+  });
+
+  window.frames["iframe"].onmessage = function(e) {
+  if(e.data == "close")
+  {
+    document.getElementById("overlay2").style.display = "none";
+    document.getElementById("backdrop").style.display = "none";
+  }
+  }
+
+  window.addEventListener("load", function(event){
+    //check if any saved data exists in the localStorage, if so, update the form...
     if (localStorage.getItem('cpu') !== null) {
       var localVal = JSON.parse(localStorage.getItem('cpu'));
       updateName(localVal.prod_name, "cpu_name");
@@ -201,45 +484,13 @@
     }
 
     if (localStorage.getItem('os') !== null) {
-      document.getElementById("os_dropdown").value = localStorage.getItem('os');
+      document.getElementById("os_dropdown").value = localStorage.getItem('os'); 
       check_os();
     }
 
     //update the total price and compatibility information
     updateTotalPrice();
-    updateCombat();
-  }
-  
-  //iframe shop popout window stuff
-  var chooseButtons = document.querySelectorAll(".choosePartButt");
-  var closeButton = document.getElementById("closeButton");
-  var overlay = document.getElementById("overlay");
-  var backdrop = document.getElementById("backdrop");
-
-  for(var button of chooseButtons)
-  {
-      //add listener for all buttons in the same class
-      button.addEventListener("click", function() {
-      overlay.style.display = "block";
-      backdrop.style.display = "block";
-    });
-  }
-
-  closeButton.addEventListener("click", function() {
-      overlay.style.display = "none";
-      backdrop.style.display = "none";
-
-      // reset the iframe src to reload the page
-      document.getElementById('iframe').src = document.getElementById('iframe').src;
   });
-
-  window.frames["iframe"].onmessage = function(e) {
-  if(e.data == "close")
-  {
-    document.getElementById("overlay").style.display = "none";
-    document.getElementById("backdrop").style.display = "none";
-  }
-  }
 
   //update the total price depending on the elements in the list
   function updateTotalPrice()
@@ -278,6 +529,44 @@
 
     else
       document.getElementById("total_price").textContent = '$' + sum;
+
+    // also in here update the compatibility filter info and and platform, form factor, and wattage
+    const columns = document.querySelectorAll('.column');
+
+    // check mobo and cpu for platform
+    if(localStorage.getItem('mobo') || localStorage.getItem('cpu')) 
+    {
+      if(localStorage.getItem('mobo'))
+        columns[0].textContent = 'Platform: ' + JSON.parse(localStorage.getItem('mobo')).socket;
+      
+      else if(localStorage.getItem('cpu'))
+        columns[0].textContent = 'Platform: ' + JSON.parse(localStorage.getItem('cpu')).socket;
+    }
+
+    else
+      columns[0].textContent = 'Platform: NA';
+
+    // check mobo for form factor
+    if(localStorage.getItem('mobo')) 
+      columns[1].textContent = 'Form Factor: ' + JSON.parse(localStorage.getItem('mobo')).form_fact;
+
+    else
+      columns[1].textContent = 'Form Factor: NA';
+
+    // check cpu (if no gpu) for wattage otherwise just take gpu wattage
+    if(localStorage.getItem('gpu') || localStorage.getItem('cpu')) 
+    {
+      if(localStorage.getItem('gpu'))
+        columns[2].textContent = 'Wattage: ' + JSON.parse(localStorage.getItem('gpu')).rec_power;
+      
+      else if(localStorage.getItem('cpu'))
+        columns[2].textContent = 'Wattage: ' + JSON.parse(localStorage.getItem('cpu')).therm_power;
+    }
+
+    else
+      columns[2].textContent = 'Wattage: NA';
+
+    // update compatibility filter info...
   }
 
   function check_os()
@@ -360,51 +649,314 @@
   //as soon as we receive a message, display a alert and close iframe
   window.onmessage = function(e) 
   {
-      overlay.style.display = "none";
+      overlay2.style.display = "none";
       backdrop.style.display = "none";
 
       // reset the iframe src to reload the page
       document.getElementById('iframe').src = document.getElementById('iframe').src;
   
       //now update the page...
+      //NEED TO STRIP THE "," from the price!
+
+      newPrice = e.data.price.replace(",", "");
 
       updateName(e.data.prod_name, lastPart + "_name");
-      updatePrice(e.data.price, lastPart + "_price");
+      updatePrice(newPrice, lastPart + "_price");
 
       //create new localStorage element
       localStorage.setItem(lastPart, JSON.stringify(e.data));
 
       //update the price at the bottom
       updateTotalPrice();
-
-      //update the compatibility information
-      updateCombat();
 }
 
 //function for purchase parts button...
-function purchaseParts()
+async function purchaseParts()
 {
   //we first need to send a get request making sure that all the parts are in stock... if all parts are in stock, decrease the stock of the items by -1
 
-  //charge user's account and then update the transaction table with the account id, product upc, purchase data, and price
+  // first display warning if slots are missing (check local storage)...
+  let checkArray = ['cpu', 'cpu_cooler', 'mobo', 'memory', 'storage', 'gpu', 'cases', 'psu'];
+  let foundItems = [];
 
-  //clear all the localStorage so next time user enters the form it's all removed
-  localStorage.removeItem('cpu');
-  localStorage.removeItem('cpu_cooler');
-  localStorage.removeItem('mobo');
-  localStorage.removeItem('memory');
-  localStorage.removeItem('storage');
-  localStorage.removeItem('gpu');
-  localStorage.removeItem('cases');
-  localStorage.removeItem('psu');
-  localStorage.removeItem('compound');
-  localStorage.removeItem('monitor');
-  localStorage.removeItem('os');
-}
+  for(let i=0; i<localStorage.length; i++) {
+    let key = localStorage.key(i);
+    //let value = localStorage.getItem(key);
+    foundItems[i] = key;
+  }
 
-function updateCombat()
-{
+  let missingItems = checkArray.filter(item => !foundItems.includes(item));
 
+  if(missingItems.length===8)
+    alert("Please at least add 1 item to your list");
+
+  else
+  {
+    let message = "Are you sure you want to purchase with the items in this list? You are missing the following items:\n\n";
+    for (let i = 0; i < missingItems.length; i++) {
+        if(missingItems[i]==='cpu')
+          message += "• CPU\n";
+
+        if(missingItems[i]==='cpu_cooler')
+          message += "• CPU Cooler\n";
+
+        if(missingItems[i]==='mobo')
+          message += "• Motherboard\n";
+
+        if(missingItems[i]==='memory')
+          message += "• RAM\n";
+
+        if(missingItems[i]==='storage')
+          message += "• Drives\n";
+
+        if(missingItems[i]==='gpu')
+          message += "• Graphics Card\n";
+
+        if(missingItems[i]==='cases')
+          message += "• Case\n";
+
+        if(missingItems[i]==='psu')
+          message += "• PSU\n";
+    }
+
+    let result = confirm(message);
+    let breakOut = 0;
+    let foundItemUPC;
+
+    if (result) 
+    {
+      // grab the userid...
+      const response1 = await fetch('http://localhost:3000/check-cookie', { 
+        method: 'GET',
+        credentials: "include",
+      })
+
+      const data1 = await response1.json();
+
+      if (data1.loggedIn == "success")
+      {
+        let username1 = data1.username;
+
+        const response2 = await fetch('http://localhost:3000/getuserid?username=' + username1, { 
+          method: 'GET'
+        })
+
+        const data2 = await response2.json();
+        let userid = data2.userid;
+        let outOfStock = [];
+        let stockIndex = 0;
+
+        // first check the stock of every item in the list... then we reserve everything in the list
+        for(i=0; i<foundItems.length; i++)
+        {
+          if(foundItems[i]!=='os')
+          {
+            let checkRequest = { quantity: '1' };
+            let upc = JSON.parse(localStorage.getItem(foundItems[i])).upc;
+            // make a request to /addtrans
+            const response3 = await fetch(`http://localhost:3000/checkStock/${upc}`, { 
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(checkRequest)
+            })
+
+            const data3 = await response3.text();
+
+            if(data3 !== 'Product in stock')
+            {
+              if(breakOut===0)
+                breakOut = 1;
+
+              // add to array of out of stock items...
+              outOfStock[stockIndex] = foundItems[i];
+              stockIndex++;
+            }
+          }
+        }
+
+        // now attempt to reserve the products and then purchase if able to reserve...
+        if(breakOut===0)
+        {
+          let reserve = 1;
+          let index = 0;
+        
+          for(index; index<foundItems.length; index++)
+          {
+            if(foundItems[index]!=='os')
+            {
+              let reserveRequest = { userid: userid, quantity: '1' };
+              let upc = JSON.parse(localStorage.getItem(foundItems[index])).upc;
+              // make a request to /reserveProduct
+              const response4 = await fetch(`http://localhost:3000/reserveProduct/${upc}`, { 
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(reserveRequest)
+              })
+
+              const data4 = await response4.text();
+
+              if(data4 !== 'Product reserved successfully')
+              {
+                reserve = 0;
+                break;
+              }
+            }
+          }
+
+          // now purchase the items...
+          if(reserve===1)
+          {
+            // purchase items in the list
+            for(i=0; i<foundItems.length; i++)
+            {
+              if(foundItems[i]!=='os')
+              {
+                let upc = JSON.parse(localStorage.getItem(foundItems[i])).upc;
+                let transRequest = { userid: userid, upc: upc, quantity: '1' };
+                // make a request to /addtrans
+                const response5 = await fetch('http://localhost:3000/addTrans', { 
+                method: "POST",
+                credentials: "include",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify(transRequest)
+                })
+
+                const data5 = await response5.text();
+
+                /*
+                if(data5 !=='Transaction added successfully')
+                {
+                  break;
+                }*/
+              }
+            }
+
+            // TO DO: handle the payment here...
+
+            clearList();
+            alert("Products in your list were purchased successfully!");
+          }
+
+          // otherwise we need to restore the original values (add 1 stock to the upc)
+          else
+          {
+            for(index; index>=0; index--)
+            {
+              // restore the original value
+              if(foundItems[index]!=='os')
+              {
+                let reserveRequest = { userid: userid, quantity: '-1' };
+                let upc = JSON.parse(localStorage.getItem(foundItems[index])).upc;
+                // make a request to /addtrans
+                const response6 = await fetch(`http://localhost:3000/reserveProduct/${upc}`, { 
+                method: "POST",
+                credentials: "include",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify(reserveRequest)
+                })
+
+                const data6 = await response6.text();
+              }
+            }
+          }
+        }
+
+        // otherwise something in the list was not in stock so do not purchase the products
+        else
+        {
+          let message = "Purchase was not successful!  These items in your list are not in stock and were removed from your list:\n\n";
+
+          for (let i = 0; i < outOfStock.length; i++) {
+            if(outOfStock[i]==='cpu')
+            {
+              document.getElementById("cpu_name").textContent = "NA";
+              document.getElementById("cpu_price").textContent = "NA";
+              localStorage.removeItem('cpu');
+              message += "• CPU\n";
+            }
+
+            if(outOfStock[i]==='cpu_cooler')
+            {
+              document.getElementById("cpu_cooler_name").textContent = "NA";
+              document.getElementById("cpu_cooler_price").textContent = "NA";
+              localStorage.removeItem('cpu_cooler');
+              message += "• CPU Cooler\n";
+            }
+
+            if(outOfStock[i]==='mobo')
+            {
+              document.getElementById("mobo_name").textContent = "NA";
+              document.getElementById("mobo_price").textContent = "NA";
+              localStorage.removeItem('mobo');
+              message += "• Motherboard\n";
+            }
+
+            if(outOfStock[i]==='memory')
+            {
+              document.getElementById("memory_name").textContent = "NA";
+              document.getElementById("memory_price").textContent = "NA";
+              localStorage.removeItem('memory');
+              message += "• RAM\n";
+            }
+
+            if(outOfStock[i]==='storage') 
+            {
+              document.getElementById("storage_name").textContent = "NA";
+              document.getElementById("storage_price").textContent = "NA";
+              localStorage.removeItem('storage');
+              message += "• Drives\n";
+            }
+
+
+            if(outOfStock[i]==='gpu') 
+            {
+              document.getElementById("gpu_name").textContent = "NA";
+              document.getElementById("gpu_price").textContent = "NA";
+              localStorage.removeItem('gpu');
+              message += "• Graphics Card\n";
+            }
+
+
+            if(outOfStock[i]==='cases') 
+            {
+              document.getElementById("cases_name").textContent = "NA";
+              document.getElementById("cases_price").textContent = "NA";
+              localStorage.removeItem('cases');
+              message += "• Case\n";
+            }
+
+
+            if(outOfStock[i]==='psu') 
+            {
+              document.getElementById("psu_name").textContent = "NA";
+              document.getElementById("psu_price").textContent = "NA";
+              localStorage.removeItem('psu');
+              message += "• PSU\n";
+            }
+
+          }
+
+          //update total price
+          updateTotalPrice();
+          message += "\nNo purchases were made.  Please edit your list and try again.";
+          alert(message);
+        }
+      }
+
+      else
+        alert("An error has occured during the authentication process!");
+    }
+  }
 }
 
 //clear all elements in the list and updateTotalPrice
@@ -448,9 +1000,6 @@ function clearList()
   document.getElementById("compound_price").textContent = "NA";
   document.getElementById("monitor_price").textContent = "NA";
   document.getElementById("os_price").textContent = "NA";
-
-  //update compatibility information
-  updateCombat();
 
   //update total price
   updateTotalPrice();

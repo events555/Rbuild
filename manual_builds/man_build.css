@@ -1,3 +1,67 @@
+/*login overlay*/
+ /* Add styles for the login overlay */
+ .overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 2;
+    }
+    
+    @keyframes fadeIn {
+        from {opacity: 0;}
+        to {opacity: 1;}
+    }
+    
+    .login-box {
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin-top: -250px;
+    margin-left: -189px;
+    padding:80px 40px;
+    background-color:rgb(255, 255, 255);
+    opacity: 0;
+    /*animation*/
+    animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    input[type="text"], input[type="password"]{
+        display:block; 
+        margin-bottom:25px; 
+        width:100%; 
+        border:none; 
+        border-bottom:solid #d9d9d9; 
+     }
+    
+    #flash-message{
+        visibility: hidden;
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        background-color: rgb(255, 251, 9);
+        width: 350px;
+        height: 50px;
+        line-height: 50px;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    
+    #flash-message-2{
+        visibility: hidden;
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        background-color: rgb(128, 255, 9);
+        width: 350px;
+        height: 50px;
+        line-height: 50px;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
 body {
     font-family: Arial;
 }
@@ -38,11 +102,11 @@ th, td {
     color: blue;
 }
 
-#cpu_price, #cpu_cooler_price, #mobo_price, #memory_price, #storage_price, #gpu_price, #case_price, #psu_price, #compound_price, #monitor_price, #os_price{
+#cpu_price, #cpu_cooler_price, #mobo_price, #memory_price, #storage_price, #gpu_price, #cases_price, #psu_price, #compound_price, #monitor_price, #os_price{
     color: green;
 }
 
-#cpu_name, #cpu_cooler_name, #mobo_name, #memory_name, #storage_name, #gpu_name, #case_name, #psu_name, #compound_name, #monitor_name, #os_name{
+#cpu_name, #cpu_cooler_name, #mobo_name, #memory_name, #storage_name, #gpu_name, #cases_name, #psu_name, #compound_name, #monitor_name, #os_name{
     color: orange;
 }
 

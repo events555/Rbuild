@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Purchase Manage Helper</title>
+    <style>
+        body {
+        text-align: center;
+        background-color: white;
+      }
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .inline {
+            display: inline-block;
+        }
+        #charCount {
+            float: right;
+        }
+
+        .star {
+        font-size: 40px;
+        cursor: pointer;
+        }
+
+        #comment {
+        width: 100%;
+        height: 450px;
+        padding: 12px 20px;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        /*background-color: #f8f8f8;*/
+        resize: none;
+        }
+
+        #review
+        {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div id = 'review'>
+    <h1 class="center">Add/Edit/Delete Review</h1>
+    <div class="center">
+        <div style="text-align:center;">
+            <span class="star" id="star1" onclick="setRating(1)" onmouseover="highlightStars(1)" onmouseout="resetStars()">&#9734;</span>
+            <span class="star" id="star2" onclick="setRating(2)" onmouseover="highlightStars(2)" onmouseout="resetStars()">&#9734;</span>
+            <span class="star" id="star3" onclick="setRating(3)" onmouseover="highlightStars(3)" onmouseout="resetStars()">&#9734;</span>
+            <span class="star" id="star4" onclick="setRating(4)" onmouseover="highlightStars(4)" onmouseout="resetStars()">&#9734;</span>
+            <span class="star" id="star5" onclick="setRating(5)" onmouseover="highlightStars(5)" onmouseout="resetStars()">&#9734;</span>
+          </div>     
+        <div></div>     
+        <textarea id="comment" maxlength="5000" oninput="reviewBoxLength()" placeholder="Write your review here (min of 200 characters and max of 8000 characters)"></textarea> 
+        <span id="charCount" style="float:right; color:red">0/8000</span>
+    </div>
+    <div class="center">
+        <button id="addReview" class="inline" style="display: none;">Add Review</button>
+        <button id="modifyReview" class="inline" style="display: none;">Modify Review</button>
+        <button id="deleteReview" class="inline" style="display: none;">Delete Review</button>
+    </div>
+    </div>
+
+    <script>
+        
+        let rating = 0;
+        let userid;
+        let upc;
+
+        function highlightStars(star) {
+        for (let i = 1; i <= 5; i++) 
+        {
+            if(i<=star)
+            {
+                document.getElementById("star" + i).innerHTML = "&#9733;";
+                document.getElementById("star" + i).style.color = "yellow";
+            }
+
+            else
+            {
+                document.getElementById("star" + i).innerHTML = "&#9734;";
+                document.getElementById("star" + i).style.color = "black";
+            }
+        }
+        }
+
+        function resetStars() {
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+            document.getElementById("star" + i).innerHTML = "&#9733;";
+            document.getElementById("star" + i).style.color = "yellow";
+            } else {
+            document.getElementById("star" + i).innerHTML = "&#9734;";
+            document.getElementById("star" + i).style.color = "black";
+            }
+        }
+        }
+
+        function setRating(star) {
+            rating = star;
+            resetStars();
+        }
+
+
+        let commentField = document.querySelector("#comment");
+        let charCount = document.querySelector("#charCount");
+        let addReviewButton = document.querySelector("#addReview");
+        let modifyReviewButton = document.querySelector("#modifyReview");
+        let deleteReviewButton = document.querySelector("#deleteReview");
+
+        function reviewBoxLength()
+        {
+                var textarea = document.getElementById("comment");
+                var display = document.getElementById("charCount");
+
+                display.textContent = textarea.value.length + "/8000";
+
+                if(textarea.value.length >= 200)
+                {
+                        display.style.color = "green";
+                }
+
+                else
+                {
+                        display.style.color = "red";
+                }
+        }
+
+        addReviewButton.addEventListener("click", function() {
+            // first make sure that the length of the text field is greater than 200 and we have a star rating...
+            if(document.getElementById("comment").value.length>=200)
+            {
+                if(rating>0)
+                {
+                    fetch("http://localhost:3000/create-review", {
+                    method: "POST",
+                    credentials: 'include',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        userid: userid,
+                        upc: upc,
+                        rating: rating,
+                        comment: commentField.value
+                    })
+                })
+                .then(response => response.text())
+                .then(data => {
+                    if(data === 'Review added successfully')
+                    {
+                        let message = JSON.stringify({action: 'addReview'});
+                        window.parent.postMessage(message,"*");
+                    }
+                
+                });
+                }
+
+                else
+                {
+                    alert('Your review must contain a rating!');
+                }
+            }
+
+            else
+            {
+                alert('Your review must be greater than 200 characters!');
+            }
+            
+        });
+
+        modifyReviewButton.addEventListener("click", function() {
+            fetch("http://localhost:3000/edit-review", {
+                method: "PATCH",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userid: userid,
+                    upc: upc,
+                    rating: rating,
+                    comment: commentField.value
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+            if(data === 'Updated review for the matching user and product')
+            {
+                let message = JSON.stringify({action: 'editReview'})
+                window.parent.postMessage(message,"*");
+            }
+        });
+        });
+
+        deleteReviewButton.addEventListener("click", function() {
+            fetch("http://localhost:3000/delete-review", {
+                method: "DELETE",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userid: userid,
+                    upc: upc
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+            if(data ==='Deleted review for matching user and product')
+            {
+                let message = JSON.stringify({action: 'deleteReview'})
+                window.parent.postMessage(message,"*");
+            }
+        });
+        });
+
+        window.onmessage = function(e) 
+        {
+            let result = JSON.parse(e.data);
+            var type = result.type;
+            
+            if(type==='review')
+                buildReviewPage(result.data)
+
+            else if(type==='product')
+                buildProductPage(result.data)
+        }
+
+        async function buildReviewPage(result)
+        {
+            document.getElementById('review').style.display = 'block';
+            var data = JSON.parse(result);
+            userid = data.userid;
+            upc = data.upc;
+
+            const response = await fetch("http://localhost:3000/view-user-reviews", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userid: userid,
+                    upc: upc
+                })
+            })
+
+            if(response.status === 200)
+            {
+                const results = await response.json();
+                commentField.value = results.comment;
+                setRating(results.rating);
+                modifyReviewButton.style.display = "inline-block";
+                deleteReviewButton.style.display = "inline-block";
+            }
+
+            else
+                addReviewButton.style.display = "inline-block";
+        }
+
+        function buildProductPage()
+        {
+
+        }
+    </script>
+</body>
+</html>

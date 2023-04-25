@@ -265,7 +265,7 @@ h1 {
   }
   h1 span {
     display: block;
-    animation: reveal 1.5s cubic-bezier(0.77, 0, 0.175, 1) 0.5s;
+    animation: reveal 1.5s cubic-bezier(0.77, 0, 0.175, 1) 1s;
   }
   
   @keyframes reveal {
