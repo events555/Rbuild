@@ -1,71 +1,80 @@
 /*login overlay*/
- /* Add styles for the login overlay */
- .overlay {
+/* Add styles for the login overlay */
+.overlay {
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 2;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  
-  @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
+  to {
+    opacity: 1;
   }
-  
-  .login-box {
-  position:absolute;
-  top:50%;
-  left:50%;
+}
+
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   margin-top: -250px;
   margin-left: -189px;
-  padding:80px 40px;
-  background-color:rgb(255, 255, 255);
+  padding: 80px 40px;
+  background-color: rgb(255, 255, 255);
   opacity: 0;
   /*animation*/
   animation: fadeIn 1s ease-in-out forwards;
-  }
+}
 
-  input[type="username"], input[type="password"]{
-      display:block; 
-      margin-bottom:25px; 
-      width:100%; 
-      border:none; 
-      border-bottom:solid #d9d9d9; 
-   }
-  
-  #flash-message{
-      visibility: hidden;
-      position: absolute;
-      top: 5%;
-      left: 50%;
-      background-color: rgb(255, 251, 9);
-      width: 450px;
-      height: 50px;
-      line-height: 50px;
-      transform: translate(-50%, -50%);
-      text-align: center;
-  }
-  
-  #flash-message-2{
-      visibility: hidden;
-      position: absolute;
-      top: 5%;
-      left: 50%;
-      background-color: rgb(128, 255, 9);
-      width: 350px;
-      height: 50px;
-      line-height: 50px;
-      transform: translate(-50%, -50%);
-      text-align: center;
-  }
+input[type="username"],
+input[type="password"] {
+  display: block;
+  margin-bottom: 25px;
+  width: 100%;
+  border: none;
+  border-bottom: solid #d9d9d9;
+}
+
+#flash-message {
+  visibility: hidden;
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  background-color: rgb(255, 251, 9);
+  width: 450px;
+  height: 50px;
+  line-height: 50px;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+#flash-message-2 {
+  visibility: hidden;
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  background-color: rgb(128, 255, 9);
+  width: 350px;
+  height: 50px;
+  line-height: 50px;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
 
 /*animation*/
-@keyframes fade{
-  from{opacity: .3}
-  to{opacity: .8}
+@keyframes fade {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 0.8;
+  }
 }
 
 /*search functionality*/
@@ -87,7 +96,7 @@
   background-color: white;
 }
 .search-input {
-  width:60%; 
+  width: 60%;
 }
 .search-result {
   padding: 3px;
@@ -99,12 +108,12 @@
 }
 
 /*Remove spin buttons*/
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0; 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
 }
 
 body {
@@ -113,7 +122,7 @@ body {
 }
 
 #outside {
-  background-image: url("request_wallpaper.png");
+  background-image: url("../images/request_wallpaper.png");
 }
 
 h1 {
@@ -130,7 +139,6 @@ form {
   padding: 1em;
   border: 3px solid #000000;
   border-radius: 1em;
-  
 }
 #survey-form {
   background-color: beige;
@@ -143,8 +151,8 @@ form {
   /* center checkbox vertically */
 }
 
-#accountID-label, #accountIDLabel
-{
+#accountID-label,
+#accountIDLabel {
   display: none;
 }
 
@@ -152,9 +160,9 @@ form {
   background: rgb(255, 142, 97)00;
 }*/
 
-fieldset { 
+fieldset {
   margin: 10px;
- }
+}
 
 legend {
   font-weight: 700;
@@ -164,21 +172,21 @@ legend {
   width: 150px;
 }
 
-#bruh_block
-{
-  margin: 0
+#bruh_block {
+  margin: 0;
 }
 
 div + div {
   margin-top: 1em;
-  }
+}
 
-input, textarea {
+input,
+textarea {
   /* To make sure that all text field have the same font settings
      By default, textarea are set with a monospace font */
   /* font: 1em sans-serif; */
 
-/*   -moz-box-sizing: border-box;
+  /*   -moz-box-sizing: border-box;
        box-sizing: border-box; */
 
   /* To harmonize the look & feel of text field border */
@@ -197,7 +205,7 @@ textarea {
 }
 
 #submit {
-  margin: .5em;
+  margin: 0.5em;
   font-size: 1em;
   text-transform: capitalize;
   background-color: red;
@@ -208,6 +216,6 @@ textarea {
 }
 
 #submitbutton {
-  display: flex; 
+  display: flex;
   justify-content: center;
 }

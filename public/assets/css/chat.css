@@ -1,87 +1,86 @@
 .title {
-    font-family: 'Roboto Mono', monospace;
-    font-size: 3em;
-    font-weight: bold;
-    text-align: center;
-    padding-top: 9rem;
+  font-family: "Roboto Mono", monospace;
+  font-size: 3em;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 9rem;
 }
 
 .container {
-    display: flex;
+  display: flex;
 }
 
 .left-column {
-    width: 50%;
-    display: flex;
-    justify-content: flex-end;
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .right-column {
-    width: 50%;
+  width: 50%;
 }
 
 .left-column-container {
-    max-width: 350px;
-    width: 70%;
-    background-color: #ededed;
-    border-radius: 25px;
-    padding: 1rem 1rem 2rem 1rem;
-    margin-right: 10px;
-    transition: transform 150ms ease-in-out;
+  max-width: 350px;
+  width: 70%;
+  background-color: #ededed;
+  border-radius: 25px;
+  padding: 1rem 1rem 2rem 1rem;
+  margin-right: 10px;
+  transition: transform 150ms ease-in-out;
 }
 
 .left-column-container:hover {
-    transform: scale(1.02);
+  transform: scale(1.02);
 }
 
 .right-column-container {
-    max-width: 350px;
-    width: 70%;
-    background-color: #ededed;
-    border-radius: 20px;
-    padding: 1rem 1rem 2rem 1rem;
-    margin-left: 10px;
-    transition: transform 150ms ease-in-out;
+  max-width: 350px;
+  width: 70%;
+  background-color: #ededed;
+  border-radius: 20px;
+  padding: 1rem 1rem 2rem 1rem;
+  margin-left: 10px;
+  transition: transform 150ms ease-in-out;
 }
 
 .right-column-container:hover {
-    transform: scale(1.02);
+  transform: scale(1.02);
 }
 
 .column-text {
-    text-align: center;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 1.5em;
-    font-weight: bold;
+  text-align: center;
+  font-family: "Roboto Mono", monospace;
+  font-size: 1.5em;
+  font-weight: bold;
 }
 
 .no-underline {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .image-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem 0rem 1rem 0rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0rem 1rem 0rem;
 }
 
 .icon {
-    max-width: 175px;
-    height: auto;
+  max-width: 175px;
+  height: auto;
 }
 
-@media(max-width: 675px) {
-    .title {
-        font-size: 2em;
-    }
+@media (max-width: 675px) {
+  .title {
+    font-size: 2em;
+  }
 
-    .column-text {
-        font-size: 1.25em;
-    }
+  .column-text {
+    font-size: 1.25em;
+  }
 
-    .icon {
-        max-width: 100px;
-    }
-
+  .icon {
+    max-width: 100px;
+  }
 }

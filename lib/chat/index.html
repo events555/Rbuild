@@ -1,186 +1,207 @@
 <!DOCTYPE html>
 <html>
-<head>
-<style>
-  /* Add styles for the login overlay */
-.overlay {
-position: fixed;
-top: 0;
-bottom: 0;
-left: 0;
-right: 0;
-background-color: rgba(0,0,0,0.5);
-z-index: 2;
-}
+  <head>
+    <style>
+      /* Add styles for the login overlay */
+      .overlay {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 2;
+      }
 
-@keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-}
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
 
-.login-box {
-position:absolute;
-top:50%;
-left:50%;
-margin-top: -250px;
-margin-left: -189px;
-padding:80px 40px;
-background-color:rgb(255, 255, 255);
-opacity: 0;
-/*animation*/
-animation: fadeIn 1s ease-in-out forwards;
-}
+      .login-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -250px;
+        margin-left: -189px;
+        padding: 80px 40px;
+        background-color: rgb(255, 255, 255);
+        opacity: 0;
+        /*animation*/
+        animation: fadeIn 1s ease-in-out forwards;
+      }
 
-input[type="text"], input[type="password"]{
-   display:block; 
-   margin-bottom:25px; 
-   width:100%; 
-   border:none; 
-   border-bottom:solid #d9d9d9; 
-}
+      input[type="text"],
+      input[type="password"] {
+        display: block;
+        margin-bottom: 25px;
+        width: 100%;
+        border: none;
+        border-bottom: solid #d9d9d9;
+      }
 
-button{
-   width:auto; 
-   padding-left:auto; 
-   padding-right:auto; 
-}
+      button {
+        width: auto;
+        padding-left: auto;
+        padding-right: auto;
+      }
 
-#flash-message{
-    visibility: hidden;
-    position: absolute;
-    top: 5%;
-    left: 50%;
-    background-color: rgb(255, 251, 9);
-    width: 350px;
-    height: 50px;
-    line-height: 50px;
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
+      #flash-message {
+        visibility: hidden;
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        background-color: rgb(255, 251, 9);
+        width: 350px;
+        height: 50px;
+        line-height: 50px;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
 
-#flash-message-2{
-    visibility: hidden;
-    position: absolute;
-    top: 5%;
-    left: 50%;
-    background-color: rgb(128, 255, 9);
-    width: 350px;
-    height: 50px;
-    line-height: 50px;
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
+      #flash-message-2 {
+        visibility: hidden;
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        background-color: rgb(128, 255, 9);
+        width: 350px;
+        height: 50px;
+        line-height: 50px;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+    </style>
 
-</style>
-
-<script>
-    function colorChange(first, second)
-    {
+    <script>
+      function colorChange(first, second) {
         var textarea = document.getElementById(first);
         var display = document.getElementById(second);
 
-        if(textarea.value.length >= 10 && textarea.value.length < 15)
-        {
-                display.style.color = "orange";
+        if (textarea.value.length >= 10 && textarea.value.length < 15) {
+          display.style.color = "orange";
+        } else if (textarea.value.length == 15) {
+          display.style.color = "red";
+        } else {
+          display.style.color = "black";
         }
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Add the login overlay -->
+    <div class="overlay" id="login-overlay">
+      <!--Message Window Div-->
+      <div id="flash-message">NO COOKIE OR INVALID COOKIE DETECTED</div>
+      <div class="login-box">
+        <h1 id="welcome_box">Welcome, please login</h1>
 
-        else if(textarea.value.length == 15)
-        {
-                display.style.color = "red";
-        }
+        <label for="username">Username </label
+        ><span id="username-count">[0/15]:</span><br />
+        <input
+          type="text"
+          id="username"
+          name="username"
+          maxlength="15"
+          oninput="colorChange('username', 'username-count')"
+        /><br />
 
-        else
-        {
-                display.style.color = "black";
-        }
-    }
-</script>
-</head>
-<body>
+        <label for="password">Password </label
+        ><span id="password-count">[0/15]:</span><br />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          maxlength="15"
+          oninput="colorChange('password', 'password-count')"
+        /><br /><br />
 
-<!-- Add the login overlay -->
-<div class="overlay" id="login-overlay">
-<!--Message Window Div-->
-<div id="flash-message">NO COOKIE OR INVALID COOKIE DETECTED</div>
-<div class="login-box">
-<h1 id="welcome_box">Welcome, please login</h1>
+        <button id="login" onclick="login()">Login</button>
+        <button id="register">Register</button><br /><br />
 
-<label for="username">Username </label><span id='username-count'>[0/15]:</span><br>
-<input type="text" id="username" name="username" maxlength='15' oninput="colorChange('username', 'username-count')"><br>
-
-<label for="password">Password </label><span id='password-count'>[0/15]:</span><br>
-<input type="password" id="password" name="password" maxlength='15' oninput="colorChange('password', 'password-count')"><br><br>
-
-<button id='login' onclick="login()">Login</button> <button id='register'>Register</button><br><br>
-
-<p id='error'></p>
-
-</div></div>
-
-<!-- Add the register overlay -->
-<div class="overlay" id='register-overlay' style='display:none'>
-    <div class='login-box'>
-    <h1>Create an account</h1>
-
-    <label for='new-username'>Username </label><span id='new-username-count'>[0/15]:</span><br>
-    <input type='text' id='new-username' name='new-username' maxlength='15' oninput="colorChange('new-username', 'new-username-count')"><br>
-
-    <label for='new-password'>Password </label><span id='new-password-count'>[0/15]:</span><br>
-    <input type='password' id='new-password' name='new-password' maxlength='15' oninput="colorChange('new-password', 'new-password-count')"><br><br>
-
-    <button id='back'>Back</button> <button id="createAccount" onclick="register()">Register</button><br><br>
-
-    <p id='register-error'></p>
+        <p id="error"></p>
+      </div>
     </div>
-</div>
 
-<script>
+    <!-- Add the register overlay -->
+    <div class="overlay" id="register-overlay" style="display: none">
+      <div class="login-box">
+        <h1>Create an account</h1>
 
-//flash message script
-function flashMessage()
-{
-    // set the flash speed in milliseconds
-    var flashSpeed = 600;
-    // get the flash message element by id
-    var flashMessage = document.getElementById("flash-message");
-    // create a setInterval function that toggles visibility
-    var counter = 0;
-    var t = setInterval(function() {
-        // if the element is hidden, show it
-        if (flashMessage.style.visibility == "hidden") {
+        <label for="new-username">Username </label
+        ><span id="new-username-count">[0/15]:</span><br />
+        <input
+          type="text"
+          id="new-username"
+          name="new-username"
+          maxlength="15"
+          oninput="colorChange('new-username', 'new-username-count')"
+        /><br />
+
+        <label for="new-password">Password </label
+        ><span id="new-password-count">[0/15]:</span><br />
+        <input
+          type="password"
+          id="new-password"
+          name="new-password"
+          maxlength="15"
+          oninput="colorChange('new-password', 'new-password-count')"
+        /><br /><br />
+
+        <button id="back">Back</button>
+        <button id="createAccount" onclick="register()">Register</button
+        ><br /><br />
+
+        <p id="register-error"></p>
+      </div>
+    </div>
+
+    <script>
+      //flash message script
+      function flashMessage() {
+        // set the flash speed in milliseconds
+        var flashSpeed = 600;
+        // get the flash message element by id
+        var flashMessage = document.getElementById("flash-message");
+        // create a setInterval function that toggles visibility
+        var counter = 0;
+        var t = setInterval(function () {
+          // if the element is hidden, show it
+          if (flashMessage.style.visibility == "hidden") {
             flashMessage.style.visibility = "visible";
             counter++;
-        } else {
+          } else {
             // otherwise, hide it
             flashMessage.style.visibility = "hidden";
-        }
-        if(counter==4)
-        {
+          }
+          if (counter == 4) {
             clearInterval(t);
             flashMessage.style.visibility = "hidden";
-        }
-    }, flashSpeed);
-}
+          }
+        }, flashSpeed);
+      }
 
-function flashMessage2()
-{
-    // set the flash speed in milliseconds
-    var flashSpeed = 600;
-    // get the flash message element by id
-    var flashMessage = document.getElementById("flash-message-2");
-    // create a setInterval function that toggles visibility
-    var counter = 0;
-    var t = setInterval(function() {
-        // if the element is hidden, show it
-        if (flashMessage.style.visibility == "hidden") {
+      function flashMessage2() {
+        // set the flash speed in milliseconds
+        var flashSpeed = 600;
+        // get the flash message element by id
+        var flashMessage = document.getElementById("flash-message-2");
+        // create a setInterval function that toggles visibility
+        var counter = 0;
+        var t = setInterval(function () {
+          // if the element is hidden, show it
+          if (flashMessage.style.visibility == "hidden") {
             flashMessage.style.visibility = "visible";
             counter++;
-        } else {
+          } else {
             // otherwise, hide it
             flashMessage.style.visibility = "hidden";
-        }
-        if(counter==4)
-        {
+          }
+          if (counter == 4) {
             clearInterval(t);
             flashMessage.style.visibility = "hidden";
         }
@@ -215,176 +236,187 @@ window.onload = function() {
                 window.location = "/builder/chat";
             }
         })
-      }
-      if(data.loggedIn == "invalid") {
-        flashMessage();
-      }
-    });
-}
-
-
-//Restrict characters in username text field...
-document.querySelectorAll('#username, #new-username').forEach(function(input) {
-    input.addEventListener('keypress', function(event) {
-        var regex = new RegExp("^[a-zA-Z0-9]+$");
-        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-        if (!regex.test(key)) {
-            event.preventDefault();
-            return false;
-        }
-    });
-});
-
-//Restrict characters in password text field...
-document.querySelectorAll('#password, #new-password').forEach(function(input) {
-    input.addEventListener('keypress', function(event) {
-        var regex = new RegExp("^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]+$");
-        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-        if (!regex.test(key)) {
-            event.preventDefault();
-            return false;
-        }
-    });
-});
-
-//login function...
-function login()
-{
-    if (document.getElementById('username').value === '' || document.getElementById('password').value === '') 
-    {
-        document.getElementById('error').innerHTML = 'Incomplete submission';
-    } 
-    
-    //check if username and password match a combination in our database
-    else 
-    {
-        var xhr = new XMLHttpRequest();
-
-        xhr.onreadystatechange = function() 
-        {
-            if (this.readyState === 4) 
-            {
-                var username = xhr.response;
-                
-                //login successful
-                if (this.status === 200)
-                {
-                    //redirect to the chat pages...
-                    fetch('http://localhost:3000/getrole/?username=' + username)
-                    .then(response => response.json())
-                    .then(data => {
-                        if(data.role === 'Customer')
-                        {
-                            window.location = "/customer/chat";
-                            sessionStorage.setItem("name", "Customer");
-                        }
-
-                        if(data.role === 'Builder')
-                        {
-                            sessionStorage.setItem("name", "Builder");
-                            window.location = "/builder/chat";
-                        }
-                    })
-                }
-                
-                //login failed
-                else 
-                {
-                    document.getElementById('error').innerHTML = 'Invalid login';
-                    document.getElementById('username').value = '';
-                    document.getElementById('password').value = '';
-                }
-            }
-        }; 
-        xhr.open('POST', 'http://localhost:3000/login', true);
-        xhr.withCredentials = true;
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        var username = document.getElementById('username').value;
-        var password = document.getElementById('password').value;
-        xhr.send('username=' + username + '&password=' + password);
     }
+    })
 }
 
-//register function...
-function register()
-{
-    if (document.getElementById('new-username').value === '' || document.getElementById('new-password').value === '') 
-    {
-        document.getElementById('register-error').innerHTML = 'Incomplete submission';
-    } 
-
-    var passwordRegex =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    var password = document.getElementById('new-password').value;
-    var isValid = passwordRegex.test(password);
-    
-    if (isValid) 
-    {
-        //check if can register unique username/password combination
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() 
-        {
-            if (this.readyState === 4) 
-            {
-                //registration successful
-                if (this.status === 201) 
-                {
-                    document.querySelector('#register-overlay').style.display = 'none';
-                    document.querySelector('#login-overlay').style.display = 'block';
-                    document.getElementById('new-username').value = '';
-                    document.getElementById('new-password').value = '';
-                }
-                
-                //registration failed
-                else 
-                {
-                    var data = xhr.response;
-                	document.getElementById('register-error').innerHTML = data;
-                	document.getElementById('new-username').value = '';
-                    document.getElementById('new-password').value = '';
-                }
+      //Restrict characters in username text field...
+      document
+        .querySelectorAll("#username, #new-username")
+        .forEach(function (input) {
+          input.addEventListener("keypress", function (event) {
+            var regex = new RegExp("^[a-zA-Z0-9]+$");
+            var key = String.fromCharCode(
+              !event.charCode ? event.which : event.charCode
+            );
+            if (!regex.test(key)) {
+              event.preventDefault();
+              return false;
             }
-        };
-    
-    xhr.open('POST', 'http://localhost:3000/register', true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    var username = document.getElementById('new-username').value;
-    var password = document.getElementById('new-password').value;
-    xhr.send('username=' + username + '&password=' + password);
+          });
+        });
 
-    } else {
-        document.getElementById('register-error').innerHTML = 'Password must...<br>- Be at least 8 characters<br>- Contain 1 lower & uppercase leter<br>- Contain 1 digit & 1 symbol';
-    }
-}
+      //Restrict characters in password text field...
+      document
+        .querySelectorAll("#password, #new-password")
+        .forEach(function (input) {
+          input.addEventListener("keypress", function (event) {
+            var regex = new RegExp(
+              "^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]+$"
+            );
+            var key = String.fromCharCode(
+              !event.charCode ? event.which : event.charCode
+            );
+            if (!regex.test(key)) {
+              event.preventDefault();
+              return false;
+            }
+          });
+        });
 
-document.querySelector('#register').addEventListener('click', function() {
-document.querySelector('#login-overlay').style.display = 'none';
-document.querySelector('#register-overlay').style.display = 'block';
-document.getElementById('username').value = '';
-document.getElementById('password').value = '';
-document.getElementById('new-username-count').innerHTML = '[0/15]:';
-document.getElementById('new-password-count').innerHTML = '[0/15]:';
-});
+      //login function...
+      function login() {
+        if (
+          document.getElementById("username").value === "" ||
+          document.getElementById("password").value === ""
+        ) {
+          document.getElementById("error").innerHTML = "Incomplete submission";
+        }
 
-document.querySelector('#back').addEventListener('click', function() {
-document.querySelector('#register-overlay').style.display = 'none';
-document.querySelector('#login-overlay').style.display = 'block';
-document.getElementById('new-username').value = '';
-document.getElementById('new-password').value = '';
-document.getElementById('username-count').innerHTML = '[0/15]:';
-document.getElementById('password-count').innerHTML = '[0/15]:';
-document.getElementById('error').innerHTML = '';
-document.getElementById('register-error').innerHTML = '';
-document.querySelector('.login-box').style.opacity = '1';
-});
+        //check if username and password match a combination in our database
+        else {
+          var xhr = new XMLHttpRequest();
 
-document.querySelectorAll('input[type="text"], input[type="password"]').forEach(function(input) {
-input.addEventListener('input', function() {
-document.querySelector('#' + input.id + '-count').innerHTML = '[' + input.value.length + '/15]:';
-});
-});
-</script>
+          xhr.onreadystatechange = function () {
+            if (this.readyState === 4) {
+              var username = xhr.response;
 
-<!--Message Window Div-->
-<div id="flash-message-2"></div>
-</body>
+              //login successful
+              if (this.status === 200) {
+                //redirect to the chat pages...
+                fetch("http://localhost:3000/getrole/?username=" + username)
+                  .then((response) => response.json())
+                  .then((data) => {
+                    if (data.role === "Customer") {
+                      window.location = "/customer/chat";
+                      sessionStorage.setItem("name", "Customer");
+                    }
+
+                    if (data.role === "Builder") {
+                      sessionStorage.setItem("name", "Builder");
+                      window.location = "/builder/chat";
+                    }
+                  });
+              }
+
+              //login failed
+              else {
+                document.getElementById("error").innerHTML = "Invalid login";
+                document.getElementById("username").value = "";
+                document.getElementById("password").value = "";
+              }
+            }
+          };
+          xhr.open("POST", "http://localhost:3000/login", true);
+          xhr.withCredentials = true;
+          xhr.setRequestHeader(
+            "Content-type",
+            "application/x-www-form-urlencoded"
+          );
+          var username = document.getElementById("username").value;
+          var password = document.getElementById("password").value;
+          xhr.send("username=" + username + "&password=" + password);
+        }
+      }
+
+      //register function...
+      function register() {
+        if (
+          document.getElementById("new-username").value === "" ||
+          document.getElementById("new-password").value === ""
+        ) {
+          document.getElementById("register-error").innerHTML =
+            "Incomplete submission";
+        }
+
+        var passwordRegex =
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        var password = document.getElementById("new-password").value;
+        var isValid = passwordRegex.test(password);
+
+        if (isValid) {
+          //check if can register unique username/password combination
+          var xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function () {
+            if (this.readyState === 4) {
+              //registration successful
+              if (this.status === 201) {
+                document.querySelector("#register-overlay").style.display =
+                  "none";
+                document.querySelector("#login-overlay").style.display =
+                  "block";
+                document.getElementById("new-username").value = "";
+                document.getElementById("new-password").value = "";
+              }
+
+              //registration failed
+              else {
+                var data = xhr.response;
+                document.getElementById("register-error").innerHTML = data;
+                document.getElementById("new-username").value = "";
+                document.getElementById("new-password").value = "";
+              }
+            }
+          };
+
+          xhr.open("POST", "http://localhost:3000/register", true);
+          xhr.setRequestHeader(
+            "Content-type",
+            "application/x-www-form-urlencoded"
+          );
+          var username = document.getElementById("new-username").value;
+          var password = document.getElementById("new-password").value;
+          xhr.send("username=" + username + "&password=" + password);
+        } else {
+          document.getElementById("register-error").innerHTML =
+            "Password must...<br>- Be at least 8 characters<br>- Contain 1 lower & uppercase leter<br>- Contain 1 digit & 1 symbol";
+        }
+      }
+
+      document
+        .querySelector("#register")
+        .addEventListener("click", function () {
+          document.querySelector("#login-overlay").style.display = "none";
+          document.querySelector("#register-overlay").style.display = "block";
+          document.getElementById("username").value = "";
+          document.getElementById("password").value = "";
+          document.getElementById("new-username-count").innerHTML = "[0/15]:";
+          document.getElementById("new-password-count").innerHTML = "[0/15]:";
+        });
+
+      document.querySelector("#back").addEventListener("click", function () {
+        document.querySelector("#register-overlay").style.display = "none";
+        document.querySelector("#login-overlay").style.display = "block";
+        document.getElementById("new-username").value = "";
+        document.getElementById("new-password").value = "";
+        document.getElementById("username-count").innerHTML = "[0/15]:";
+        document.getElementById("password-count").innerHTML = "[0/15]:";
+        document.getElementById("error").innerHTML = "";
+        document.getElementById("register-error").innerHTML = "";
+        document.querySelector(".login-box").style.opacity = "1";
+      });
+
+      document
+        .querySelectorAll('input[type="text"], input[type="password"]')
+        .forEach(function (input) {
+          input.addEventListener("input", function () {
+            document.querySelector("#" + input.id + "-count").innerHTML =
+              "[" + input.value.length + "/15]:";
+          });
+        });
+    </script>
+
+    <!--Message Window Div-->
+    <div id="flash-message-2"></div>
+  </body>
 </html>
