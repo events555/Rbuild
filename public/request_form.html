@@ -474,6 +474,7 @@
         
         if(categories.includes('cpu_cooler'))
         {
+                console.log('cpu_cooler');
                 document.querySelectorAll('#coolerVal').forEach(function(radio) {
                         radio.style.display = 'none';
                 });
@@ -512,6 +513,7 @@
 
         if(categories.includes('cases'))
         {
+                console.log('cases');
                 document.querySelectorAll('#factorVal').forEach(function(radio) {
                         radio.style.display = 'none';
                 });
@@ -550,6 +552,7 @@
 
         if(categories.includes('cpu'))
         {
+                console.log('cpu');
                 document.querySelectorAll('#cpu_tier').forEach(function(radio) {
                         radio.style.display = 'none';
                 });
@@ -588,6 +591,7 @@
 
         if(categories.includes('gpu'))
         {
+                console.log('gpu');
                 document.querySelectorAll('#gpuVal').forEach(function(radio) {
                         radio.style.display = 'none';
                 });
@@ -657,6 +661,7 @@
 
         if(categories.includes('memory'))
         {
+                console.log('memory');
                 document.getElementById('ram_dropdown').style.display = 'none';
 
                 document.querySelectorAll('#ram_tier').forEach(function(radio) {
@@ -699,6 +704,7 @@
 
         if(categories.includes('mobo'))
         {
+                console.log('mobo');
                 document.querySelectorAll('#wifiVal').forEach(function(radio) {
                         radio.style.display = 'none';
                 });
@@ -751,10 +757,10 @@
                 lastRadioButton.setAttribute('required', '');
 
                 document.querySelectorAll('#mobo_tier').forEach(function(radio) {
-                        radio.style.display = 'none';
+                        radio.style.display = 'inline-block';
                 });
                 document.querySelectorAll('#mobo_tier_change').forEach(function(label) {
-                        label.style.display = 'none';
+                        label.style.display = 'inline-block';
                 });
                 // Get all the radio buttons with the name "moboTierButt"
                 const radioButtons2 = document.querySelectorAll('input[type="radio"][name="moboTierButt"]');
@@ -768,6 +774,7 @@
 
         if(categories.includes('psu'))
         {
+                console.log('psu');
                 document.querySelectorAll('#psuVal').forEach(function(radio) {
                         radio.style.display = 'none';
                 });
@@ -837,6 +844,7 @@
 
         if(categories.includes('storage'))
         {
+                console.log('storage');
                 document.getElementById('drive_id').style.display = 'none';
                 document.getElementById('dropdown2').value = 'no_pref';
                 document.getElementById('drive_cap').style.display = 'none';
@@ -1128,11 +1136,11 @@
           <p style="margin : 0; padding-top:0;">- Set no price, price will depend on customer's supplied parts or build requirements</p>
           <p></p>
           <div id="price_change_selection"> 
-            <label for="price" required id="price_change"><b>Price:</b></label> 
+            <label for="price" id="price_change"><b>Price:</b></label> 
             
             <input type = "radio"
                     name = "priceButt"
-                    id = "flat_price"
+                    required id = "flat_price"
                     value = "flatPrice" 
                     onclick="javascript:price_check();"/>
             <label for = "flatPrice">Flat Price</label>
@@ -1146,7 +1154,7 @@
       
             <input type = "radio"
                     name = "priceButt"
-                    required id = "you_price"
+                    id = "you_price"
                     value = "you" 
                     onclick="javascript:price_check();"/>
             <label for = "you">You Decide</label>
@@ -1450,7 +1458,7 @@
             <label for = "none" id="psu_change">No preference</label>
           </div>
           <div> 
-            <label for="rgb_pref" required id="rgb_change"><b>RGB Parts:</b></label> 
+            <label for="rgb_pref" id="rgb_change"><b>RGB Parts:</b></label> 
             <input type = "radio"
                     name = "rgbButt"
                     id = "rgbVal"
@@ -1476,7 +1484,7 @@
             <label for = "none">No preference</label>
           </div>
           <div> 
-            <label for="noise_level" required id="noise_change"><b>Noise Level:</b></label> 
+            <label for="noise_level" id="noise_change"><b>Noise Level:</b></label> 
             <input type = "radio"
                     name = "noiseButt"
                     id = "noiseVal"
