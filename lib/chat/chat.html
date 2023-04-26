@@ -112,10 +112,6 @@
     </head>
     <body>
         <div class = "receive-data">
-            <script>
-                // Determines whether the user is a builder or a customer from previous roles page
-                var username = sessionStorage.getItem("name");
-            </script>
         </div>
         <div class = "chat-messages">
             <!-- chat messages -->
@@ -124,44 +120,157 @@
             <form id="form" action="">
                 <input id="input" autocomplete="off"/>
                 <button>Send</button>
-                <input placeholder="User ID" class="privateMessagingInput" type="text" id="room-input">
-                <button type="button" id="room-button" style="background-color: #5d00e1;">Private Message</button>
+                <select id="room-input" style="display: none"></select>
             </form>
 
             <script src="/socket.io/socket.io.js"></script>
             <script>
-
+                
                 const socket = io.connect('http://localhost:8000/chat');
+                var room;
+                var otherRoom;
+                var username;
+
+                document.getElementById('room-input').addEventListener('change', function() {
+                    generateRoomBuilder();
+                })
+
+                async function generateRoomBuilder()
+                {
+                    otherRoom = document.getElementById('room-input').options[document.getElementById('room-input').selectedIndex].text;
+
+                    socket.emit('join', room);
+                    // first message will be the data from the request form...
+                    socket.emit("chat-message", {msg: '[' + sessionStorage.getItem("name") + '] ' + username + ": " + document.getElementById('room-input').options[document.getElementById('room-input').selectedIndex].value}, room, otherRoom, sessionStorage.getItem("name"));
+                    socket.emit("chat-message", {msg:  '[' + sessionStorage.getItem("name") + '] ' + "You to " + otherRoom + ": " + document.getElementById('room-input').options[document.getElementById('room-input').selectedIndex].value}, otherRoom, room, sessionStorage.getItem("name"));
+                }
+
+                async function cusOtherRoom()
+                {
+                    // grab the userid...
+                    const response1 = await fetch('http://localhost:3000/check-cookie', { 
+                        method: 'GET',
+                        credentials: "include",
+                    })
+
+                    const data1 = await response1.json();
+
+                    if (data1.loggedIn == "success")
+                    {
+                        username = data1.username;
+                        room = username;
+                        socket.emit('join', room);
+
+                        //otherRoom
+                        const response2 = await fetch('http://localhost:3000/getuserid?username=' + username, { 
+                        method: 'GET'
+                        })
+
+                        const data2 = await response2.json();
+                        let userid = data2.userid;
+
+                        const response3 = await fetch(`http://localhost:3000/get-service`, {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: {
+                        'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({userid: userid, role: 'customer', high_case: 'Customer', want_role: 'employee', request: 'Builder'})
+                        });
+
+                        if(response3.status === 200)
+                        {
+                            const results = await response3.json();
+                            otherRoom = results[0].employee;
+                        }
+                    }
+                }
+
+                async function populateDropdown()
+                {
+                    // grab the userid...
+                    const response1 = await fetch('http://localhost:3000/check-cookie', { 
+                        method: 'GET',
+                        credentials: "include",
+                    })
+
+                    const data1 = await response1.json();
+
+                    if (data1.loggedIn == "success")
+                    {
+                        username = data1.username;
+                        room = username;
+
+                        const response2 = await fetch('http://localhost:3000/getuserid?username=' + username, { 
+                        method: 'GET'
+                        })
+
+                        const data2 = await response2.json();
+                        let userid = data2.userid;
+
+                        const response3 = await fetch(`http://localhost:3000/get-service`, {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: {
+                        'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({userid: userid, role: 'employee', high_case: 'Builder', want_role: 'customer', request: 'Builder'})
+                        });
+
+                        if(response3.status === 200)
+                        {
+                            const results = await response3.json();
+
+                            if(results)
+                            {
+                                let dropdown = document.getElementById('room-input');
+                                // Loop through the results array
+                                for (let i = 0; i < results.length; i++) {
+                                // Get the customer value from the current result object
+                                let customer = results[i].customer;
+                                // Create a new option element with the customer value and label
+                                let option = document.createElement('option');
+                                option.value = results[i].data;
+                                option.textContent = customer;
+                                // Append the option element to the dropdown element
+                                dropdown.appendChild(option);
+                                }
+
+                                otherRoom = dropdown.options[dropdown.selectedIndex].text;
+                                socket.emit('join', room);
+
+                                // first message will be the data from the request form...
+                                socket.emit("chat-message", {msg: '[' + sessionStorage.getItem("name") + '] ' + username + ": " + dropdown.options[dropdown.selectedIndex].value}, room, otherRoom, sessionStorage.getItem("name"));
+                                socket.emit("chat-message", {msg:  '[' + sessionStorage.getItem("name") + '] ' + "You to " + otherRoom + ": " + dropdown.options[dropdown.selectedIndex].value}, otherRoom, room, sessionStorage.getItem("name"));
+                            }
+                        }
+                    }
+
+                    //roomInput.style.display = 'block';
+                    document.getElementById("room-input").style.display = 'block';
+                }
+
+                window.onload = function() {
+                    if(sessionStorage.getItem("name")==='Builder')
+                        populateDropdown();
+                    if(sessionStorage.getItem("name")==="Customer")
+                        cusOtherRoom();
+                }
+
                 var messages = document.getElementById("messages");
                 var form = document.getElementById("form");
                 var input = document.getElementById("input");
-                
-                // private messaging
-                var roomButton = document.getElementById("room-button");
-                var roomInput = document.getElementById("room-input");
-
-                var room = '';
 
                 var today = new Date();
                 var date = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " | ";
 
-                roomButton.addEventListener("click", () => {
-                    room = roomInput.value;
-                })
-
                 // Sending individual chat messages
                 form.addEventListener("submit", function(e) {
                     e.preventDefault();
-                    console.log(input.value);
                     if (input.value) {
-                        room = roomInput.value;
-                        if (room == '') {
-                            socket.emit("chat-message", {msg: "ID: " + socket.id + " | " + username + ": " + input.value}, room);
-                        } else {
-                            socket.emit("chat-message", {msg: "PM from " + username + ": " + input.value}, room);
-                            socket.emit("chat-message", {msg: "PM from " + username + " to " + room + ": " + input.value}, socket.id);
-                        }
-                        input.value = "";
+                            socket.emit("chat-message", {msg: '[' + sessionStorage.getItem("name") + '] ' + username + ": " + input.value}, room, otherRoom, sessionStorage.getItem("name"));
+                            socket.emit("chat-message", {msg:  '[' + sessionStorage.getItem("name") + '] ' + "You to " + otherRoom + ": " + input.value}, otherRoom, room, sessionStorage.getItem("name"));
+                            input.value = "";
                     }
                 });
                 
@@ -185,17 +294,18 @@
                     var updateTime = setInterval(function() {
                         messageTime.textContent = getTimeString();
                     }, 60000);
-
+                    
                     // split the message by " "
                     let msgArr = msg.split(" ");
                     // obtain the 3rd or 4th element, which is the role of the speaker
                     // the speaker is the builder
-                    if (msgArr[3].includes("Builder") || msgArr[4].includes("Builder")) {
+                    if (msgArr[0].includes("[Builder]")) {
                         // add a class to the builder message (for different styling)
                         item.classList.add("builder");
                     }
+
                     // checks if message is one that states status of user
-                    if (msg.includes("User has entered the room with id") || msg.includes("User has left the room")) {
+                    if (msg.includes("User has entered the room") || msg.includes("User has left the room")) {
                         // add a class to the user status messages (for different styling)
                         item.classList.add("user-status");
                         // add a class to the corresponding time p tag (for different styling)
@@ -230,11 +340,6 @@
                         }
                         return hours + ":" + minutes+ " " + amOrpm;
                     }
-                });
-
-                // notifies when the user has joined the room with a popup message
-                socket.on("connect", () => {
-                    socket.emit("join", {room: room});
                 });
             </script>
         </div>

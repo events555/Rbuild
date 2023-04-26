@@ -127,14 +127,15 @@
         else 
         {
             var xhr = new XMLHttpRequest();
-            xhr.responseType = "json";
     
             xhr.onreadystatechange = function() 
+            {
+                if (this.readyState === 4) 
             {
                 var data = xhr.response;
                 
                 //login successful
-                if (data.loggedIn == 'success') 
+                if (this.status === 200 && data === 'admin')
                 {
                     document.querySelector('.overlay').style.display = 'none';
                     getProducts();
@@ -147,13 +148,14 @@
                     document.getElementById('username').value = '';
                     document.getElementById('password').value = '';
                 }
-            }; 
-            xhr.open('POST', 'http://localhost:3000/admin-login', true);
-            xhr.withCredentials = true;
-            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            var username = document.getElementById('username').value.toLowerCase();
-            var password = document.getElementById('password').value;
-            xhr.send('username=' + username + '&password=' + password);
+            }
+        };
+        xhr.open('POST', 'http://localhost:3000/login', true);
+        xhr.withCredentials = true;
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        var username = document.getElementById('username').value.toLowerCase();
+        var password = document.getElementById('password').value;
+        xhr.send('username=' + username + '&password=' + password);
         }
     }
 </script>
