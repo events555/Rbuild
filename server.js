@@ -7,8 +7,6 @@ const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
 const port = 3000;
 const uuidv4 = require('uuid').v4;
-
-
 const inventory = require('./lib/inventory');
 const review = require('./lib/review');
 const account = require('./lib/account');
