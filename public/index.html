@@ -94,7 +94,7 @@
                             </div>
                             <!--End Search-->
                             <!--Cart Icons-->
-                            <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#minicart-drawer" class="btn btn-secondary btn-lg rounded-circle cart-icon"><i class="cp cp-shopping-cart"></i> <span class="items rounded-circle">3</span></a>
+                            <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#minicart-drawer" class="btn btn-secondary btn-lg rounded-circle cart-icon"><i class="cp cp-shopping-cart"></i> <span class="items rounded-circle">0</span></a>
                             <!--End Cart Icons-->
                         </div>
                     </div>
@@ -915,7 +915,6 @@
                         </a>
                         <div class="product-details">
                             <a href="#" class="remove"><i class="cp cp-times"></i></a>
-                            <a href="#" class="edit-i remove"><i class="cp cp-edit" aria-hidden="true"></i></a>
                             <a class="product-title" href="#">${item.prod_name}</a>
                             <div class="variant-cart">Black / XL</div>
                             <div class="d-flex align-items-center justify-content-between">
@@ -933,9 +932,41 @@
                                 </div>
                             </div>
                         </div>`;
+                        li.querySelector('.remove').addEventListener('click', async (event) => {
+                        event.preventDefault();
+                        await fetch('/cart/remove', {
+                            method: 'POST',
+                            headers: {
+                            'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ name: item.prod_name })
+                        });
+                        updateCart();
+                        });
+                        li.querySelector('.qtyBtn.plus').addEventListener('click', async (event) => {
+                        event.preventDefault();
+                        await fetch('/cart/incr', {
+                            method: 'POST',
+                            headers: {
+                            'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ name: item.prod_name })
+                        });
+                        updateCart();
+                        });
+                        li.querySelector('.qtyBtn.minus').addEventListener('click', async (event) => {
+                        event.preventDefault();
+                        await fetch('/cart/decr', {
+                            method: 'POST',
+                            headers: {
+                            'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ name: item.prod_name })
+                        });
+                        updateCart();
+                        });
                     // Append the item to the cart
                     document.querySelector('.minicart-content ul.clearfix').appendChild(li);
-                    console.log('Appended cart item to .html');
                     totalCost += item.price * item.quantity;
                     totalQuant += item.quantity;
                 });
