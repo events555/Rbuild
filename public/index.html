@@ -59,13 +59,13 @@
                             <nav class="grid__item px-1 pr-0" id="AccessibleNav">
                                 <ul id="siteNav" class="site-nav medium left hidearrow">
                                     <li class="lvl1"><a href="/" class="active">Home</a></li>
-                                    </li>
                                     <li class="lvl1 parent megamenu mdropdown position-relative"><a href="#">Build Requests</a>
                                         <div class="megamenu style2">
                                             <div class="row">
                                                 <div class="col-md-6 col-lg-6">
                                                     <h4 class="title text-uppercase">Tools</h4>
                                                     <ul class="m-items lvl-1">
+                                                        <li><a href="/manual_builder" class="site-nav">Builder</a></li>
                                                         <li><a href="/ticket" class="site-nav">Submit Ticket</a></li>
                                                         <li><a href="/chat" class="site-nav">Open Chat</a></li>
                                                     </ul>
@@ -159,7 +159,7 @@
                                 <div class="slideshow-content">
                                     <div class="wrap-caption animation style1">
                                         <h2 class="mega-title white-text text-uppercase">Experienced builder?<br>Design a PC seamlessly.</h2>
-                                        <a href="/manual-builder" id="build-now-btn" class="btn rounded-pill">Open PC Builder Now</a>
+                                        <a href="/manual_builder" id="build-now-btn" class="btn rounded-pill">Open PC Builder Now</a>
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +174,6 @@
                                 <div class="slideshow-content">
                                     <div class="wrap-caption animation style1">
                                         <h2 class="mega-title white-text text-uppercase">The best deals anywhere,<br>guranteed.</h2>
-                                        <a href="/manual-builder" class="btn rounded-pill">View Current Sales</a>
                                     </div>
                                 </div>
                             </div>
@@ -964,15 +963,15 @@
         if (adminData.loggedIn === "success") {
             console.log("admin:", adminData.loggedIn);
             document.querySelector("#settingsBox ul").innerHTML = `
-            <li><a href="/product/manage">Manage products</a></li>
-            <li><a href="view-order.html">Manage users</a></li>
-            <li><button id="logoutButton">Log Out</button></li>
+            <li><a href="/manage_product">Manage products</a></li>
+            <li><a href="/manage_users">Manage users</a></li>
+            <li><a href="#" id="logoutButton">Log Out</a></li>
             `;
         } else if (userData.loggedIn === "success") {
             console.log("user:", userData.loggedIn);
             document.querySelector("#settingsBox ul").innerHTML = `
-            <li><a href="/view-orders">View Order</a></li>
-            <li><button id="logoutButton">Log Out</button></li>
+            <li><a href="/view_orders">View Order</a></li>
+            <li><a href="#" id="logoutButton">Log Out</a></li>
             `;
         }
         else {
@@ -983,7 +982,8 @@
         }
         const logoutButton = document.querySelector("#logoutButton");
         if (logoutButton) {
-            logoutButton.addEventListener("click", async () => {
+            logoutButton.addEventListener("click", async (event) => {
+            event.preventDefault();
             await fetch('/logout', {
                 method: 'PUT',
                 credentials: "include",

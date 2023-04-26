@@ -294,8 +294,13 @@
               
               //registration failed
               else 
-                  var data = xhr.response;
-                  document.getElementById('register-error').innerHTML = data;
+              {
+                var data = xhr.response;
+                document.getElementById('register-error').innerHTML = data;
+                document.getElementById('new-username').value = '';
+                document.getElementById('new-password').value = '';
+              }
+                  
           }
       };
   

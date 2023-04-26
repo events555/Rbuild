@@ -1,242 +1,459 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Socket.io Chat Tester</title>
-        <!-- chat styling -- CSS -->
-        <style>
-            /* chat font */
-            body { 
-                /* padding so that messages are not blocked by form on bottom */
-                padding-bottom: 2.9rem;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            }
-            /* form at bottom of screen */
-            #form { 
-                background: #7abae5; 
-                padding: 0.5rem; 
-                position: fixed; 
-                bottom: 0; 
-                left: 0; 
-                right: 0;
-                display: flex;
-                height: 3.5rem;
-                box-sizing: border-box;
-            }
-            /* input box within form */
-            #input { 
-                border: none; 
-                padding: 1rem; 
-                flex-grow: 1; 
-                border-radius: 2rem; 
-                margin: 0.2rem; 
-            }
-            #input:focus { 
-                /* removes outline when selected */
-                outline: none; 
-            }
-            /* form button */
-            #form > button { 
-                cursor: pointer;
-                background: #006fc0; 
-                border: none; 
-                padding: 0 1rem; 
-                margin: 0.25rem; 
-                border-radius: 15px; 
-                outline: none; 
-                color: #fff; 
-                font-weight: bold;
-                transition: transform 150ms ease-in-out;
-            }
-            #form > button:hover {
-                transform: scale(1.04);
-            }
-            /* chat messages */
-            #messages { 
-                list-style-type: none; 
-                padding: 0; 
-            }
-            /* message container (contains a <li> and a <p> */
-            #messages > div {
-                display: flex;
-                flex-direction: row;
-                align-items: center; /* vertically center */
-            }
-            /* messages from customer styling */
-            #messages > div > li { 
-                padding: 0.5rem 1rem; 
-                background: #efefef; 
-                border-radius: 25px;
-                margin: 8px;
-                margin-right: 4.25rem;
-            }
-            /* messages from the builder styling */
-            #messages > div > li.builder {
-                /* add additional styles for builder messages */
-                background-color: #006fc0;
-                color: #ffffff;
-            }
-            /* user status message styling */
-            #messages > div > li.user-status {
-                padding: 0rem 1rem;
-                font-size: smaller;
-                background: none;
-                color: #6a6a6a;
-                font-style: italic;
-                text-align: center;
-            }
-            /* message time styling */
-            #messages > div > p.message-time {
-                position: absolute;
-                right: 1rem;
-                font-size: smaller;
-                color: #6a6a6a;
-            }
-            /* user status time styling */
-            #messages > div > p.user-status-message-time {
-                display: none;
-            }
-            .privateMessagingInput {
-                border: none;
-                border-radius: 2rem;
-                padding: 1rem; 
-                outline: none;
-                margin: 0.2rem;
-            }
-            .privateMessagingBtn {
-                color: #3600C5;
-            }
-            .builder-present {
-                background-color: green;
-            }
-        </style>
-    </head>
-    <body>
-        <div class = "receive-data">
-            <script>
-                // Determines whether the user is a builder or a customer from previous roles page
-                var username = sessionStorage.getItem("name");
-            </script>
-        </div>
-        <div class = "chat-messages">
-            <!-- chat messages -->
-            <ul id="messages"></ul>
-            <!-- form at bottom of screen -->
-            <form id="form" action="">
-                <input id="input" autocomplete="off"/>
-                <button>Send</button>
-                <input placeholder="User ID" class="privateMessagingInput" type="text" id="room-input">
-                <button type="button" id="room-button" style="background-color: #5d00e1;">Private Message</button>
-            </form>
+  <head>
+    <title>Socket.io Chat Tester</title>
+    <!-- chat styling -- CSS -->
+    <style>
+      /* chat font */
+      body {
+        /* padding so that messages are not blocked by form on bottom */
+        padding-bottom: 2.9rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+      /* form at bottom of screen */
+      #form {
+        background: #7abae5;
+        padding: 0.5rem;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        height: 3.5rem;
+        box-sizing: border-box;
+      }
+      /* input box within form */
+      #input {
+        border: none;
+        padding: 1rem;
+        flex-grow: 1;
+        border-radius: 2rem;
+        margin: 0.2rem;
+      }
+      #input:focus {
+        /* removes outline when selected */
+        outline: none;
+      }
+      /* form button */
+      #form > button {
+        cursor: pointer;
+        background: #006fc0;
+        border: none;
+        padding: 0 1rem;
+        margin: 0.25rem;
+        border-radius: 15px;
+        outline: none;
+        color: #fff;
+        font-weight: bold;
+        transition: transform 150ms ease-in-out;
+      }
+      #form > button:hover {
+        transform: scale(1.04);
+      }
+      /* chat messages */
+      #messages {
+        list-style-type: none;
+        padding: 0;
+      }
+      /* message container (contains a <li> and a <p> */
+      #messages > div {
+        display: flex;
+        flex-direction: row;
+        align-items: center; /* vertically center */
+      }
+      /* messages from customer styling */
+      #messages > div > li {
+        padding: 0.5rem 1rem;
+        background: #efefef;
+        border-radius: 25px;
+        margin: 8px;
+        margin-right: 4.25rem;
+      }
+      /* messages from the builder styling */
+      #messages > div > li.builder {
+        /* add additional styles for builder messages */
+        background-color: #006fc0;
+        color: #ffffff;
+      }
+      /* user status message styling */
+      #messages > div > li.user-status {
+        padding: 0rem 1rem;
+        font-size: smaller;
+        background: none;
+        color: #6a6a6a;
+        font-style: italic;
+        text-align: center;
+      }
+      /* message time styling */
+      #messages > div > p.message-time {
+        position: absolute;
+        right: 1rem;
+        font-size: smaller;
+        color: #6a6a6a;
+      }
+      /* user status time styling */
+      #messages > div > p.user-status-message-time {
+        display: none;
+      }
+      .privateMessagingInput {
+        border: none;
+        border-radius: 2rem;
+        padding: 1rem;
+        outline: none;
+        margin: 0.2rem;
+      }
+      .privateMessagingBtn {
+        color: #3600c5;
+      }
+      .builder-present {
+        background-color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="receive-data"></div>
+    <div class="chat-messages">
+      <!-- chat messages -->
+      <ul id="messages"></ul>
+      <!-- form at bottom of screen -->
+      <form id="form" action="">
+        <input id="input" autocomplete="off" />
+        <button>Send</button>
+        <select id="room-input" style="display: none"></select>
+      </form>
 
-            <script src="/socket.io/socket.io.js"></script>
-            <script>
+      <script src="/socket.io/socket.io.js"></script>
+      <script>
+        const socket = io.connect("http://localhost:8000/chat");
+        var room;
+        var otherRoom;
+        var username;
 
-                const socket = io.connect('http://localhost:8000/chat');
-                var messages = document.getElementById("messages");
-                var form = document.getElementById("form");
-                var input = document.getElementById("input");
-                
-                // private messaging
-                var roomButton = document.getElementById("room-button");
-                var roomInput = document.getElementById("room-input");
+        document
+          .getElementById("room-input")
+          .addEventListener("change", function () {
+            generateRoomBuilder();
+          });
 
-                var room = '';
+        async function generateRoomBuilder() {
+          otherRoom =
+            document.getElementById("room-input").options[
+              document.getElementById("room-input").selectedIndex
+            ].text;
 
-                var today = new Date();
-                var date = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " | ";
+          socket.emit("join", room);
+          // first message will be the data from the request form...
+          socket.emit(
+            "chat-message",
+            {
+              msg:
+                "[" +
+                sessionStorage.getItem("name") +
+                "] " +
+                username +
+                ": " +
+                document.getElementById("room-input").options[
+                  document.getElementById("room-input").selectedIndex
+                ].value,
+            },
+            room,
+            otherRoom,
+            sessionStorage.getItem("name")
+          );
+          socket.emit(
+            "chat-message",
+            {
+              msg:
+                "[" +
+                sessionStorage.getItem("name") +
+                "] " +
+                "You to " +
+                otherRoom +
+                ": " +
+                document.getElementById("room-input").options[
+                  document.getElementById("room-input").selectedIndex
+                ].value,
+            },
+            otherRoom,
+            room,
+            sessionStorage.getItem("name")
+          );
+        }
 
-                roomButton.addEventListener("click", () => {
-                    room = roomInput.value;
-                })
+        async function cusOtherRoom() {
+          // grab the userid...
+          const response1 = await fetch("http://localhost:3000/check-cookie", {
+            method: "GET",
+            credentials: "include",
+          });
 
-                // Sending individual chat messages
-                form.addEventListener("submit", function(e) {
-                    e.preventDefault();
-                    console.log(input.value);
-                    if (input.value) {
-                        room = roomInput.value;
-                        if (room == '') {
-                            socket.emit("chat-message", {msg: "ID: " + socket.id + " | " + username + ": " + input.value}, room);
-                        } else {
-                            socket.emit("chat-message", {msg: "PM from " + username + ": " + input.value}, room);
-                            socket.emit("chat-message", {msg: "PM from " + username + " to " + room + ": " + input.value}, socket.id);
-                        }
-                        input.value = "";
-                    }
-                });
-                
-                // listens for "chat-message" event to run function
-                socket.on("chat-message", function(msg) {
-                    // create new tag <div>
-                    var messageContainer = document.createElement("div");
+          const data1 = await response1.json();
 
-                    // create new item of tag <li>
-                    var item = document.createElement("li");
-                    // set the content of the li to msg
-                    item.textContent = msg;
+          if (data1.loggedIn == "success") {
+            username = data1.username;
+            room = username;
+            socket.emit("join", room);
 
-                    // create new item of tag <p>
-                    var messageTime = document.createElement("p");
-                    // add class to p for styling
-                    messageTime.classList.add("message-time");  
-                    // set the content of p to the current time
-                    messageTime.textContent = getTimeString();
-                    // set up a function to dynamically update the time every minute
-                    var updateTime = setInterval(function() {
-                        messageTime.textContent = getTimeString();
-                    }, 60000);
+            //otherRoom
+            const response2 = await fetch(
+              "http://localhost:3000/getuserid?username=" + username,
+              {
+                method: "GET",
+              }
+            );
 
-                    // split the message by " "
-                    let msgArr = msg.split(" ");
-                    // obtain the 3rd or 4th element, which is the role of the speaker
-                    // the speaker is the builder
-                    if (msgArr[3].includes("Builder") || msgArr[4].includes("Builder")) {
-                        // add a class to the builder message (for different styling)
-                        item.classList.add("builder");
-                    }
-                    // checks if message is one that states status of user
-                    if (msg.includes("User has entered the room with id") || msg.includes("User has left the room")) {
-                        // add a class to the user status messages (for different styling)
-                        item.classList.add("user-status");
-                        // add a class to the corresponding time p tag (for different styling)
-                        messageTime.classList.add("user-status-message-time");
-                    }
+            const data2 = await response2.json();
+            let userid = data2.userid;
 
-                    // append the li and p elements to each div element (each div contains a li and p element)
-                    messageContainer.appendChild(item);
-                    messageContainer.appendChild(messageTime);
+            const response3 = await fetch(`http://localhost:3000/get-service`, {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userid: userid,
+                role: "customer",
+                high_case: "Customer",
+                want_role: "employee",
+                request: "Builder",
+              }),
+            });
 
-                    // add div to the end of the message block 
-                    messages.appendChild(messageContainer);
-                    
-                    // scrolls window to last message
-                    window.scrollTo(0, document.body.scrollHeight);
+            if (response3.status === 200) {
+              const results = await response3.json();
+              otherRoom = results[0].employee;
+            }
+          }
+        }
 
-                    // function to get the current time
-                    function getTimeString() {
-                        let now = new Date();
-                        // obtain hours
-                        let hours = now.getHours();
-                        // determine if time is AM or PM
-                        let amOrpm = hours >= 12 ? 'PM' : 'AM';
-                        if (hours > 12) {
-                            hours = hours - 12;
-                        }
-                        // obtain minutes
-                        let minutes = now.getMinutes();
-                        // adds leading zero
-                        if (minutes < 10) {
-                            minutes = "0" + minutes;
-                        }
-                        return hours + ":" + minutes+ " " + amOrpm;
-                    }
-                });
+        async function populateDropdown() {
+          // grab the userid...
+          const response1 = await fetch("http://localhost:3000/check-cookie", {
+            method: "GET",
+            credentials: "include",
+          });
 
-                // notifies when the user has joined the room with a popup message
-                socket.on("connect", () => {
-                    socket.emit("join", {room: room});
-                });
-            </script>
-        </div>
-    </body>
+          const data1 = await response1.json();
+
+          if (data1.loggedIn == "success") {
+            username = data1.username;
+            room = username;
+
+            const response2 = await fetch(
+              "http://localhost:3000/getuserid?username=" + username,
+              {
+                method: "GET",
+              }
+            );
+
+            const data2 = await response2.json();
+            let userid = data2.userid;
+
+            const response3 = await fetch(`http://localhost:3000/get-service`, {
+              method: "POST",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userid: userid,
+                role: "employee",
+                high_case: "Builder",
+                want_role: "customer",
+                request: "Builder",
+              }),
+            });
+
+            if (response3.status === 200) {
+              const results = await response3.json();
+
+              if (results) {
+                let dropdown = document.getElementById("room-input");
+                // Loop through the results array
+                for (let i = 0; i < results.length; i++) {
+                  // Get the customer value from the current result object
+                  let customer = results[i].customer;
+                  // Create a new option element with the customer value and label
+                  let option = document.createElement("option");
+                  option.value = results[i].data;
+                  option.textContent = customer;
+                  // Append the option element to the dropdown element
+                  dropdown.appendChild(option);
+                }
+
+                otherRoom = dropdown.options[dropdown.selectedIndex].text;
+                socket.emit("join", room);
+
+                // first message will be the data from the request form...
+                socket.emit(
+                  "chat-message",
+                  {
+                    msg:
+                      "[" +
+                      sessionStorage.getItem("name") +
+                      "] " +
+                      username +
+                      ": " +
+                      dropdown.options[dropdown.selectedIndex].value,
+                  },
+                  room,
+                  otherRoom,
+                  sessionStorage.getItem("name")
+                );
+                socket.emit(
+                  "chat-message",
+                  {
+                    msg:
+                      "[" +
+                      sessionStorage.getItem("name") +
+                      "] " +
+                      "You to " +
+                      otherRoom +
+                      ": " +
+                      dropdown.options[dropdown.selectedIndex].value,
+                  },
+                  otherRoom,
+                  room,
+                  sessionStorage.getItem("name")
+                );
+              }
+            }
+          }
+
+          //roomInput.style.display = 'block';
+          document.getElementById("room-input").style.display = "block";
+        }
+
+        window.onload = function () {
+          if (sessionStorage.getItem("name") === "Builder") populateDropdown();
+          if (sessionStorage.getItem("name") === "Customer") cusOtherRoom();
+        };
+
+        var messages = document.getElementById("messages");
+        var form = document.getElementById("form");
+        var input = document.getElementById("input");
+
+        var today = new Date();
+        var date =
+          today.getFullYear() +
+          "-" +
+          (today.getMonth() + 1) +
+          "-" +
+          today.getDate() +
+          " | ";
+
+        // Sending individual chat messages
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          if (input.value) {
+            socket.emit(
+              "chat-message",
+              {
+                msg:
+                  "[" +
+                  sessionStorage.getItem("name") +
+                  "] " +
+                  username +
+                  ": " +
+                  input.value,
+              },
+              room,
+              otherRoom,
+              sessionStorage.getItem("name")
+            );
+            socket.emit(
+              "chat-message",
+              {
+                msg:
+                  "[" +
+                  sessionStorage.getItem("name") +
+                  "] " +
+                  "You to " +
+                  otherRoom +
+                  ": " +
+                  input.value,
+              },
+              otherRoom,
+              room,
+              sessionStorage.getItem("name")
+            );
+            input.value = "";
+          }
+        });
+
+        // listens for "chat-message" event to run function
+        socket.on("chat-message", function (msg) {
+          // create new tag <div>
+          var messageContainer = document.createElement("div");
+
+          // create new item of tag <li>
+          var item = document.createElement("li");
+          // set the content of the li to msg
+          item.textContent = msg;
+
+          // create new item of tag <p>
+          var messageTime = document.createElement("p");
+          // add class to p for styling
+          messageTime.classList.add("message-time");
+          // set the content of p to the current time
+          messageTime.textContent = getTimeString();
+          // set up a function to dynamically update the time every minute
+          var updateTime = setInterval(function () {
+            messageTime.textContent = getTimeString();
+          }, 60000);
+
+          // split the message by " "
+          let msgArr = msg.split(" ");
+          // obtain the 3rd or 4th element, which is the role of the speaker
+          // the speaker is the builder
+          if (msgArr[0].includes("[Builder]")) {
+            // add a class to the builder message (for different styling)
+            item.classList.add("builder");
+          }
+
+          // checks if message is one that states status of user
+          if (
+            msg.includes("User has entered the room") ||
+            msg.includes("User has left the room")
+          ) {
+            // add a class to the user status messages (for different styling)
+            item.classList.add("user-status");
+            // add a class to the corresponding time p tag (for different styling)
+            messageTime.classList.add("user-status-message-time");
+          }
+
+          // append the li and p elements to each div element (each div contains a li and p element)
+          messageContainer.appendChild(item);
+          messageContainer.appendChild(messageTime);
+
+          // add div to the end of the message block
+          messages.appendChild(messageContainer);
+
+          // scrolls window to last message
+          window.scrollTo(0, document.body.scrollHeight);
+
+          // function to get the current time
+          function getTimeString() {
+            let now = new Date();
+            // obtain hours
+            let hours = now.getHours();
+            // determine if time is AM or PM
+            let amOrpm = hours >= 12 ? "PM" : "AM";
+            if (hours > 12) {
+              hours = hours - 12;
+            }
+            // obtain minutes
+            let minutes = now.getMinutes();
+            // adds leading zero
+            if (minutes < 10) {
+              minutes = "0" + minutes;
+            }
+            return hours + ":" + minutes + " " + amOrpm;
+          }
+        });
+      </script>
+    </div>
+  </body>
 </html>

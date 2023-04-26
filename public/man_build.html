@@ -3,9 +3,8 @@
   <head>
     <meta charset="UTF-8" />
       <!--<script src="request_form.js" type="text/javascript"></script>-->
-      <link rel="stylesheet" href="man_build.css">
+      <link rel="stylesheet" href="assets/css/man_build.css">
       <title>PC Builder</title>
-  </head>
     <script>
       function colorChange(first, second)
       {
@@ -261,9 +260,12 @@ document.querySelector('#' + input.id + '-count').innerHTML = '[' + input.value.
   <!-- Add your main page content here -->
   <!--Message Window Div-->
   <div id="flash-message-2"></div>
-    <div class="header">
-       <h1>Choose Your Parts</h1>
-    </div>
+      <header>
+          <a class="logo" href="/"><img src="assets/images/logo.png" alt="Rbuild" title="Rbuild" /></a>
+          <div class="header">
+              <h1>Choose Your Parts</h1>
+          </div>
+      </header>
 
     <div class="row">
        <div class="column"><b>Platform: NA</b></div>
@@ -382,7 +384,7 @@ document.querySelector('#' + input.id + '-count').innerHTML = '[' + input.value.
     <div id="clearButton">
       <button type="clear" id="clear" onclick="clearList()">Clear List</button></div>
     <div id="submitbutton">
-      <button type="submit" id="submit" onclick="purchaseParts()">Purchase Parts</button></div>
+      <button type="submit" id="submit" onclick="checkoutParts()">Checkout Parts</button></div>
   </div>
 
   <script>
@@ -671,7 +673,7 @@ document.querySelector('#' + input.id + '-count').innerHTML = '[' + input.value.
 }
 
 //function for purchase parts button...
-async function purchaseParts()
+async function checkoutParts()
 {
   //we first need to send a get request making sure that all the parts are in stock... if all parts are in stock, decrease the stock of the items by -1
 
