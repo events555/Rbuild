@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS `chat_line`;
+
 CREATE TABLE `chat_line` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user1` varchar(15) NOT NULL,

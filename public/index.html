@@ -967,7 +967,7 @@
             <li><a href="/manage_users">Manage users</a></li>
             <li><a href="#" id="logoutButton">Log Out</a></li>
             `;
-        } else if (userData.loggedIn === "success") {
+        } else if (userData.loggedIn === "success" || document.secureCookie.username != null) {
             console.log("user:", userData.loggedIn);
             document.querySelector("#settingsBox ul").innerHTML = `
             <li><a href="/view_orders">View Order</a></li>
