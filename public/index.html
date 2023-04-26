@@ -494,20 +494,13 @@
                             </ul>
                         </div>
                         <div class="minicart-bottom">
-                            <div class="subtotal list">
-                                <span>Shipping:</span>
-                                <span class="product-price">$10.00</span>
-                            </div>
-                            <div class="subtotal list">
-                                <span>Tax:</span>
-                                <span class="product-price">$05.00</span>
-                            </div>
                             <div class="subtotal">
                                 <span>Total:</span>
-                                <span class="product-price">$93.13</span>
+                                <span class="product-price">$0.00</span>
                             </div>
-                            <button type="button" class="btn proceed-to-checkout rounded">Checkout</button>
-                            <button type="button" class="btn btn-secondary cart-btn rounded">View Cart</button>
+                            <form action="/create-checkout-session" method="POST">
+                                <button type="submit" class="btn proceed-to-checkout rounded">Checkout</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -528,85 +521,84 @@
 <script>    
 
     function listProduct(){
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        var page = urlParams.get('page');
-        if(page == undefined) page = 0;
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            var page = urlParams.get('page');
+            if(page == undefined) page = 0;
 
 
-        var user = localStorage.getItem("username");
-        var nearleast = localStorage.getItem("nearleast");
-        var role = localStorage.getItem("role");
-         var isAdminLogin = false;
-            if(user && nearleast){
-                var now = (new Date()).getTime();
-                if(now - nearleast <= 600000 && role.toUpperCase() === 'ADMIN'){
-                    isAdminLogin = true;
-                }
-            }
-        
-        var productPage = document.getElementById("product-page");
-        productPage.querySelector("#product-page-link").innerText = parseInt(page) + 1;
-        productPage.querySelector("#product-page-link2").innerText = parseInt(page) + 2;
-        productPage.querySelector("#product-page-link3").innerText = parseInt(page) + 3;
-        productPage.querySelector("#product-page-link4").innerText = parseInt(page) + 6;
-
-        productPage.querySelector("#product-page-prev").href = window.location.pathname + "?page=" + (Math.min(0, parseInt(page) - 1));
-        productPage.querySelector("#product-page-link").href = window.location.pathname + "?page=" + page;
-        productPage.querySelector("#product-page-link2").href = window.location.pathname + "?page=" + (parseInt(page) + 1);
-        productPage.querySelector("#product-page-link3").href = window.location.pathname + "?page=" + (parseInt(page) + 2);
-        productPage.querySelector("#product-page-link4").href = window.location.pathname + "?page=" + (parseInt(page) + 5);
-        productPage.querySelector("#product-page-next").href = window.location.pathname + "?page=" +  (parseInt(page) + 1);
-
-        var cnt = 0;
-        const url = `http://localhost:3000/product?part=all&page=${page}&limit=2`;
-        fetch(url, {
-            method: 'GET'
-        })
-        .then(res => {
-                return res.json();
-            })
-        .then(data => {
-            const tables = ['aio_cooler', 'air_cooler', 'cpu', 'cases', 'gpu', 'memory', 'mobo', 'psu', 'storage'];
-            tables.forEach(table => {
-                const items = data[table];
-                items.forEach(item => {
-                    if(!isAdminLogin && item['stock'] == 1) return;
-                    var row = document.getElementById("product-row");
-                    var cloneRow = row;
-                    if(cnt > 0)
-                        var cloneRow = row.cloneNode(true);
-                    cnt++;
-                    cloneRow.querySelector("#product-name").innerHTML = item['prod_name'];
-                    cloneRow.querySelector("#product-name").href = "./product-detail.html?upc=" + item['upc'] + "&category=" + item['table'];
-                    cloneRow.querySelector("#product-price").innerHTML = item['price'];
-                    cloneRow.querySelector("#product-stock").innertText = (item['stock'] == 0? "NEW" : "OUT STOCK");
-                    var detail = "";
-                    var size = 0;
-
-                    delete item.stock;
-                    delete item.table;
-                    delete item.price;
-                    for (const [key, value] of Object.entries(item)) {
-                        var productKey = key.toUpperCase().replaceAll("_", " ");
-                        var tmp = value;
-                        if(typeof(value) === 'string'){
-                            tmp = value.substring(0, Math.min(20, value.length));
-                        }
-                        detail += productKey + ": " + tmp + "<br>";
-                        if(size++ == 8)
-                            break;
+            var user = localStorage.getItem("username");
+            var nearleast = localStorage.getItem("nearleast");
+            var role = localStorage.getItem("role");
+            var isAdminLogin = false;
+                if(user && nearleast){
+                    var now = (new Date()).getTime();
+                    if(now - nearleast <= 600000 && role.toUpperCase() === 'ADMIN'){
+                        isAdminLogin = true;
                     }
-                    cloneRow.querySelector("#product-detail").innerHTML = detail;
+                }
+            
+            var productPage = document.getElementById("product-page");
+            productPage.querySelector("#product-page-link").innerText = parseInt(page) + 1;
+            productPage.querySelector("#product-page-link2").innerText = parseInt(page) + 2;
+            productPage.querySelector("#product-page-link3").innerText = parseInt(page) + 3;
+            productPage.querySelector("#product-page-link4").innerText = parseInt(page) + 6;
 
-                    document.getElementById("product-view").appendChild(cloneRow);
-                    document.getElementById("product-showing").innerText = `Showing: ${cnt} products`;
-                    addToCart(cloneRow);
+            productPage.querySelector("#product-page-prev").href = window.location.pathname + "?page=" + (Math.min(0, parseInt(page) - 1));
+            productPage.querySelector("#product-page-link").href = window.location.pathname + "?page=" + page;
+            productPage.querySelector("#product-page-link2").href = window.location.pathname + "?page=" + (parseInt(page) + 1);
+            productPage.querySelector("#product-page-link3").href = window.location.pathname + "?page=" + (parseInt(page) + 2);
+            productPage.querySelector("#product-page-link4").href = window.location.pathname + "?page=" + (parseInt(page) + 5);
+            productPage.querySelector("#product-page-next").href = window.location.pathname + "?page=" +  (parseInt(page) + 1);
+
+            var cnt = 0;
+            const url = `http://localhost:3000/product?part=all&page=${page}&limit=2`;
+            fetch(url, {
+                method: 'GET'
+            })
+            .then(res => {
+                    return res.json();
+                })
+            .then(data => {
+                const tables = ['aio_cooler', 'air_cooler', 'cpu', 'cases', 'gpu', 'memory', 'mobo', 'psu', 'storage'];
+                tables.forEach(table => {
+                    const items = data[table];
+                    items.forEach(item => {
+                        if(!isAdminLogin && item['stock'] == 1) return;
+                        var row = document.getElementById("product-row");
+                        var cloneRow = row;
+                        if(cnt > 0)
+                            var cloneRow = row.cloneNode(true);
+                        cnt++;
+                        cloneRow.querySelector("#product-name").innerHTML = item['prod_name'];
+                        cloneRow.querySelector("#product-name").href = "./product-detail.html?upc=" + item['upc'] + "&category=" + table;
+                        cloneRow.querySelector("#product-price").innerHTML = item['price'];
+                        cloneRow.querySelector("#product-stock").innertText = (item['stock'] == 0? "NEW" : "OUT STOCK");
+                        var detail = "";
+                        var size = 0;
+
+                        delete item.stock;
+                        delete item.table;
+                        delete item.price;
+                        for (const [key, value] of Object.entries(item)) {
+                            var productKey = key.toUpperCase().replaceAll("_", " ");
+                            var tmp = value;
+                            if(typeof(value) === 'string'){
+                                tmp = value.substring(0, Math.min(20, value.length));
+                            }
+                            detail += productKey + ": " + tmp + "<br>";
+                            if(size++ == 8)
+                                break;
+                        }
+                        cloneRow.querySelector("#product-detail").innerHTML = detail;
+
+                        document.getElementById("product-view").appendChild(cloneRow);
+                        document.getElementById("product-showing").innerText = `Showing: ${cnt} products`;
+                        addToCart(cloneRow);
+                });
             });
         });
-    });
-    }
-
+        }
     function searchProduct(){
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
@@ -672,7 +664,6 @@
 
         suffix += `&page=${page}`;
         const url = prefix + suffix;
-        console.log(url);
         fetch(url, {
             method: 'GET'
         })
@@ -680,7 +671,6 @@
                 return res.json();
             })
         .then(data => {
-            console.log(data);
             const tables = ['aio_cooler', 'air_cooler', 'cpu', 'cases', 'gpu', 'memory', 'mobo', 'psu', 'storage'];
             
             tables.forEach(table => {
@@ -698,7 +688,7 @@
                         var cloneRow = row.cloneNode(true);
                     cnt++;
                     cloneRow.querySelector("#product-name").innerHTML = item['prod_name'];
-                    cloneRow.querySelector("#product-name").href = "./product-detail.html?upc=" + item['upc'] + "&category=" + item['table'];
+                    cloneRow.querySelector("#product-name").href = "./product-detail.html?upc=" + item['upc'] + "&category=" + table;
                     cloneRow.querySelector("#product-price").innerHTML = item['price'];
                     cloneRow.querySelector("#product-stock").innerHTML = item['stock'] == 0? "NEW" : "OUT STOCK";
                     var detail = "";
@@ -855,12 +845,12 @@
     const urlParams = new URLSearchParams(queryString);
     var search = urlParams.get('search');
     var keyword = urlParams.get('keyword');
-        var memory = urlParams.get('memory');
-        var cpu = urlParams.get('cpu');
-        var storage = urlParams.get('storage');
-        var fromPrice = urlParams.get('fromPrice');
-        var toPrice = urlParams.get('toPrice');
-        var category = urlParams.get('category');
+    var memory = urlParams.get('memory');
+    var cpu = urlParams.get('cpu');
+    var storage = urlParams.get('storage');
+    var fromPrice = urlParams.get('fromPrice');
+    var toPrice = urlParams.get('toPrice');
+    var category = urlParams.get('category');
     if(search !== null && search !== undefined)
         searchProduct();
     else if(keyword !== null && keyword !== undefined)
@@ -912,8 +902,10 @@
             .then(response => response.json())
             .then(data => {
                 // Update the cart item count
-                document.querySelector('#cart-item-count').textContent = data.length;
+                document.querySelector('.minicart-content ul.clearfix').innerHTML = '';
                 // Loop through the cart items and create the HTML for each item
+                let totalQuant = 0;
+                let totalCost = 0;
                 data.forEach(item => {
                     const li = document.createElement('li');
                     li.className = 'item clearfix d-flex align-items-center';
@@ -944,8 +936,14 @@
                     // Append the item to the cart
                     document.querySelector('.minicart-content ul.clearfix').appendChild(li);
                     console.log('Appended cart item to .html');
+                    totalCost += item.price * item.quantity;
+                    totalQuant += item.quantity;
                 });
+                document.querySelector('.minicart-bottom .subtotal .product-price').textContent = `$${totalCost.toFixed(2)}`;
+                document.querySelector('#cart-item-count').textContent = totalQuant;
+                document.querySelector('.cart-icon .items').textContent = totalQuant;
             });
     }
+    updateCart();
 </script>
 </html>
