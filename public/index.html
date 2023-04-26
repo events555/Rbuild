@@ -35,8 +35,7 @@
                         <div class="setting-link">
                             <a href="javascript:void(0);"><i class="cp cp-user-circle"></i> <span class="label">My Account</span></a>
                             <div id="settingsBox">
-                                <ul>
-                                </ul>
+                                <ul></ul>
                             </div>
                         </div>
                     </div>
@@ -967,7 +966,7 @@
             <li><a href="/manage_users">Manage users</a></li>
             <li><a href="#" id="logoutButton">Log Out</a></li>
             `;
-        } else if (userData.loggedIn === "success" || document.secureCookie.username != null) {
+        } else if (userData.loggedIn === "success") {
             console.log("user:", userData.loggedIn);
             document.querySelector("#settingsBox ul").innerHTML = `
             <li><a href="/view_orders">View Order</a></li>
