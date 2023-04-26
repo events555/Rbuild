@@ -810,7 +810,7 @@
                         var cloneRow = row.cloneNode(true);
                     cnt++;
                     cloneRow.querySelector("#product-name").innerHTML = item['prod_name'];
-                    cloneRow.querySelector("#product-name").href = "./product-detail.html?upc=" + item['upc'] + "&category=" + item['table'];
+                    cloneRow.querySelector("#product-name").href = "./product-detail.html?upc=" + item['upc'] + "&category=" + table;
                     cloneRow.querySelector("#product-price").innerHTML = item['price'];
                     cloneRow.querySelector("#product-stock").innertText = (item['stock'] == 0? "NEW" : "OUT STOCK");
                     var detail = "";
@@ -932,8 +932,9 @@
                     if(cnt > 0)
                         var cloneRow = row.cloneNode(true);
                     cnt++;
+                    console.log(item);
                     cloneRow.querySelector("#product-name").innerHTML = item['prod_name'];
-                    cloneRow.querySelector("#product-name").href = "./product-detail.html?upc=" + item['upc'] + "&category=" + item['table'];
+                    cloneRow.querySelector("#product-name").href = "./product-detail.html?upc=" + item['upc'] + "&category=" + table;
                     cloneRow.querySelector("#product-price").innerHTML = item['price'];
                     cloneRow.querySelector("#product-stock").innerHTML = item['stock'] == 0? "NEW" : "OUT STOCK";
                     var detail = "";
