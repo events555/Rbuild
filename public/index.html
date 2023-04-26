@@ -36,8 +36,6 @@
                             <a href="javascript:void(0);"><i class="cp cp-user-circle"></i> <span class="label">My Account</span></a>
                             <div id="settingsBox">
                                 <ul>
-                                    <li><a href="login-register.html">Register / Log in</a></li>
-                                    <li><a href="my-account.html">Manage</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -53,7 +51,7 @@
                     <div class="row align-items-center">
                         <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
                             <!--Desktop Logo-->
-                            <a class="logo" href="/"><img src="assets/images/logo.png" alt="Tacko - Auto Parts eCommerce Bootstrap5 Html Template" title="Tacko - Auto Parts eCommerce Bootstrap5 Html Template" /></a>
+                            <a class="logo" href="/"><img src="assets/images/logo.png" alt="Rbuild" title="Rbuild" /></a>
                             <!--End Desktop Logo-->
                         </div>
                         <div class="col-4 col-sm-4 col-md-6 col-lg-5 col-xl-6 prs-0 d-none d-lg-block">
@@ -66,9 +64,9 @@
                                         <div class="megamenu style2">
                                             <div class="row">
                                                 <div class="col-md-6 col-lg-6">
-                                                    <h4 class="title text-uppercase">Product Types</h4>
+                                                    <h4 class="title text-uppercase">Tools</h4>
                                                     <ul class="m-items lvl-1">
-                                                        <li><a href="product-layout-style1.html" class="site-nav">Submit Ticket</a></li>
+                                                        <li><a href="/ticket" class="site-nav">Submit Ticket</a></li>
                                                         <li><a href="/chat" class="site-nav">Open Chat</a></li>
                                                     </ul>
                                                 </div>
@@ -120,9 +118,6 @@
             </div>
         </header>
         <!--Header-->
-
-        <!--Page Content-->
-        <main id="page-content">
             
             <!--Homepage Slideshow-->
             <div class="slideshow home-slideshow p-0">
@@ -134,7 +129,7 @@
                                 <div class="slideshow-content">
                                     <div class="wrap-caption animation style1">
                                         <h2 class="mega-title white-text text-uppercase">The definitive store<br> to build your dream PC.</h2>
-                                        <a href="#" class="btn rounded-pill">Shop Now</a>
+                                        <a href="#" id="shop-now-btn" class="btn rounded-pill">Shop Now</a>
                                     </div>
                                 </div>
                             </div>
@@ -149,7 +144,7 @@
                                 <div class="slideshow-content">
                                     <div class="wrap-caption animation style1">
                                         <h2 class="mega-title white-text text-uppercase">First time builder?<br>We got you covered.</h2>
-                                        <a href="#" class="btn rounded-pill">Request a Build Now</a>
+                                        <a href="/ticket" id="form-request-btn" class="btn rounded-pill">Request a Build Now</a>
                                     </div>
                                 </div>
                             </div>
@@ -164,7 +159,7 @@
                                 <div class="slideshow-content">
                                     <div class="wrap-caption animation style1">
                                         <h2 class="mega-title white-text text-uppercase">Experienced builder?<br>Design a PC seamlessly.</h2>
-                                        <a href="#" class="btn rounded-pill">Open PC Builder Now</a>
+                                        <a href="/manual-builder" id="build-now-btn" class="btn rounded-pill">Open PC Builder Now</a>
                                     </div>
                                 </div>
                             </div>
@@ -179,7 +174,7 @@
                                 <div class="slideshow-content">
                                     <div class="wrap-caption animation style1">
                                         <h2 class="mega-title white-text text-uppercase">The best deals anywhere,<br>guranteed.</h2>
-                                        <a href="#" class="btn rounded-pill">View Current Sales</a>
+                                        <a href="/manual-builder" class="btn rounded-pill">View Current Sales</a>
                                     </div>
                                 </div>
                             </div>
@@ -189,11 +184,9 @@
             </div>
             <!--End Homepage Slideshow-->
             
-          <!--Page Content-->
+        <!--Page Content-->
         <main id="page-content" class="mb-0">
-            
-      
-            
+           
             <!--Categories Content-->
             <div class="section">
                 <div class="container">
@@ -324,14 +317,10 @@
                                 <div class="filters-toolbar-wrapper">
                                     <ul class="list-unstyled d-flex align-items-center justify-content-between m-0">
                                         <li class="collection-view d-flex align-items-center">
-                                            <div class="filters-toolbar__item collection-view-as d-flex align-items-center me-3">
-                                                <a href="shop-leftsidebar.html" class="change-view prd-grid"><i class="cps cp-th-large"></i><span class="tooltip-label">Grid View</span></a>
-                                                <a href="shop-listview.html" class="change-view prd-list active"><i class="cps cp-list"></i><span class="tooltip-label">List View</span></a>
-                                            </div>
                                             <div class="product-count d-flex align-items-center">
                                                 <button type="button" class="btn rounded btn-filter d-block d-lg-none me-2 me-sm-3"><span class="hidden">Filter</span></button>
                                                 <div class="filters-toolbar__item">
-                                                    <span class="filters-toolbar__product-count d-none d-sm-block" id = "product-showing">Showing: 12 products</span>
+                                                    <span class="filters-toolbar__product-count d-none d-sm-block" id = "product-showing">Showing: 0 products</span>
                                                 </div>
                                             </div>
                                         </li>
@@ -385,10 +374,10 @@
                                             <!--Product Detail-->
                                             <div class="product-details flex-1">
                                                 <div class="product-details-in">
-                                                    <div class="h3"><a href="#" id="product-name">Hankook DynaPro AT-m RF10</a></div>
-                                                    <div class="price-box"><span class="price" id="product-price">$450.00</span></div>
+                                                    <div class="h3"><a href="#" id="product-name"></a></div>
+                                                    <div class="price-box"><span class="price" id="product-price">$</span></div>
                                             
-                                                    <div class="sort-description"><p id="product-detail">Quaerat voluptatem ut enim ad minima veniam quis nostrum exercitationem ullam corporis suscipit laboriosam nisi. Ut aliquid ex ea commodi consequatur quis autem vel eum. Iure reprehenderit qui in ea voluptate velit esse quam nihil.</p></div>
+                                                    <div class="sort-description"><p id="product-detail"></p></div>
                                                 </div>
                                             </div>
                                             <!--End Product Detail-->
@@ -432,28 +421,6 @@
             <div class="footer-top">
                 <div class="container">
                 <div class="row">
-                    <div class="col-12 col-sm-12 col-md-2 col-lg-3">
-                        <div class="newsletter mb-3">
-                            <h4 class="title">Our Newsletter</h4>
-                            <form action="#" method="post">
-                                <p>to stay up-to-date on our promotions, discounts, sales, special offers and more.</p>
-                                <div class="input-group">
-                                    <input type="email" class="newsletter-input" name="email" value="" placeholder="Enter email address..." required="">
-                                    <span class="news-btn">
-                                        <button type="submit" class="btn" name="commit" id="Subscribe"><i class="cp cp-paper-plane"></i></button>
-                                    </span>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="social-col mb-3 clearfix">
-                            <a href="#;" target="_blank"><i class="cpb cp-facebook-f"></i></a>
-                            <a href="#;" target="_blank"><i class="cpb cp-twitter"></i></a>
-                            <a href="#;" target="_blank"><i class="cpb cp-instagram"></i></a>
-                            <a href="#;" target="_blank"><i class="cpb cp-google-plus"></i></a>
-                            <a href="#;" target="_blank"><i class="cpb cp-linkedin-in"></i></a>
-                            <a href="#;" target="_blank"><i class="cpb cp-youtube"></i></a>
-                        </div>
-                    </div>
                     <div class="col-12 col-sm-12 col-md-4 col-lg-3">
                         <div class="footer-col contact-col">
                             <h4 class="title">Contact</h4>
@@ -873,7 +840,12 @@
     });
 
     var form = document.getElementById("price-form");
+    document.querySelector('#shop-now-btn').addEventListener('click', function(event) {
+            event.preventDefault();
+        document.querySelector('#page-content').scrollIntoView({behavior: 'smooth'});
+    });
 
+ 
     function addToCart(row){
         row.querySelector(".button-hover").addEventListener("click", function(event) {
         var upc = row.querySelector("#product-detail").innerHTML.split('<br>')[0].split(':')[1].trim();
@@ -921,7 +893,7 @@
                                 <div class="wrapQtyBtn">
                                     <div class="qtyField">
                                         <a class="qtyBtn minus" href="#"><i class="cp cp-minus" aria-hidden="true"></i></a>
-                                        <input type="text" name="quantity" value="${item.quantity}" class="qty">
+                                        <span class="qty" name="quantity">${item.quantity}</span>
                                         <a class="qtyBtn plus" href="#"><i class="cp cp-plus" aria-hidden="true"></i></a>
                                     </div>
                                 </div>
@@ -975,6 +947,52 @@
                 document.querySelector('.cart-icon .items').textContent = totalQuant;
             });
     }
+    async function checkLoginStatus() {
+        const userResponse = await fetch('/check-cookie', {
+            method: 'GET',
+            credentials: "include",
+        });
+        const adminResponse = await fetch('/admin-check-cookie', {
+            method: 'GET',
+            credentials: "include",
+        });
+
+        const adminData = await adminResponse.json();
+        const userData = await userResponse.json();
+
+
+        if (adminData.loggedIn === "success") {
+            console.log("admin:", adminData.loggedIn);
+            document.querySelector("#settingsBox ul").innerHTML = `
+            <li><a href="/product/manage">Manage products</a></li>
+            <li><a href="view-order.html">Manage users</a></li>
+            <li><button id="logoutButton">Log Out</button></li>
+            `;
+        } else if (userData.loggedIn === "success") {
+            console.log("user:", userData.loggedIn);
+            document.querySelector("#settingsBox ul").innerHTML = `
+            <li><a href="/view-orders">View Order</a></li>
+            <li><button id="logoutButton">Log Out</button></li>
+            `;
+        }
+        else {
+            console.log("not logged in");
+            document.querySelector("#settingsBox ul").innerHTML = `
+            <li><a href="/login">Register / Log in</a></li>
+            `;
+        }
+        const logoutButton = document.querySelector("#logoutButton");
+        if (logoutButton) {
+            logoutButton.addEventListener("click", async () => {
+            await fetch('/logout', {
+                method: 'PUT',
+                credentials: "include",
+            });
+            checkLoginStatus();
+            });
+        }
+        }
+    checkLoginStatus();
     updateCart();
 </script>
 </html>
