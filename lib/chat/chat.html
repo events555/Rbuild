@@ -135,14 +135,33 @@
                     generateRoomBuilder();
                 })
 
+                // function to get the current time
+                function getTimeString() {
+
+                    let fixDate = new Date();
+                    let date = fixDate.getUTCMonth()+1 + '-' + fixDate.getUTCDate() + '-' + fixDate.getUTCFullYear();
+
+                    let now = new Date();
+                    // obtain hours
+                    let hours = now.getHours();
+                    // determine if time is AM or PM
+                    let amOrpm = hours >= 12 ? 'PM' : 'AM';
+                    if (hours > 12) {
+                        hours = hours - 12;
+                    }
+                    // obtain minutes
+                    let minutes = now.getMinutes();
+                    // adds leading zero
+                    if (minutes < 10) {
+                        minutes = "0" + minutes;
+                    }
+                    return hours + ":" + minutes+ " " + amOrpm + ' ' + date;
+                }
+
                 async function generateRoomBuilder()
                 {
                     otherRoom = document.getElementById('room-input').options[document.getElementById('room-input').selectedIndex].text;
-
-                    socket.emit('join', room);
-                    // first message will be the data from the request form...
-                    socket.emit("chat-message", {msg: '[' + sessionStorage.getItem("name") + '] ' + username + ": " + document.getElementById('room-input').options[document.getElementById('room-input').selectedIndex].value}, room, otherRoom, sessionStorage.getItem("name"));
-                    socket.emit("chat-message", {msg:  '[' + sessionStorage.getItem("name") + '] ' + "You to " + otherRoom + ": " + document.getElementById('room-input').options[document.getElementById('room-input').selectedIndex].value}, otherRoom, room, sessionStorage.getItem("name"));
+                    socket.emit('join', room, otherRoom, JSON.stringify({role: 'builder', name: username, message: document.getElementById('room-input').options[document.getElementById('room-input').selectedIndex].value}));
                 }
 
                 async function cusOtherRoom()
@@ -159,7 +178,6 @@
                     {
                         username = data1.username;
                         room = username;
-                        socket.emit('join', room);
 
                         //otherRoom
                         const response2 = await fetch('http://localhost:3000/getuserid?username=' + username, { 
@@ -182,6 +200,7 @@
                         {
                             const results = await response3.json();
                             otherRoom = results[0].employee;
+                            socket.emit('join', room, otherRoom, JSON.stringify({role: 'customer'}));
                         }
                     }
                 }
@@ -237,11 +256,7 @@
                                 }
 
                                 otherRoom = dropdown.options[dropdown.selectedIndex].text;
-                                socket.emit('join', room);
-
-                                // first message will be the data from the request form...
-                                socket.emit("chat-message", {msg: '[' + sessionStorage.getItem("name") + '] ' + username + ": " + dropdown.options[dropdown.selectedIndex].value}, room, otherRoom, sessionStorage.getItem("name"));
-                                socket.emit("chat-message", {msg:  '[' + sessionStorage.getItem("name") + '] ' + "You to " + otherRoom + ": " + dropdown.options[dropdown.selectedIndex].value}, otherRoom, room, sessionStorage.getItem("name"));
+                                socket.emit('join', room, otherRoom, JSON.stringify({role: 'builder', name: username, message: document.getElementById('room-input').options[document.getElementById('room-input').selectedIndex].value}));
                             }
                         }
                     }
@@ -261,21 +276,19 @@
                 var form = document.getElementById("form");
                 var input = document.getElementById("input");
 
-                var today = new Date();
-                var date = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate() + " | ";
-
                 // Sending individual chat messages
                 form.addEventListener("submit", function(e) {
                     e.preventDefault();
                     if (input.value) {
-                            socket.emit("chat-message", {msg: '[' + sessionStorage.getItem("name") + '] ' + username + ": " + input.value}, room, otherRoom, sessionStorage.getItem("name"));
-                            socket.emit("chat-message", {msg:  '[' + sessionStorage.getItem("name") + '] ' + "You to " + otherRoom + ": " + input.value}, otherRoom, room, sessionStorage.getItem("name"));
+                            time = getTimeString();
+                            socket.emit("chat-message", {msg: '[' + sessionStorage.getItem("name") + '] ' + username + ": " + input.value + "\n"}, room, otherRoom, time);
+                            socket.emit("chat-message", {msg:  '[' + sessionStorage.getItem("name") + '] ' + "You to " + otherRoom + ": " + input.value + "\n"}, otherRoom, room, time);
                             input.value = "";
                     }
                 });
                 
                 // listens for "chat-message" event to run function
-                socket.on("chat-message", function(msg) {
+                socket.on("chat-message", function(msg, time) {
                     // create new tag <div>
                     var messageContainer = document.createElement("div");
 
@@ -289,12 +302,8 @@
                     // add class to p for styling
                     messageTime.classList.add("message-time");  
                     // set the content of p to the current time
-                    messageTime.textContent = getTimeString();
-                    // set up a function to dynamically update the time every minute
-                    var updateTime = setInterval(function() {
-                        messageTime.textContent = getTimeString();
-                    }, 60000);
-                    
+                    messageTime.textContent = time;
+
                     // split the message by " "
                     let msgArr = msg.split(" ");
                     // obtain the 3rd or 4th element, which is the role of the speaker
@@ -321,25 +330,6 @@
                     
                     // scrolls window to last message
                     window.scrollTo(0, document.body.scrollHeight);
-
-                    // function to get the current time
-                    function getTimeString() {
-                        let now = new Date();
-                        // obtain hours
-                        let hours = now.getHours();
-                        // determine if time is AM or PM
-                        let amOrpm = hours >= 12 ? 'PM' : 'AM';
-                        if (hours > 12) {
-                            hours = hours - 12;
-                        }
-                        // obtain minutes
-                        let minutes = now.getMinutes();
-                        // adds leading zero
-                        if (minutes < 10) {
-                            minutes = "0" + minutes;
-                        }
-                        return hours + ":" + minutes+ " " + amOrpm;
-                    }
                 });
             </script>
         </div>

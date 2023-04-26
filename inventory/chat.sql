@@ -1,8 +1,8 @@
-DROP TABLE IF EXISTS `chat_line`;
-
 CREATE TABLE `chat_line` (
-    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `socket_id` VARCHAR(255) NOT NULL DEFAULT '',
-    `line_text` TEXT NOT NULL, 
-    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(`id`)
-    )
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user1` varchar(15) NOT NULL,
+  `user2` varchar(15) NOT NULL,
+  `line_text` text,
+  `line_time` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

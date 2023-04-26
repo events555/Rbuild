@@ -198,6 +198,23 @@ window.onload = function() {
         document.querySelector('.overlay').style.display = 'none';
         document.getElementById("flash-message-2").innerHTML = "LOGGED IN AS: " + data.username;
         flashMessage2();
+
+        //redirect to the chat pages...
+        fetch('http://localhost:3000/getrole/?username=' + data.username)
+        .then(response => response.json())
+        .then(data => {
+            if(data.role === 'Customer')
+            {
+                window.location = "/customer/chat";
+                sessionStorage.setItem("name", "Customer");
+            }
+
+            if(data.role === 'Builder')
+            {
+                sessionStorage.setItem("name", "Builder");
+                window.location = "/builder/chat";
+            }
+        })
       }
       if(data.loggedIn == "invalid") {
         flashMessage();
