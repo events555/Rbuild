@@ -10,7 +10,18 @@ Folders: inventory, lib, node_modules (might have issue with Bcrypt because some
 
 - public: contains the assets folder (which stores various fonts, images, css, and javascript) and all the other important html files that can be accessed by going to http://localhost:3000.  Contains the following pages
 
-  -  amongus
+  -  add_product_manage.html: 
+  -  index.html: Main website homepage.  When you run the server.js with node and you go to http://localhost:3000 this is the page that is loaded.  From here you can navigate to all other pages
+  -  login-register.html: 
+  -  man_build.html: 
+  -  product_detail.html: 
+  -  product_manage.html: 
+  -  purchase_manage.html: 
+  -  purchase_manage_2.html: 
+  -  request_form.html: 
+  -  shop_popout.html: 
+  -  thank_you.html: 
+  -  user-manage.html:
 
 - employee: contains admin user database management(frontend to change user's roles & delete users from the database). You must be running an http server (like apache) and you must have a user in the database with the username 'admin' and role 'Admin'. If you do not have an 'admin' user in your user database, uou can first run the login_register.html in the manual_builds folder to register admin.
 
