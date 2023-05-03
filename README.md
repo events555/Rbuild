@@ -28,3 +28,4 @@ Folders: inventory, lib, node_modules (might have issue with Bcrypt because some
 # RUNNING THE PROGRAM
 
 Make sure to have node installed, the required modules, and a MySQL server setup with the rbuild database (the username used here is root and password is admin but you should be able to change this in server.js file in the root directory: where the //connect this node.js server to the mysql comment is).  After that, run the .sql files in the inventory directory (besides loadCSV.sql) and then load all the product .csvs into their respective table (make sure local_infile is set to true).  You can then run node server.js and open the browser to http://localhost:3000 to view the page.
+
