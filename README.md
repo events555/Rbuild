@@ -1,6 +1,8 @@
 # Rbuild
 
-Folders: chat, icons, manual_builds, inventory, request, server, and shop
+Folders: inventory, lib, node_modules (might have issue with Bcrypt because some teammates are on Linux/Windows and the versions differ), and public
+
+- inventory: contains all the needed MySQL tables (in the form of a .sql file) and also the .csv files needed to create the product inventory.  The name of the MySQL database is called rbuild and the username and password to the MySQL server is root and password is admin.  Please change the username and password to match what yours is if it is different.  Please also run all the .sql files (EXCEPT loadCSV.sql) in software like MySQL workbench to generate the databases.  You can then run the loadCSV.sql to load the .csv product databases into the prduct tables.  Be sure to edit the file depending on what database you want to load. 
 
 - chat: refer to Lance's branch for more info on how the chat works; all I did was change the port to 3001 so the server.js can run with the chat_server.js
 - employee: contains admin user database management(frontend to change user's roles & delete users from the database). You must be running an http server (like apache) and you must have a user in the database with the username 'admin' and role 'Admin'. If you do not have an 'admin' user in your user database, uou can first run the login_register.html in the manual_builds folder to register admin.
