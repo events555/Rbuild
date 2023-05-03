@@ -1,207 +1,205 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <style>
-      /* Add your CSS styles here */
-      body {
-        overflow-x: hidden;
-        margin: 0;
-        padding: 0;
-        background: white;
-      }
+        /* Add your CSS styles here */
+        body {
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
 
-      .row {
-        display: flex;
-      }
+        .row {
+            display: flex;
+        }
 
-      .column {
-        flex: 33.33%;
-        padding: 10px;
-        background-color: beige;
-        text-align: center;
-      }
+        .column {
+            flex: 33.33%;
+            padding: 10px;
+            background-color: beige;
+            text-align:center;
+        }
 
-      table {
-        border-collapse: collapse;
-        width: 90%;
-        margin-top: 20px;
-        margin-left: auto;
-        margin-right: auto;
-      }
+        table {
+            border-collapse: collapse;
+            width: 90%;
+            margin-top:20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+            
+        th, td {
+            text-align:center;
+            padding: 8px;
+            border-bottom: 1px solid #ddd; 
+        }
 
-      th,
-      td {
-        text-align: center;
-        padding: 8px;
-        border-bottom: 1px solid #ddd;
-      }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 20px;
+        }
+        
+        .product {
+            text-align: center;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: auto;
+        }
+        
+        .product-name,
+        .product-price {
+            text-align: center;
+        }
+        
+        .view-more-btn {
+            cursor: pointer;
+            padding: 10px 20px;
+            background-color: #4CAF50; /* Green */
+            border-radius: 5px;
+            color: white;
+        }
+        
+        .view-more-btn:hover {
+            background-color: #3e8e41; /* Darker green */
+        }
 
-      .product-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-gap: 20px;
-      }
+         #exit-button{
+             float:right
+         }
 
-      .product {
-        text-align: center;
-      }
+         #add-to-cart-button{
+             position:absolute; 
+             bottom:-30px; 
+             left:-30px
+         }
 
-      .product-image {
-        width: 100%;
-        height: auto;
-      }
+         #product-details-container{
+             position:absolute; 
+             right:-1200px; 
+             top:0; 
+             width:auto; 
+             height:auto; 
+             transition:right 1s linear; 
+             overflow:hidden;
+             background: white;
+         }
 
-      .product-name,
-      .product-price {
-        text-align: center;
-      }
+         #container-product-name, #container-product-price{
+            font-size: 40px;
+            display: block;
+            text-align: center;
+            margin: auto;
+         }
 
-      .view-more-btn {
-        cursor: pointer;
-        padding: 10px 20px;
-        background-color: #4caf50; /* Green */
-        border-radius: 5px;
-        color: white;
-      }
+         #add_to_cart {
+            margin: .5em;
+            font-size: 2em;
+            text-transform: capitalize;
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 2px;
+        }
+        
+        #add_cartButton {
+            display: flex; 
+            justify-content: center;
+        }
 
-      .view-more-btn:hover {
-        background-color: #3e8e41; /* Darker green */
-      }
-
-      #exit-button {
-        float: right;
-      }
-
-      #add-to-cart-button {
-        position: absolute;
-        bottom: -30px;
-        left: -30px;
-      }
-
-      #product-details-container {
-        position: absolute;
-        right: -1200px;
-        top: 0;
-        width: auto;
-        height: auto;
-        transition: right 1s linear;
-        overflow: hidden;
-        background: white;
-      }
-
-      #container-product-name,
-      #container-product-price {
-        font-size: 40px;
-        display: block;
-        text-align: center;
-        margin: auto;
-      }
-
-      #add_to_cart {
-        margin: 0.5em;
-        font-size: 2em;
-        text-transform: capitalize;
-        background-color: red;
-        color: white;
-        border: none;
-        padding: 5px;
-        border-radius: 2px;
-      }
-
-      #add_cartButton {
-        display: flex;
-        justify-content: center;
-      }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="shop-container">
-      <input
-        type="text"
-        id="search-bar"
-        onkeyup="searchProducts()"
-        placeholder="Search for products..."
-      />
+    
+      <input type="text" id="search-bar" onkeyup="searchProducts()" placeholder="Search for products...">
 
       <!--Updated with products later-->
-      <div class="product-grid"></div>
+      <div class="product-grid">
+      </div>
 
       <!--Transparent overlay that appears over the product grid-->
-      <div id="overlay"></div>
-
+      <div id = "overlay"></div>
+      
       <!--Product Details container with all the product information-->
-      <div id="product-details-container">
-        <button id="exit-button" onclick="hideDetails()">Close</button
-        ><br /><br />
-        <div id="product-details-info"></div>
+      <div id = "product-details-container">
+          <button id = "exit-button" onclick = "hideDetails()">Close</button><br><br>
+          <div id="product-details-info">
+          </div>
       </div>
     </div>
 
-    <script>
-      //global data variable storing the product info
-      let prod_data;
+<script>
 
-      //as soon as we receive a message, query the table we want...
-      window.onmessage = function (e) {
-        queryTable(e);
-      };
+//global data variable storing the product info
+let prod_data;
+    
+//as soon as we receive a message, query the table we want...
+window.onmessage = function(e) 
+{
+    queryTable(e);
+}
 
-      //query the database and then display the elements that were retreived from the database...
-      async function queryTable(e) {
-        var payload = JSON.parse(e.data);
-        console.log(payload);
-        let loadPart = payload["part"];
+//query the database and then display the elements that were retreived from the database...
+async function queryTable(e) {
 
-        if (loadPart !== "cpu_cooler") {
-          // Use await keyword to pause until fetch request has completed
-          let response = await fetch(
-            "http://localhost:3000/product?part=" + loadPart
-          );
+    var payload = JSON.parse(e.data);
 
-          // Use await keyword to pause until response has been parsed as JSON
-          prod_data = await response.json();
+    let loadPart = payload["part"];
 
-          //now make the divs
-          makeDivs(e);
-        }
+    if(loadPart!=='cpu_cooler')
+    {
+        // Use await keyword to pause until fetch request has completed 
+        let response = await fetch('http://localhost:3000/product?part=' + loadPart);
+        
+        // Use await keyword to pause until response has been parsed as JSON 
+        prod_data = await response.json();
 
-        //otherwise we need to send two fetch requests: one for aio liquid cooler and another for an air cooler.
-        else {
-          // Use await keyword to pause until fetch request has completed
-          let response = await fetch(
-            "http://localhost:3000/product?part=air_cooler"
-          );
+        //now make the divs
+        makeDivs(e);
+    }
 
-          // Use await keyword to pause until response has been parsed as JSON
-          var temp_data1 = await response.json();
+    //otherwise we need to send two fetch requests: one for aio liquid cooler and another for an air cooler.
+    else
+    {
+        // Use await keyword to pause until fetch request has completed 
+        let response = await fetch('http://localhost:3000/product?part=air_cooler');
+        
+        // Use await keyword to pause until response has been parsed as JSON 
+        var temp_data1 = await response.json();
 
-          // Use await keyword to pause until fetch request has completed
-          response = await fetch(
-            "http://localhost:3000/product?part=aio_cooler"
-          );
+        // Use await keyword to pause until fetch request has completed 
+        response = await fetch('http://localhost:3000/product?part=aio_cooler');
+        
+        // Use await keyword to pause until response has been parsed as JSON 
+        var temp_data2 = await response.json();
 
-          // Use await keyword to pause until response has been parsed as JSON
-          var temp_data2 = await response.json();
+        prod_data = temp_data1.concat(temp_data2);
 
-          prod_data = temp_data1.concat(temp_data2);
+        //now make the divs
+        makeDivs(e);
+    }
+};
 
-          //now make the divs
-          makeDivs(e);
-        }
-      }
+function makeDivs(e)
+{
+    let prod_disp_div = document.getElementsByClassName('product-grid')[0];
 
-      function makeDivs(e) {
-        let prod_disp_div = document.getElementsByClassName("product-grid")[0];
+    var payload = JSON.parse(e.data);
+    let loadPart = payload["part"];
 
-        var payload = JSON.parse(e.data);
-        let loadPart = payload["part"];
+    for(let i=0; i<prod_data.length; i++) {
 
-        for (let i = 0; i < prod_data.length; i++) {
-          //compatibility checks
-          var compatible = 1;
-
-          //check the current part that we have loaded
-          if (loadPart === "cpu") {
+        //compatibility checks
+        var compatible = 1;
+        
+        //check the current part that we have loaded
+        if(loadPart==='cpu')
+        {
             /*
             CPU NEEDS TO CHECK LOCALSTORAGE ELEMENTS:
             MOTHERBOARD & CPU COOLER
@@ -210,83 +208,87 @@
             CPU COOLER: CPU socket with amd_socket and intel_socket
             MEMORY: compare mem_type from cpu with mem_type from memory
             */
-            if (payload.hasOwnProperty("cpu_cooler")) {
-              let checkVal = JSON.parse(payload["cpu_cooler"]);
-              if (
-                checkVal.intel_sock.indexOf(prod_data[i].socket) > -1 ||
-                checkVal.amd_sock.indexOf(prod_data[i].socket) > -1
-              )
-                compatible = 1;
-              else compatible = 0;
+            if(payload.hasOwnProperty("cpu_cooler"))
+            {
+                let checkVal = JSON.parse(payload["cpu_cooler"]);
+                if(((checkVal.intel_sock).indexOf(prod_data[i].socket) > -1) || ((checkVal.amd_sock).indexOf(prod_data[i].socket) > -1))
+                    compatible = 1;
+                else
+                    compatible = 0;
             }
 
-            if (payload.hasOwnProperty("mobo") && compatible === 1) {
-              //first we need to parse the JSON in this localStorage...
-              let checkVal = JSON.parse(payload["mobo"]);
-              if (
-                checkVal.socket === prod_data[i].socket &&
-                prod_data[i].compatibility.indexOf(checkVal.chipset) > -1
-              ) {
-                // Split by DDR values and RAM speeds
-                var first = checkVal.mem_type.split(/[\s-]+/);
-                var second = prod_data[i].mem_type.split(/[\s-]+/);
+            if(payload.hasOwnProperty("mobo") && compatible === 1)
+            {
+                //first we need to parse the JSON in this localStorage...
+                let checkVal = JSON.parse(payload["mobo"]);
+                if((checkVal.socket === prod_data[i].socket) && (prod_data[i].compatibility.indexOf(checkVal.chipset) > -1))
+                {
+                    // Split by DDR values and RAM speeds
+                    var first = checkVal.mem_type.split(/[\s-]+/);
+                    var second = prod_data[i].mem_type.split(/[\s-]+/);
 
-                let firstDDR = first.filter((_, i) => i % 2 === 0);
-                let firstSpeeds = first.filter((_, i) => i % 2 === 1);
-                let secondDDR = second.filter((_, i) => i % 2 === 0);
-                let secondSpeeds = second.filter((_, i) => i % 2 === 1);
-                let moboOCSpeeds = checkVal.mem_speeds.match(/\d+/g);
+                    let firstDDR = first.filter((_, i) => i % 2 === 0);
+                    let firstSpeeds = first.filter((_, i) => i % 2 === 1);
+                    let secondDDR = second.filter((_, i) => i % 2 === 0);
+                    let secondSpeeds = second.filter((_, i) => i % 2 === 1);
+                    let moboOCSpeeds = checkVal.mem_speeds.match(/\d+/g);
 
-                if (firstDDR.some((value) => secondDDR.includes(value))) {
-                  if (firstSpeeds.some((value) => secondSpeeds.includes(value)))
-                    compatible = 1;
-                  else {
-                    if (
-                      secondSpeeds.some((value) => moboOCSpeeds.includes(value))
-                    )
-                      compatible = 1;
-                    else compatible = 0;
-                  }
-                } else compatible = 0;
-              } else compatible = 0;
-            }
+                    if(firstDDR.some(value => secondDDR.includes(value)))
+                    {
+                        if(firstSpeeds.some(value => secondSpeeds.includes(value)))
+                            compatible = 1;
 
-            if (payload.hasOwnProperty("memory") && compatible === 1) {
-              //first we need to parse the JSON in this localStorage...
-              let checkVal = JSON.parse(payload["memory"]);
-              if (
-                prod_data[i].mem_type.indexOf(checkVal.mem_type) > -1 ||
-                prod_data[i].mem_type.indexOf(checkVal.mem_speed) > -1
-              ) {
-                // Make sure the RAM has the right platform...
-                if (
-                  prod_data[i].prod_name.includes("Intel") &&
-                  checkVal.mem_pfp === "Intel XMP"
-                )
-                  compatible = 1;
-                else if (
-                  prod_data[i].prod_name.includes("AMD") &&
-                  checkVal.mem_pfp === "AMD EXPO"
-                )
-                  compatible = 1;
-                else compatible = 0;
+                        else
+                        {
+                            if(secondSpeeds.some(value => moboOCSpeeds.includes(value)))
+                                compatible = 1;
 
-                if (compatible === 1) {
-                  var first = checkVal.mem_type.split(/[\s-]+/);
-                  var second = prod_data[i].mem_type.split(/[\s-]+/);
+                            else
+                                compatible = 0;
+                        }
+                    }
 
-                  let firstDDR = first.filter((_, i) => i % 2 === 0);
-                  let secondDDR = second.filter((_, i) => i % 2 === 0);
-
-                  if (firstDDR.some((value) => secondDDR.includes(value))) {
-                    compatible = 1;
-                  }
+                    else
+                        compatible = 0;
                 }
-              }
-            }
-          } else if (loadPart === "cpu_cooler") {
 
-          /*
+                else
+                    compatible = 0;
+            }
+
+            if(payload.hasOwnProperty("memory") && compatible === 1)
+            {
+                //first we need to parse the JSON in this localStorage...
+                let checkVal = JSON.parse(payload["memory"]);
+                if((prod_data[i].mem_type.indexOf(checkVal.mem_type) > -1) || (prod_data[i].mem_type.indexOf(checkVal.mem_speed) > -1))
+                {
+                    // Make sure the RAM has the right platform...
+                    if(prod_data[i].prod_name.includes('Intel') && checkVal.mem_pfp === 'Intel XMP')
+                        compatible = 1;
+                    else if(prod_data[i].prod_name.includes('AMD') && checkVal.mem_pfp === 'AMD EXPO')
+                        compatible = 1;
+                    else
+                        compatible = 0;
+
+                    if(compatible === 1)
+                    {
+                        var first = checkVal.mem_type.split(/[\s-]+/);
+                        var second = prod_data[i].mem_type.split(/[\s-]+/);
+
+                        let firstDDR = first.filter((_, i) => i % 2 === 0);
+                        let secondDDR = second.filter((_, i) => i % 2 === 0);
+
+                        if(firstDDR.some(value => secondDDR.includes(value)))
+                        {
+                                compatible = 1;
+                        }
+                    }
+
+                 }
+            }
+        }
+
+        /*
             CPU COOLER NEEDS TO CHECK LOCALSTORAGE ELEMENTS:
             CPU & CASES & Motherboard
             
@@ -294,56 +296,58 @@
             CASES: CPU height with max_heatsink from case (max_heatsink should be larger) & CPU socket width 
             MOTHERBOARD: check CPU socket with intel_sock and amd_sock from mobo
         */
-            if (payload.hasOwnProperty("cpu")) {
-              //first we need to parse the JSON in this localStorage...
-              let checkVal = JSON.parse(payload["cpu"]);
-              if (
-                prod_data[i].intel_sock.indexOf(checkVal.socket) > -1 ||
-                prod_data[i].amd_sock.indexOf(checkVal.socket) > -1
-              )
-                compatible = 1;
-              else compatible = 0;
+        else if(loadPart==='cpu_cooler')
+        {
+            if(payload.hasOwnProperty("cpu"))
+            {
+                //first we need to parse the JSON in this localStorage...
+                let checkVal = JSON.parse(payload["cpu"]);
+                if(((prod_data[i].intel_sock).indexOf(checkVal.socket) > -1) || ((prod_data[i].amd_sock).indexOf(checkVal.socket) > -1))
+                    compatible = 1;
+                    
+                else
+                    compatible = 0;
             }
 
-            if (payload.hasOwnProperty("cases") && compatible === 1) {
-              //first we need to parse the JSON in this localStorage...
-              let checkVal = parseFloat(
-                JSON.parse(payload["cases"]).max_heatsink.match(
-                  /\(([^)]+)\)/
-                )[1]
-              );
-              if (prod_data[i].hasOwnProperty("height")) {
-                let cpuHeight = parseFloat(
-                  prod_data[i].height.match(/\(([^)]+)\)/)[1]
-                );
+            if(payload.hasOwnProperty("cases") && compatible === 1)
+            {
+                //first we need to parse the JSON in this localStorage...
+                let checkVal = parseFloat(((JSON.parse(payload["cases"])).max_heatsink).match(/\(([^)]+)\)/)[1]);
+                if(prod_data[i].hasOwnProperty('height'))
+                {
+                    let cpuHeight = parseFloat((prod_data[i].height.match(/\(([^)]+)\)/)[1]));
 
-                if (checkVal > cpuHeight) compatible = 1;
-                else compatible = 0;
-              }
+                    if(checkVal > cpuHeight)
+                        compatible = 1;
+                    else
+                        compatible = 0;
+                }
 
-              // aio liquid cooler if it does not have this property...
-              else {
-                let checkVal2 = JSON.parse(payload["cases"]);
-                test = parseInt(prod_data[i].rad_size);
-                test = test + " mm";
-                if (checkVal2.sup_rad.indexOf(test) > -1) compatible = 1;
-                else compatible = 0;
-              }
+                // aio liquid cooler if it does not have this property...
+                else
+                {
+                    let checkVal2 = JSON.parse(payload["cases"]);
+                    test = parseInt(prod_data[i].rad_size);
+                    test = test + " mm";
+                    if((checkVal2.sup_rad).indexOf(test) > -1)
+                        compatible = 1;
+                    else
+                        compatible = 0;
+                }
             }
 
-            if (payload.hasOwnProperty("mobo") && compatible === 1) {
-              //first we need to parse the JSON in this localStorage...
-              let checkVal = JSON.parse(payload["mobo"]);
-              if (
-                prod_data[i].intel_sock.indexOf(checkVal.socket) > -1 ||
-                prod_data[i].amd_sock.indexOf(checkVal.socket) > -1
-              )
-                compatible = 1;
-              else compatible = 0;
+            if(payload.hasOwnProperty("mobo") && compatible === 1)
+            {
+                //first we need to parse the JSON in this localStorage...
+                let checkVal = JSON.parse(payload["mobo"]);
+                if(((prod_data[i].intel_sock).indexOf(checkVal.socket) > -1) || ((prod_data[i].amd_sock).indexOf(checkVal.socket) > -1))
+                    compatible = 1;
+                else
+                    compatible = 0;
             }
-          } else if (loadPart === "mobo") {
+        }
 
-          /*
+        /*
             MOBO NEEDS TO CHECK LOCALSTORAGE ELEMENTS:
             CPU, Cases, CPU Cooler, Memory
             
@@ -353,80 +357,97 @@
             MEMORY: Make sure mem_type from mobo and memory and mem_speed from mobo
             STORAGE: Not overpopulating the slots
         */
-            if (payload.hasOwnProperty("cpu_cooler")) {
-              //first we need to parse the JSON in this localStorage...
-              let checkVal = JSON.parse(payload["cpu_cooler"]);
-              if (
-                checkVal.intel_sock.indexOf(prod_data[i].socket) > -1 ||
-                checkVal.amd_sock.indexOf(prod_data[i].socket) > -1
-              )
-                compatible = 1;
-              else compatible = 0;
+
+        else if(loadPart==='mobo')
+        {
+            if(payload.hasOwnProperty("cpu_cooler"))
+            {
+                //first we need to parse the JSON in this localStorage...
+                let checkVal = JSON.parse(payload["cpu_cooler"]);
+                if(((checkVal.intel_sock).indexOf(prod_data[i].socket) > -1) || ((checkVal.amd_sock).indexOf(prod_data[i].socket) > -1))
+                    compatible = 1;
+                else
+                    compatible = 0;
             }
 
-            if (payload.hasOwnProperty("cpu") && compatible === 1) {
-              //first we need to parse the JSON in this localStorage...
-              let checkVal = JSON.parse(payload["cpu"]);
-              if (
-                checkVal.socket === prod_data[i].socket &&
-                checkVal.compatibility.indexOf(prod_data[i].chipset) > -1
-              ) {
+            if(payload.hasOwnProperty("cpu") && compatible === 1)
+            {
+                //first we need to parse the JSON in this localStorage...
+                let checkVal = JSON.parse(payload["cpu"]);
+                if(checkVal.socket === prod_data[i].socket && checkVal.compatibility.indexOf(prod_data[i].chipset) > -1)
+                {
+                    // Split by DDR values and RAM speeds
+                    var first = prod_data[i].mem_type.split(/[\s-]+/);
+                    var second = checkVal.mem_type.split(/[\s-]+/);
+
+                    let firstDDR = first.filter((_, i) => i % 2 === 0);
+                    let firstSpeeds = first.filter((_, i) => i % 2 === 1);
+                    let secondDDR = second.filter((_, i) => i % 2 === 0);
+                    let secondSpeeds = second.filter((_, i) => i % 2 === 1);
+                    let moboOCSpeeds = prod_data[i].mem_speeds.match(/\d+/g);
+
+                    if(firstDDR.some(value => secondDDR.includes(value)))
+                    {
+                        if(firstSpeeds.some(value => secondSpeeds.includes(value)))
+                            compatible = 1;
+
+                        else
+                        {
+                            if(secondSpeeds.some(value => moboOCSpeeds.includes(value)))
+                                compatible = 1;
+
+                            else
+                                compatible = 0;
+                        }
+                    }
+
+                    else
+                        compatible = 0;
+                }
+
+                else
+                    compatible = 0;
+            }
+
+            if(payload.hasOwnProperty("cases") && compatible === 1)
+            {
+                //first we need to parse the JSON in this localStorage...
+                let checkVal = JSON.parse(payload["cases"]);
+                if(checkVal.mobo_support.indexOf(prod_data[i].form_factor) > -1)
+                    compatible = 1;
+                else
+                    compatible = 0;
+            }
+
+            if(payload.hasOwnProperty("memory") && compatible === 1)
+            {
+                let checkVal = JSON.parse(payload["memory"]);
                 // Split by DDR values and RAM speeds
                 var first = prod_data[i].mem_type.split(/[\s-]+/);
                 var second = checkVal.mem_type.split(/[\s-]+/);
 
                 let firstDDR = first.filter((_, i) => i % 2 === 0);
                 let firstSpeeds = first.filter((_, i) => i % 2 === 1);
-                let secondDDR = second.filter((_, i) => i % 2 === 0);
                 let secondSpeeds = second.filter((_, i) => i % 2 === 1);
-                let moboOCSpeeds = prod_data[i].mem_speeds.match(/\d+/g);
+                let moboOCSpeeds = prod_data[i].match(/\d+/g);
 
-                if (firstDDR.some((value) => secondDDR.includes(value))) {
-                  if (firstSpeeds.some((value) => secondSpeeds.includes(value)))
-                    compatible = 1;
-                  else {
-                    if (
-                      secondSpeeds.some((value) => moboOCSpeeds.includes(value))
-                    )
-                      compatible = 1;
-                    else compatible = 0;
-                  }
-                } else compatible = 0;
-              } else compatible = 0;
-            }
+                if(firstDDR.some(value => prod_data[i].mem_type.includes(value)))
+                {
+                    if(firstSpeeds.some(value => secondSpeeds.includes(value)))
+                        compatible = 1;
 
-            if (payload.hasOwnProperty("cases") && compatible === 1) {
-              //first we need to parse the JSON in this localStorage...
-              let checkVal = JSON.parse(payload["cases"]);
-              if (checkVal.mobo_support.indexOf(prod_data[i].form_factor) > -1)
-                compatible = 1;
-              else compatible = 0;
-            }
+                    else
+                    {
+                        if(secondSpeeds.some(value => moboOCSpeeds.includes(value)))
+                            compatible = 1;
 
-            if (payload.hasOwnProperty("memory") && compatible === 1) {
-              let checkVal = JSON.parse(payload["memory"]);
-              // Split by DDR values and RAM speeds
-              var first = prod_data[i].mem_type.split(/[\s-]+/);
-              var second = checkVal.mem_type.split(/[\s-]+/);
-
-              let firstDDR = first.filter((_, i) => i % 2 === 0);
-              let firstSpeeds = first.filter((_, i) => i % 2 === 1);
-              let secondSpeeds = second.filter((_, i) => i % 2 === 1);
-              let moboOCSpeeds = prod_data[i].match(/\d+/g);
-
-              if (
-                firstDDR.some((value) => prod_data[i].mem_type.includes(value))
-              ) {
-                if (firstSpeeds.some((value) => secondSpeeds.includes(value)))
-                  compatible = 1;
-                else {
-                  if (
-                    secondSpeeds.some((value) => moboOCSpeeds.includes(value))
-                  )
-                    compatible = 1;
-                  else compatible = 0;
+                        else
+                            compatible = 0;
+                    }
                 }
-              } else compatible = 0;
+
+                else
+                    compatible = 0;
             }
 
             /*
@@ -437,64 +458,75 @@
                 
                 compatible = 1;
             }*/
-          }
+        }
 
-          // Memory matches with MOBO and with CPU
-          else if (loadPart === "memory") {
-            if (payload.hasOwnProperty("mobo")) {
-              let checkVal = JSON.parse(payload["mobo"]);
-              // Split by DDR values and RAM speeds
-              var first = checkVal.mem_type.mem_type.split(/[\s-]+/);
-              var second = prod_data[i].split(/[\s-]+/);
+        // Memory matches with MOBO and with CPU
+        else if(loadPart==='memory')
+        {
+            if(payload.hasOwnProperty("mobo"))
+            {
+                let checkVal = JSON.parse(payload["mobo"]);
+                // Split by DDR values and RAM speeds
+                var first = checkVal.mem_type.mem_type.split(/[\s-]+/);
+                var second = prod_data[i].split(/[\s-]+/);
 
-              let firstDDR = first.filter((_, i) => i % 2 === 0);
-              let firstSpeeds = first.filter((_, i) => i % 2 === 1);
-              let secondSpeeds = second.filter((_, i) => i % 2 === 1);
-              let moboOCSpeeds = checkVal.match(/\d+/g);
+                let firstDDR = first.filter((_, i) => i % 2 === 0);
+                let firstSpeeds = first.filter((_, i) => i % 2 === 1);
+                let secondSpeeds = second.filter((_, i) => i % 2 === 1);
+                let moboOCSpeeds = checkVal.match(/\d+/g);
 
-              if (
-                firstDDR.some((value) => prod_data[i].mem_type.includes(value))
-              ) {
-                if (firstSpeeds.some((value) => secondSpeeds.includes(value)))
-                  compatible = 1;
-                else {
-                  if (
-                    secondSpeeds.some((value) => moboOCSpeeds.includes(value))
-                  )
-                    compatible = 1;
-                  else compatible = 0;
+                if(firstDDR.some(value => prod_data[i].mem_type.includes(value)))
+                {
+                    if(firstSpeeds.some(value => secondSpeeds.includes(value)))
+                        compatible = 1;
+
+                    else
+                    {
+                        if(secondSpeeds.some(value => moboOCSpeeds.includes(value)))
+                            compatible = 1;
+
+                        else
+                            compatible = 0;
+                    }
                 }
-              } else compatible = 0;
+
+                else
+                    compatible = 0;
             }
 
-            if (payload.hasOwnProperty("cpu") && compatible === 1) {
-              let checkVal = JSON.parse(payload["mobo"]);
-              // Split by DDR values and RAM speeds
-              var first = checkVal.mem_type.mem_type.split(/[\s-]+/);
-              var second = prod_data[i].split(/[\s-]+/);
+            if(payload.hasOwnProperty("cpu") && compatible === 1)
+            {
+                let checkVal = JSON.parse(payload["mobo"]);
+                // Split by DDR values and RAM speeds
+                var first = checkVal.mem_type.mem_type.split(/[\s-]+/);
+                var second = prod_data[i].split(/[\s-]+/);
 
-              let firstDDR = first.filter((_, i) => i % 2 === 0);
-              let firstSpeeds = first.filter((_, i) => i % 2 === 1);
-              let secondSpeeds = second.filter((_, i) => i % 2 === 1);
-              let moboOCSpeeds = checkVal.match(/\d+/g);
+                let firstDDR = first.filter((_, i) => i % 2 === 0);
+                let firstSpeeds = first.filter((_, i) => i % 2 === 1);
+                let secondSpeeds = second.filter((_, i) => i % 2 === 1);
+                let moboOCSpeeds = checkVal.match(/\d+/g);
 
-              if (
-                firstDDR.some((value) => prod_data[i].mem_type.includes(value))
-              ) {
-                if (firstSpeeds.some((value) => secondSpeeds.includes(value)))
-                  compatible = 1;
-                else {
-                  if (
-                    secondSpeeds.some((value) => moboOCSpeeds.includes(value))
-                  )
-                    compatible = 1;
-                  else compatible = 0;
+                if(firstDDR.some(value => prod_data[i].mem_type.includes(value)))
+                {
+                    if(firstSpeeds.some(value => secondSpeeds.includes(value)))
+                        compatible = 1;
+
+                    else
+                    {
+                        if(secondSpeeds.some(value => moboOCSpeeds.includes(value)))
+                            compatible = 1;
+
+                        else
+                            compatible = 0;
+                    }
                 }
-              } else compatible = 0;
-            }
-          } else if (loadPart === "gpu") {
 
-          /*
+                else
+                    compatible = 0;
+            }
+        }
+
+        /*
             Drives NEEDS TO CHECK LOCALSTORAGE ELEMENTS:
             Case, Mobo
             
@@ -503,407 +535,428 @@
             PSU:  check if enough slots to fit 3.5/2.5
         */
 
-          /*else if(loadPart==='storage')
+        /*else if(loadPart==='storage')
         {
             
         }*/
 
-          /*
+        /*
             GPU NEEDS TO CHECK LOCALSTORAGE ELEMENTS:
             Case, PSU
             
             CASE: check CPU socket & compatibility with mobo socket and mobo chipset
             PSU: gfx_con with pow_con and rec_psu >= watt
         */
+        else if(loadPart==='gpu')
+        {
             // psu check
-            if (payload.hasOwnProperty("psu")) {
-              let checkVal = JSON.parse(payload["psu"]);
+            if(payload.hasOwnProperty("psu"))
+            {
+                 let checkVal = JSON.parse(payload["psu"]);
 
-              // gpu power check
-              if (parseInt(prod_data[i].rec_psu) <= parseInt(checkVal.watt))
-                compatible = 1;
-              else compatible = 0;
+                 // gpu power check
+                 if(parseInt(prod_data[i].rec_psu) <= parseInt(checkVal.watt))
+                    compatible = 1;
+                 else
+                    compatible = 0;
+                
+                // gpu power cable check
+                if(compatible===1)
+                {
+                    let pinValue = checkVal.gfx_con;
+                    let pinArray = pinValue.split(", ");
+                    let result = {};
 
-              // gpu power cable check
-              if (compatible === 1) {
-                let pinValue = checkVal.gfx_con;
-                let pinArray = pinValue.split(", ");
-                let result = {};
-
-                for (let i = 0; i < pinArray.length; i++) {
-                  let pin = pinArray[i].split(" x ");
-                  let value = parseInt(pin[0]);
-                  let key = pin[1];
-                  if (key.includes("+")) {
-                    let splitKey = key.split("+");
-                    let firstNum = parseInt(splitKey[0]);
-                    let secondNum = parseInt(splitKey[1].split("-")[0]);
-                    key = firstNum + secondNum + "-pin";
-                  }
-                  result[key] = value;
-                }
-
-                // now that result is created... do same for checkVal and then compare...
-                let pin = prod_data[i].pow_con.split(" x ");
-                let counter = parseInt(pin[0]);
-                let compareVal = pin[1];
-                let notFound = 1;
-
-                // now we check if compareVal
-                for (key in result) {
-                  // first make sure that it is matching value...
-                  if (key === compareVal) {
-                    notFound = 0;
-                    if (result[key] <= counter) {
-                      compatible = 1;
-                      break;
-                    } else {
-                      comaptible = 0;
-                      break;
+                    for (let i = 0; i < pinArray.length; i++) {
+                        let pin = pinArray[i].split(" x ");
+                        let value = parseInt(pin[0]);
+                        let key = pin[1];
+                        if (key.includes("+")) {
+                            let splitKey = key.split("+");
+                            let firstNum = parseInt(splitKey[0]);
+                            let secondNum = parseInt(splitKey[1].split("-")[0]);
+                            key = firstNum + secondNum + "-pin";
+                        }
+                        result[key] = value;
                     }
-                  }
+
+                    // now that result is created... do same for checkVal and then compare...
+                    let pin = prod_data[i].pow_con.split(" x ");
+                    let counter = parseInt(pin[0]);
+                    let compareVal = pin[1];
+                    let notFound = 1;
+
+                    // now we check if compareVal 
+                    for(key in result)
+                    {
+                        // first make sure that it is matching value...
+                        if(key === compareVal)
+                        {
+                            notFound = 0;
+                            if(result[key] <= counter)
+                            {
+                                compatible = 1;
+                                break;
+                            }
+
+                            else
+                            {
+                                comaptible = 0;
+                                break;
+                            }
+                        }
+                    }
+
+                    // if not found then compatible is 0...
+                    if(notFound===1)
+                        compatible = 0;
                 }
 
-                // if not found then compatible is 0...
-                if (notFound === 1) compatible = 0;
-              }
+                if(payload.hasOwnProperty("cases") && compatible===1)
+                {
+                    let checkVal = parseFloat(((JSON.parse(payload["cases"])).max_gpu).match(/\(([^)]+)\)/)[1]);
+                    let caseHeight = parseFloat((prod_data[i].card_length.match(/\(([^)]+)\)/)[1]));
 
-              if (payload.hasOwnProperty("cases") && compatible === 1) {
-                let checkVal = parseFloat(
-                  JSON.parse(payload["cases"]).max_gpu.match(/\(([^)]+)\)/)[1]
-                );
-                let caseHeight = parseFloat(
-                  prod_data[i].card_length.match(/\(([^)]+)\)/)[1]
-                );
-
-                if (checkVal > caseHeight) compatible = 1;
-                else compatible = 0;
-              }
+                    if(checkVal > caseHeight)
+                        compatible = 1;
+                    else
+                        compatible = 0;
+                }
             }
-          } else if (loadPart === "cases") {
+        }
+
+        else if(loadPart==='cases')
+        {
             // cpu cooler check
+                
+
 
             // gpu length check
-            if (payload.hasOwnProperty("gpu")) {
-              let checkVal = parseFloat(
-                JSON.parse(payload["gpu"]).card_length.match(/\(([^)]+)\)/)[1]
-              );
-              let caseSize = parseFloat(
-                prod_data[i].max_gpu.match(/\(([^)]+)\)/)[1]
-              );
+            if(payload.hasOwnProperty("gpu"))
+            {
+                let checkVal = parseFloat(((JSON.parse(payload["gpu"])).card_length).match(/\(([^)]+)\)/)[1]);
+                let caseSize = parseFloat((prod_data[i].max_gpu.match(/\(([^)]+)\)/)[1]));
 
-              if (caseSize > checkVal) compatible = 1;
-              else compatible = 0;
+                if(caseSize > checkVal)
+                    compatible = 1;
+                else
+                    compatible = 0;
             }
 
             // mobo size check
-            if (payload.hasOwnProperty("mobo") && compatible === 1) {
-              //first we need to parse the JSON in this localStorage...
-              let checkVal = JSON.parse(payload["mobo"]);
-              if (prod_data[i].mobo_support.indexOf(checkVal.form_factor) > -1)
-                compatible = 1;
-              else compatible = 0;
+            if(payload.hasOwnProperty("mobo") && compatible === 1)
+            {
+                //first we need to parse the JSON in this localStorage...
+                let checkVal = JSON.parse(payload["mobo"]);
+                if(prod_data[i].mobo_support) {
+                  if(prod_data[i].mobo_support.indexOf(checkVal.form_factor) > -1)
+                    compatible = 1;
+                  else
+                      compatible = 0;
+                }
             }
 
             // psu length check
-            if (payload.hasOwnProperty("psu")) {
-              let checkVal = parseFloat(
-                JSON.parse(payload["psu"]).psu_size.match(/\(([^)]+)\)/)[1]
-              );
-              let maxCase = parseFloat(
-                prod_data[i].max_psu.match(/\(([^)]+)\)/)[1]
-              );
+            if(payload.hasOwnProperty("psu"))
+            {
+                let checkVal = parseFloat(((JSON.parse(payload["psu"])).psu_size).match(/\(([^)]+)\)/)[1]);
+                let maxCase = parseFloat((prod_data[i].max_psu.match(/\(([^)]+)\)/)[1]));
 
-              if (maxCase > checkVal) compatible = 1;
-              else compatible = 0;
+                if(maxCase > checkVal)
+                    compatible = 1;
+                else
+                    compatible = 0;
             }
-          } else if (loadPart === "psu") {
+        }
 
-          /*
+        /*
             PSU NEEDS TO CHECK LOCALSTORAGE ELEMENTS:
             GPU, CASE
             
             GPU: gfx_con with correct pow_con and rec_psu >= watt
             CASE: make sure it fits in the case
         */
-            if (payload.hasOwnProperty("gpu")) {
-              let checkVal = JSON.parse(payload["gpu"]);
+        else if(loadPart==='psu')
+        {
+            if(payload.hasOwnProperty("gpu"))
+            {
+                 let checkVal = JSON.parse(payload["gpu"]);
 
-              // gpu power check
-              if (parseInt(prod_data[i].watt) >= parseInt(checkVal.rec_psu))
-                compatible = 1;
-              else compatible = 0;
+                 // gpu power check
+                 if(parseInt(prod_data[i].watt) >= parseInt(checkVal.rec_psu))
+                    compatible = 1;
+                 else
+                    compatible = 0;
+                
+                // gpu power cable check
+                if(compatible===1)
+                {
+                    let pinValue = prod_data[i].gfx_con;
+                    let pinArray = pinValue.split(", ");
+                    let result = {};
 
-              // gpu power cable check
-              if (compatible === 1) {
-                let pinValue = prod_data[i].gfx_con;
-                let pinArray = pinValue.split(", ");
-                let result = {};
-
-                for (let i = 0; i < pinArray.length; i++) {
-                  let pin = pinArray[i].split(" x ");
-                  let value = parseInt(pin[0]);
-                  let key = pin[1];
-                  if (key.includes("+")) {
-                    let splitKey = key.split("+");
-                    let firstNum = parseInt(splitKey[0]);
-                    let secondNum = parseInt(splitKey[1].split("-")[0]);
-                    key = firstNum + secondNum + "-pin";
-                  }
-                  result[key] = value;
-                }
-
-                // now that result is created... do same for checkVal and then compare...
-                let pin = checkVal.pow_con.split(" x ");
-                let counter = parseInt(pin[0]);
-                let compareVal = pin[1];
-                let notFound = 1;
-
-                // now we check if compareVal
-                for (key in result) {
-                  // first make sure that it is matching value...
-                  if (key === compareVal) {
-                    notFound = 0;
-                    if (result[key] <= counter) {
-                      compatible = 1;
-                      break;
-                    } else {
-                      comaptible = 0;
-                      break;
+                    for (let i = 0; i < pinArray.length; i++) {
+                        let pin = pinArray[i].split(" x ");
+                        let value = parseInt(pin[0]);
+                        let key = pin[1];
+                        if(key) {
+                          if (key.includes("+")) {
+                            let splitKey = key.split("+");
+                            let firstNum = parseInt(splitKey[0]);
+                            let secondNum = parseInt(splitKey[1].split("-")[0]);
+                            key = firstNum + secondNum + "-pin";
+                        }
+                        result[key] = value;
+                        }
                     }
-                  }
+
+                    // now that result is created... do same for checkVal and then compare...
+                    let pin = checkVal.pow_con.split(" x ");
+                    let counter = parseInt(pin[0]);
+                    let compareVal = pin[1];
+                    let notFound = 1;
+
+                    // now we check if compareVal 
+                    for(key in result)
+                    {
+                        // first make sure that it is matching value...
+                        if(key === compareVal)
+                        {
+                            notFound = 0;
+                            if(result[key] <= counter)
+                            {
+                                compatible = 1;
+                                break;
+                            }
+
+                            else
+                            {
+                                comaptible = 0;
+                                break;
+                            }
+                        }
+                    }
+
+                    // if not found then compatible is 0...
+                    if(notFound===1)
+                        compatible = 0;
                 }
-
-                // if not found then compatible is 0...
-                if (notFound === 1) compatible = 0;
-              }
             }
 
-            if (payload.hasOwnProperty("cases") && compatible === 1) {
-              let checkVal = parseFloat(
-                JSON.parse(payload["cases"]).max_psu.match(/\(([^)]+)\)/)[1]
-              );
-              let psuLength = parseFloat(
-                prod_data[i].psu_size.match(/\(([^)]+)\)/)[1]
-              );
+            if(payload.hasOwnProperty("cases") && compatible===1)
+            {
+                let checkVal = parseFloat(((JSON.parse(payload["cases"])).max_psu).match(/\(([^)]+)\)/)[1]);
+                let psuLength = parseFloat((prod_data[i].psu_size.match(/\(([^)]+)\)/)[1]));
 
-              if (checkVal > psuLength) compatible = 1;
-              else compatible = 0;
+                if(checkVal > psuLength)
+                    compatible = 1;
+                else
+                    compatible = 0;
             }
-          }
+        }
 
-          //if the parts are compatible with current loadout
-          if (compatible == 1) {
+        //if the parts are compatible with current loadout
+        if(compatible==1)
+        {
             //create div element based on prod_data element
-            let div = document.createElement("div");
+            let div = document.createElement('div');
 
-            // Set its class name and data-name property
-            div.setAttribute("class", "product");
-            div.setAttribute("data-name", prod_data[i].upc);
+            // Set its class name and data-name property 
+            div.setAttribute('class', 'product');
+            div.setAttribute('data-name', prod_data[i].upc);
 
-            // Create an img element
-            let img = document.createElement("img");
+            // Create an img element 
+            let img = document.createElement('img');
 
-            // Set its class name and src attribute
-            img.setAttribute("class", "product-image");
-            img.setAttribute(
-              "src",
-              "https://via.placeholder.com/250x250.png?text=Product+Image"
-            );
-            img.setAttribute("alt", "Product Image");
+            // Set its class name and src attribute 
+            img.setAttribute('class', 'product-image');
+            img.setAttribute('src', 'https://via.placeholder.com/250x250.png?text=Product+Image');
+            img.setAttribute('alt', 'Product Image')
 
-            // Append it to the div element
+            // Append it to the div element 
             div.appendChild(img);
 
-            // Create an h2 element
-            let h2 = document.createElement("h2");
+            // Create an h2 element 
+            let h2 = document.createElement('h2');
 
-            // Set its class name and text content
-            h2.setAttribute("class", "product-name");
+            // Set its class name and text content 
+            h2.setAttribute('class', 'product-name');
             h2.textContent = prod_data[i].prod_name;
 
-            // Append it to the div element
+            // Append it to the div element 
             div.appendChild(h2);
 
-            // Create a p element
-            let p = document.createElement("p");
+            // Create a p element 
+            let p = document.createElement('p');
 
-            // Set its class name and text content
-            p.setAttribute("class", "product-price");
+            // Set its class name and text content 
+            p.setAttribute('class', 'product-price');
             p.textContent = prod_data[i].price;
 
-            // Append it to the div element
+            // Append it to the div element 
             div.appendChild(p);
 
-            // Create a button element
-            let button = document.createElement("button");
+            // Create a button element 
+            let button = document.createElement('button');
 
-            // Set its class name and text content
-            button.setAttribute("class", "view-more-btn");
-            button.setAttribute(
-              "onclick",
-              "(function(){showDetails(" + i + ")})()"
-            );
-            button.textContent = "View More";
+            // Set its class name and text content 
+            button.setAttribute('class', 'view-more-btn');
+            button.setAttribute('onclick', '(function(){showDetails('+i+')})()');
+            button.textContent = 'View More';
 
-            // Append it to the div element
+            // Append it to the div element 
             div.appendChild(button);
 
             prod_disp_div.append(div);
-          }
         }
-      }
+    }
+}
 
-      function showDetails(i) {
-        // Play animation to slide product grid to left and slide in product details table
-        document.getElementById("overlay").style.display = "block";
-        document.getElementById("overlay").style.position = "fixed";
-        document.getElementById("overlay").style.top = "0";
-        document.getElementById("overlay").style.left = "0";
-        document.getElementById("overlay").style.width = "100%";
-        document.getElementById("overlay").style.height = "100%";
-        document.getElementById("overlay").style.backgroundColor =
-          "rgba(0,0,0,.5)";
-        document.getElementById("overlay").onclick = function () {
-          hideDetails();
-        };
+function showDetails(i) {
+    // Play animation to slide product grid to left and slide in product details table
+    document.getElementById("overlay").style.display = "block";
+    document.getElementById("overlay").style.position = "fixed";
+    document.getElementById("overlay").style.top = "0";
+    document.getElementById("overlay").style.left = "0";
+    document.getElementById("overlay").style.width = "100%";
+    document.getElementById("overlay").style.height = "100%";
+    document.getElementById("overlay").style.backgroundColor = "rgba(0,0,0,.5)";
+    document.getElementById("overlay").onclick = function () { hideDetails() };
+    
+    //Create the table...
+    var table = document.createElement('table');
 
-        //Create the table...
-        var table = document.createElement("table");
+    // Create a table head element
+    var head = document.createElement('thead');
 
-        // Create a table head element
-        var head = document.createElement("thead");
+    // Create a table head row element
+    var headRow = document.createElement('tr');
 
-        // Create a table head row element
-        var headRow = document.createElement("tr");
+    // Create two table head cells for name and value
+    var nameCell = document.createElement('th');
+    var valueCell = document.createElement('th');
 
-        // Create two table head cells for name and value
-        var nameCell = document.createElement("th");
-        var valueCell = document.createElement("th");
+    // Set the text content of the cells
+    nameCell.textContent = 'Category';
+    valueCell.textContent = 'Value';
 
-        // Set the text content of the cells
-        nameCell.textContent = "Category";
-        valueCell.textContent = "Value";
+    // Append the cells to the head row
+    headRow.append(nameCell);
+    headRow.append(valueCell);
 
-        // Append the cells to the head row
-        headRow.append(nameCell);
-        headRow.append(valueCell);
+    // Append the head row to the head
+    head.append(headRow);
 
-        // Append the head row to the head
-        head.append(headRow);
+    // Append the head to the table
+    table.append(head);
 
-        // Append the head to the table
-        table.append(head);
+    // Create a table body element
+    var body = document.createElement('tbody');
 
-        // Create a table body element
-        var body = document.createElement("tbody");
-
-        // Loop through all the attributes in prod_data[i]
-        for (var attr in prod_data[i]) {
-          // Check if prod_data has this property
-          if (prod_data[i].hasOwnProperty(attr)) {
+    // Loop through all the attributes in prod_data[i]
+    for (var attr in prod_data[i]) {
+        // Check if prod_data has this property
+        if (prod_data[i].hasOwnProperty(attr)) {
             // Create a table body row element
-            var bodyRow = document.createElement("tr");
+            var bodyRow = document.createElement('tr');
 
             // Create two table body cells for name and value
-            var nameCell = document.createElement("td");
-            var valueCell = document.createElement("td");
+            var nameCell = document.createElement('td');
+            var valueCell = document.createElement('td');
 
-            if (
-              attr !== "price" &&
-              attr !== "prod_name" &&
-              attr !== "picture"
-            ) {
-              // Set the text content of the cells to attr and prod_data[i][attr]
-              nameCell.textContent = attr;
-              valueCell.textContent = prod_data[i][attr];
+            if(attr!=="price" && attr!=="prod_name" && attr!=="picture")
+            {
+                // Set the text content of the cells to attr and prod_data[i][attr]
+                nameCell.textContent = attr;
+                valueCell.textContent = prod_data[i][attr];
 
-              // Append the cells to the body row
-              bodyRow.append(nameCell);
-              bodyRow.append(valueCell);
+                // Append the cells to the body row
+                bodyRow.append(nameCell);
+                bodyRow.append(valueCell);
 
-              // Append the body row to the body
-              body.append(bodyRow);
+                // Append the body row to the body
+                body.append(bodyRow);
             }
-          }
         }
+    }
 
-        // Append the body to the table
-        table.append(body);
+    // Append the body to the table
+    table.append(body);
 
-        // Update product details table with information for the selected product
-
-        document.getElementById("product-details-info").innerHTML = `
+    // Update product details table with information for the selected product
+   
+   document.getElementById("product-details-info").innerHTML =
+   `
    <p id="container-product-name"><b>${prod_data[i].prod_name}<b></p>
    <img class="product-image" src="https://via.placeholder.com/250x250.png?text=Product+Image" alt="Product Image">
    <p id="container-product-price"><b>${prod_data[i].price}<b></p>
    ${table.outerHTML}
     <div id="add_cartButton">
-        <button id="add_to_cart" onclick='addToCart(${JSON.stringify(
-          prod_data[i]
-        )})'>Add To Cart</button>
+        <button id="add_to_cart" onclick='addToCart(${JSON.stringify(prod_data[i])})'>Add To Cart</button>
    </div>
    `;
+    
+   //set size of the container (width to be 1/3 of the page and height to be the size we need based upon the info in the product-details-info)
+    var containerWidth = window.innerWidth / 3;
 
-        //set size of the container (width to be 1/3 of the page and height to be the size we need based upon the info in the product-details-info)
-        var containerWidth = window.innerWidth / 3;
+    if (containerWidth < 300) {
+        containerWidth = 300;
+    }
 
-        if (containerWidth < 300) {
-          containerWidth = 300;
-        }
+    var containerHeight = document.getElementById("product-details-info").height;
 
-        var containerHeight = document.getElementById(
-          "product-details-info"
-        ).height;
+    var detailsContainer = document.getElementById("product-details-container");
+    
+    detailsContainer.style.right="0";
+    
+    detailsContainer.style.width=containerWidth+"px";
+    
+    detailsContainer.style.height=containerHeight+"px";
+}
 
-        var detailsContainer = document.getElementById(
-          "product-details-container"
-        );
+function hideDetails() {
+   var detailsContainer=document.getElementById("product-details-container");
+   
+   detailsContainer.style.right="-1200px";
 
-        detailsContainer.style.right = "0";
+   setTimeout(function(){
+      document.getElementById("overlay").style.display ="none";
+      },700);
+}
 
-        detailsContainer.style.width = containerWidth + "px";
+function addToCart(prodToAdd) {
 
-        detailsContainer.style.height = containerHeight + "px";
-      }
+    //window.parent.postMessage(prodToAdd,"*");
+    
+    if(prodToAdd.stock > 0)
+    window.parent.postMessage(prodToAdd,"*");
+    
+    else
+    alert("Cannot add to your list: this product is out of stock");
+} 
 
-      function hideDetails() {
-        var detailsContainer = document.getElementById(
-          "product-details-container"
-        );
+function searchProducts() {
+    
+    //convert input from search to lowercase
+    var input = document.getElementById("search-bar");
+    var filter = input.value.toLowerCase();
+   
+    // Get all the divs with the class name "product"
+    var products = document.getElementsByClassName("product");
 
-        detailsContainer.style.right = "-1200px";
+    // Loop through all the divs 
+    for (var i = 0; i < products.length; i++) {
+    
+        // Get the text content and convert it to lower case 
+        var h2 = products[i].getElementsByClassName("product-name")[0]
+        var text = h2.textContent.toLowerCase();
 
-        setTimeout(function () {
-          document.getElementById("overlay").style.display = "none";
-        }, 700);
-      }
-
-      function addToCart(prodToAdd) {
-        //window.parent.postMessage(prodToAdd,"*");
-
-        if (prodToAdd.stock > 0) window.parent.postMessage(prodToAdd, "*");
-        else alert("Cannot add to your list: this product is out of stock");
-      }
-
-      function searchProducts() {
-        //convert input from search to lowercase
-        var input = document.getElementById("search-bar");
-        var filter = input.value.toLowerCase();
-
-        // Get all the divs with the class name "product"
-        var products = document.getElementsByClassName("product");
-
-        // Loop through all the divs
-        for (var i = 0; i < products.length; i++) {
-          // Get the text content and convert it to lower case
-          var h2 = products[i].getElementsByClassName("product-name")[0];
-          var text = h2.textContent.toLowerCase();
-
-          if (text.indexOf(filter) > -1) products[i].style.display = "";
-          else products[i].style.display = "none";
-        }
-      }
-    </script>
-  </body>
+        if(text.indexOf(filter) > -1)
+            products[i].style.display = "";
+        else
+            products[i].style.display = "none";
+    }
+}
+</script>
+</body>
 </html>

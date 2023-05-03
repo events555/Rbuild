@@ -163,6 +163,12 @@
                     time = getTimeString();
                     otherRoom = document.getElementById('room-input').options[document.getElementById('room-input').selectedIndex].text;
                     socket.emit('join', room, otherRoom, JSON.stringify({role: 'builder', name: username, message: document.getElementById('room-input').options[document.getElementById('room-input').selectedIndex].value}), time);
+
+                    // clear the current messages...
+                    var el = document.getElementById("messages");
+                    
+                    while(el.firstChild)
+                        el.removeChild(el.firstChild);
                 }
 
                 async function cusOtherRoom()
