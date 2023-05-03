@@ -10,7 +10,7 @@ Folders: inventory, lib, node_modules (might have issue with Bcrypt because some
 
 - public: contains the assets folder (which stores various fonts, images, css, and javascript) and all the other important html files that can be accessed by going to http://localhost:3000.  Contains the following pages
 
-  -  
+  -  amongus
 
 - employee: contains admin user database management(frontend to change user's roles & delete users from the database). You must be running an http server (like apache) and you must have a user in the database with the username 'admin' and role 'Admin'. If you do not have an 'admin' user in your user database, uou can first run the login_register.html in the manual_builds folder to register admin.
 
