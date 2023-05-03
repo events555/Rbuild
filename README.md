@@ -1,6 +1,6 @@
 # PROGRAM DESCRIPTION
 
-Rbuild is a fullstack storefont for buying PCs.  Users can browse the store or create an account to build PCs using a pcpartpicker-like list or use a form to request a PC from company employees and chat with them.  It uses HTML and Javascript for the frontend and Node.js and MySQL for the backend.
+Rbuild is a fullstack storefont for buying PCs.  Users can browse the store or create an account to build PCs using a pcpartpicker-like list or use a form to request a PC from company employees and chat with them.  It uses HTML and Javascript for the frontend and Node.js and MySQL for the backend.  Developed for the 14:332:452 Software Engineering course at Rutgers University with a group of 10 students.
 
 # OVERVIEW OF FOLDER HIERARCHY
 
