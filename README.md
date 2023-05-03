@@ -1,12 +1,16 @@
 # Rbuild
 
+**OVERVIEW OF FOLDER HIERARCHY**
+
 Folders: inventory, lib, node_modules (might have issue with Bcrypt because some teammates are on Linux/Windows and the versions differ), and public
 
-- inventory: contains all the needed MySQL tables (in the form of a .sql file) and also the .csv files needed to create the product inventory.  The name of the MySQL database is called rbuild and the username and password to the MySQL server is root and password is admin.  Please change the username and password to match what yours is if it is different.  Please also run all the .sql files (EXCEPT loadCSV.sql) in software like MySQL workbench to generate the databases.  You can then run the loadCSV.sql to load the .csv product databases into the prduct tables.  Be sure to edit the file depending on what database you want to load. ***NOTE: You might have issues loading the .sql files into your MySQL server and get the error 3948 (42000) 'loading local data is disabled' please open mysql and run SET GLOBAL local_infile=true; and this should fix the error***
+- inventory: contains all the needed MySQL tables (in the form of a .sql file) and also the .csv files needed to create the product inventory.  The name of the MySQL database is called rbuild and the username and password to the MySQL server is root and password is admin.  Please change the username and password to match what yours is if it is different.  Please also run all the .sql files (EXCEPT loadCSV.sql) in software like MySQL workbench to generate the databases.  You can then run the loadCSV.sql to load the .csv product databases into the prduct tables.  Be sure to edit the file depending on what database you want to load. **NOTE: You might have issues loading the .sql files into your MySQL server and get the error 3948 (42000) 'loading local data is disabled' please open mysql and run SET GLOBAL local_infile=true; and this should fix the error**
 
 - lib: contains Node.js endpoints (account.js, cart.js, inventory.js, review.js, and user.js) that are loaded and called by the server.js in the root of the Rbuild folder.  It also contains the folder chat which holds all the necessary files for running the chat server (chat.html, chat_server.js, and index.html)
 
-- public: contains the assets folder (which stores various fonts, images, css, and javascript) and all the other important html files that can be accessed by going to http://localhost:3000
+- public: contains the assets folder (which stores various fonts, images, css, and javascript) and all the other important html files that can be accessed by going to http://localhost:3000.  Contains the following pages
+
+  -  
 
 - employee: contains admin user database management(frontend to change user's roles & delete users from the database). You must be running an http server (like apache) and you must have a user in the database with the username 'admin' and role 'Admin'. If you do not have an 'admin' user in your user database, uou can first run the login_register.html in the manual_builds folder to register admin.
 
@@ -14,25 +18,3 @@ Folders: inventory, lib, node_modules (might have issue with Bcrypt because some
 - request: contains the request_form.html. It is not fully done yet: I want to add some more stuff to the page and I need to connect it with our database. thank_you.html is loaded when the user submits the form.
 - server: contains the chat_server.js (which you can ignore) and the main server.js which allows the html code to interact with our database. Run this code if you are testing the login process.
 - shop: contains html files for the template for the overall website. Needs a lot of work and modification to fit our needs.
-
-**_IMPORTANT INFORMATION_**
-
-To test the code (mostly the login/register process), you need the following:
-
-- A MySQL database running on localhost with the username root, password admin, and database rbuild. The rbuild database should have a table named users with the following columns: userid, username, password, and role. Here is the create table:
-
-CREATE TABLE `users` (
-`userid` int NOT NULL AUTO_INCREMENT,
-`username` varchar(15) NOT NULL,
-`password` varchar(72) NOT NULL,
-`role` varchar(50) NOT NULL DEFAULT 'Customer',
-PRIMARY KEY (`userid`)
-)
-
-- npm and Node.js installed with the following packages (express, body-parser, cors, mysql, cookie-parser, and crypto).
-
-- An apache http server with the login_register.html file in it.
-
-Run the MySQL files in /inventory/sqlScripts to create the required MySQL tables in software like MySQL Workbench.
-
-To populate the product database with the info from the inventory .csv tables, run the loadCSV.sql file included in the inventory folder or just put it in your MySQL data folder.
