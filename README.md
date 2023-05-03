@@ -1,6 +1,4 @@
-# Rbuild
-
-**OVERVIEW OF FOLDER HIERARCHY**
+# OVERVIEW OF FOLDER HIERARCHY
 
 Folders: inventory, lib, node_modules (might have issue with Bcrypt because some teammates are on Linux/Windows and the versions differ), and public
 
